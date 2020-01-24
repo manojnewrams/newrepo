@@ -1,7 +1,13 @@
 variables:
   DOCKER_DRIVER: overlay
-  DOCKER_HOST: tcp://192.168.65.1 unix:///var/run/docker.sock
+  DOCKER_HOST: tcp://192.168.65.1
   DOCKER_TLS_CERTDIR: ""
+
+include:
+  - project: 'gitlab-templates/ci-templates/java/gradle/'
+    file: 'gitlab-ci-template.yml'
+  - project: 'gitlab-templates/ci-templates/build/docker/'
+    file: 'gitlab-ci-template.yml'  
 
 stages:
   - build
@@ -12,13 +18,9 @@ stages:
 build:
   stage: build
   image: gradle:alpine
+  extends: .gradle_java_build
   tags:
     - docker
-  script:
-    - gradle build -x test
-  artifacts:
-    paths:
-      - build/libs/*.jar  
 
 .test:
   stage: test
@@ -27,9 +29,7 @@ build:
 
 pushImage:
   stage: pushImage
-  image: docker:19.03.5
-  services:
-    - docker:19.03.5-dind
+  extends: .docker_image_creation
   tags:
     - docker
   before_script:
