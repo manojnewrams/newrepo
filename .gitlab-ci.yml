@@ -25,6 +25,9 @@ pushImage:
   tags:
     - docker
   before_script:
+    - echo $URL_REGISTRY
+    - echo $USER
+    - echo $TOKEN
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
   script:
     - docker build -t $APP_NAME:$NUMBER_RANDOM .
