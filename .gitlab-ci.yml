@@ -1,6 +1,8 @@
 variables:
   DOCKER_DRIVER: overlay
-  DOCKER_HOST: tcp://192.168.65.1
+  DOCKER_HOST: 
+    - tcp://192.168.65.1
+    - unix:///var/run/docker.sock
   DOCKER_TLS_CERTDIR: ""
 
 stages:
@@ -33,9 +35,6 @@ pushImage:
   tags:
     - docker
   before_script:
-    - echo $URL_REGISTRY
-    - echo $USER
-    - echo $TOKEN
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
   script:
     - docker build -t $APP_NAME:$CI_COMMIT_SHORT_SHA . 
