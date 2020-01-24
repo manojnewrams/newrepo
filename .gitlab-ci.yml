@@ -50,7 +50,8 @@ deployInAws:
     - apt-get install openssh-server -y
     - service ssh start
   script:
-    - ssh -i $awshi5nisum $AWS_HOST
+    - ssh-agent -i $awshi5nisum $AWS_HOST
     - docker info
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
     - docker pull $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
+    - docker run -p 8080:8080 $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
