@@ -21,6 +21,7 @@ build:
 
 pushImage:
   stage: pushImage
+  image: docker:stable
   tags:
     - docker
   before_script:
