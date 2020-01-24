@@ -1,5 +1,5 @@
 variables:
-  DOCKER_DRIVER: overlay2
+  DOCKER_DRIVER: overlay
   DOCKER_HOST: tcp://192.168.65.1
   DOCKER_TLS_CERTDIR: ""
 
@@ -35,6 +35,7 @@ pushImage:
   before_script:
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
   script:
+    - docker info
     - docker build -t $APP_NAME:$CI_COMMIT_SHORT_SHA . 
     - docker push $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
 
