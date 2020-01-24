@@ -1,7 +1,4 @@
 image: ubuntu:xenial
-services:
-  - gradle:jdk8
-  - docker:stable
 
 stages:
   - build
