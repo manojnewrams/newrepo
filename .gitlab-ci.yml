@@ -13,7 +13,7 @@ build:
   stage: build
   image: gradle:alpine
   tags:
-    - gradle
+    - docker
   script:
     - gradle build -x test
 
