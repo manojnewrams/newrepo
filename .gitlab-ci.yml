@@ -1,6 +1,6 @@
 variables:
   DOCKER_DRIVER: overlay
-  DOCKER_HOST: unix:///var/run/docker.sock
+  DOCKER_HOST: localhost
   DOCKER_TLS_CERTDIR: ""
 
 include:
