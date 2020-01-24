@@ -40,7 +40,17 @@ pushImage:
     - docker build -t $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA . 
     - docker push $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
 
-.deployInAws:
+deployInAws:
   stage: deploy
+  image: ubuntu:xenial
+  before_script:
+    - apt-get update -y
+    - apt-get upgrade -y
+    - apt-get install openssh-client -y
+    - apt-get install openssh-server -y
+    - service ssh start
   script:
-    - hol
+    - ssh -i $awshi5nisum $AWS_HOST
+    - docker info
+    - docker login $URL_REGISTRY -u $USER -p $TOKEN
+    - docker pull $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
