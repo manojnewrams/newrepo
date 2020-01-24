@@ -1,6 +1,6 @@
 variables:
   DOCKER_DRIVER: overlay
-  DOCKER_HOST: tcp://index.docker.io:2375
+  DOCKER_HOST: tcp://192.168.65.1:53
   DOCKER_TLS_CERTDIR: ""
 
 stages:
