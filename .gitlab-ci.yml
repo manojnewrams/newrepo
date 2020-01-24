@@ -12,7 +12,7 @@ build:
     - docker
   script:
     - gradle build -x test
-  artifacs:
+  artifacts:
     paths:
       - build/libs/*.jar  
 
