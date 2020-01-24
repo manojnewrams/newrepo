@@ -1,4 +1,5 @@
 
+
 stages:
   - build
   - test
@@ -24,6 +25,8 @@ build:
 pushImage:
   stage: pushImage
   image: docker:stable
+  services:
+    - docker:18.09.7-dind
   tags:
     - docker
   before_script:
