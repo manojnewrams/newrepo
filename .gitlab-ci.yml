@@ -41,4 +41,4 @@ pushImage:
 .deployInAws:
   stage: deploy
   script:
-    - hola
+    - hol
