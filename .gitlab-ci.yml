@@ -12,6 +12,9 @@ build:
     - docker
   script:
     - gradle build -x test
+  artifacs:
+    paths:
+      - build/libs/*.jar  
 
 .test:
   stage: test
