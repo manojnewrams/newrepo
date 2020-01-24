@@ -37,7 +37,7 @@ pushImage:
   script:
     - echo $DOCKER_HOST
     - docker info
-    - docker build -t $APP_NAME:$CI_COMMIT_SHORT_SHA . 
+    - docker build -t $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA . 
     - docker push $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
 
 .deployInAws:
