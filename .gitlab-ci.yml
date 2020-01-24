@@ -20,7 +20,7 @@ build:
   image: gradle:6.0.1-jdk8
   extends: .gradle_java_build
   tags:
-    - docker
+    - runnerk8s
 
 .test:
   stage: test
@@ -31,7 +31,7 @@ pushImage:
   stage: pushImage
   extends: .docker_image_creation
   tags:
-    - docker
+    - runnerk8s
   before_script:
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
   script:
