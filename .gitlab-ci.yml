@@ -9,6 +9,8 @@ stages:
 build:
   stage: build
   image: gradle:alpine
+  tags:
+    - docker
   script:
     - gradle build -x test
   artifacts:
@@ -23,6 +25,8 @@ build:
 pushImage:
   stage: pushImage
   image: docker:stable
+  tags:
+    - docker
   before_script:
     - echo $URL_REGISTRY
     - echo $USER
