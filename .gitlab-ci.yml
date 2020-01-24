@@ -1,0 +1,39 @@
+image: ubuntu:xenial
+services:
+  - gradle:jdk8
+  - docker:stable
+
+stages:
+  - build
+  - test
+  - pushImage
+  - deploy
+
+build:
+  stage: build
+  image: gradle:alpine
+  tags:
+    - gradle
+  script:
+    - gradle build -x test
+
+.test:
+  stage: test
+  script:
+    - gradle test
+
+pushImage:
+  stage: pushImage
+  tags:
+    - docker
+  before_script:
+    - docker login $URL_REGISTRY -u $USER -p $TOKEN
+  script:
+    - docker build -t $APP_NAME:$NUMBER_RANDOM .
+    - docker push $USER/$APP_NAME:$NUMBER_RANDOM
+
+.deployInAws:
+  stage: deploy
+  script:
+    - hola
+
