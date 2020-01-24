@@ -36,4 +36,3 @@ pushImage:
   stage: deploy
   script:
     - hola
-
