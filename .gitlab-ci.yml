@@ -4,9 +4,9 @@ variables:
   DOCKER_TLS_CERTDIR: ""
 
 include:
-  - project: 'gitlab-templates/ci-templates/java/gradle/'
+  - project: 'gitlab-templates/ci-templates/java/gradle'
     file: 'gitlab-ci-template.yml'
-  - project: 'gitlab-templates/ci-templates/build/docker/'
+  - project: 'gitlab-templates/ci-templates/build/docker'
     file: 'gitlab-ci-template.yml'  
 
 stages:
