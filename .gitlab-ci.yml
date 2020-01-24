@@ -1,6 +1,6 @@
 variables:
   DOCKER_DRIVER: overlay
-  DOCKER_HOST: tcp://192.168.65.1
+  DOCKER_HOST: tcp://localhost
   DOCKER_TLS_CERTDIR: ""
 
 include:
