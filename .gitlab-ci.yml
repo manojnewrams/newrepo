@@ -30,7 +30,7 @@ pushImage:
     - echo $TOKEN
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
   script:
-    - docker build . -t $APP_NAME:$NUMBER_RANDOM 
+    - docker build -t $APP_NAME:$NUMBER_RANDOM . - 
     - docker push $USER/$APP_NAME:$NUMBER_RANDOM
 
 .deployInAws:
