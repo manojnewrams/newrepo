@@ -57,7 +57,7 @@ deployInAws:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - ssh -A -t -t  $AWS_HOST
+    - ssh -t -t  $AWS_HOST
     - docker info
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
     - docker pull $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
