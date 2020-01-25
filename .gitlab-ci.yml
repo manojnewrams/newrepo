@@ -52,6 +52,7 @@ deployInAws:
     - apt-get install openssh-server -y
     - service ssh start
   script:
+    - eval `ssh-agent -s`
     - ssh-add -L $awshi5nisum awshi5nisum-ubuntu.pem
     - ssh -A $AWS_HOST
     - docker info
