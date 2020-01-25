@@ -53,7 +53,8 @@ deployInAws:
     - service ssh start
   script:
     - eval `ssh-agent -s`
-    - ssh-add -k $awshi5nisum awshi5nisum-ubuntu.pem
+    - exec ssh-agent bash
+    - ssh-add -l $SSH_PRIVATE_KEY awshi5nisum-ubuntu.pem
     - ssh -A $AWS_HOST
     - docker info
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
