@@ -51,9 +51,12 @@ deployInAws:
     - apt-get install openssh-client -y
     - apt-get install openssh-server -y
     - service ssh start
-    - eval `ssh-agent -s`
   script:
-    - ssh-add -l $SSH_PRIVATE_KEY awshi5nisum-ubuntu.pem
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
     - ssh -A $AWS_HOST
     - docker info
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
