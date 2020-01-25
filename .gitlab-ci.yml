@@ -52,7 +52,6 @@ deployInAws:
     - apt-get install openssh-server -y
     - service ssh start
     - eval `ssh-agent -s`
-    - exec ssh-agent bash
   script:
     - ssh-add -l $SSH_PRIVATE_KEY awshi5nisum-ubuntu.pem
     - ssh -A $AWS_HOST
