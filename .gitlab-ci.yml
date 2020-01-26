@@ -56,9 +56,11 @@ deployInAws:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-  #  - ssh -t -t  $AWS_HOST
-    - ssh-keygen -R $AWS_HOST
+    - cat Host *
+        StrictHostKeyChecking no > ~/.ssh/config
+    - chmod 400 ~/.ssh
+    - ssh -t -t  $AWS_HOST
+  #  - ssh-keygen -R $AWS_HOST
     - docker info
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
     - docker pull $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
