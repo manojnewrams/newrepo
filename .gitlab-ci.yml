@@ -62,6 +62,7 @@ deployInAws:
   #  - ssh -t -t  $AWS_HOST
   #  - ssh-keygen -R $AWS_HOST
   #  - echo "$AWS_HOST" > ~/.ssh/known_hosts
+    - echo $AWS_HOST
     - ssh-keygen -H -R ${AWS_HOST} >> ~/.ssh/known_hosts
     - ssh -t -t $AWS_HOST
     - docker info
