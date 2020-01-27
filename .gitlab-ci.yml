@@ -51,7 +51,6 @@ deployInAws:
   #  - apt-get install openssh-client -y
    # - service ssh start
     - whoami
-    - sudo su
     - mkdir ~/.ssh
     - echo $SSH_PRIVATE_KEY > /root/.ssh/hostkey.pem
     - chmod 600 /root/.ssh/hostkey.pem
