@@ -55,7 +55,7 @@ deployInAws:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - mkdir -p ~/.ssh
     - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | base64 -d | ssh-add -
+    - echo "$SSH_PRIVATE_KEY" | base64 -di | ssh-add -
   #  - echo "Host *
   #      StrictHostKeyChecking no" > ~/.ssh/config
   #  - chmod 400 ~/.ssh
