@@ -47,7 +47,7 @@ deployInAws:
     - runnerk8s
   before_script:
     - apt-get update -y
-    - apt-get upgrade -y
+  #  - apt-get upgrade -y
     - apt-get install openssh-client -y
   #  - service ssh start
   script:
