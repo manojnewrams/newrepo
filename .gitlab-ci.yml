@@ -53,14 +53,16 @@ deployInAws:
     - service ssh start
   script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
-    - echo "Host *
-        StrictHostKeyChecking no" > ~/.ssh/config
-    - chmod 400 ~/.ssh
-    - ssh -t -t  $AWS_HOST
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | base64 -d | ssh-add -
+  #  - echo "Host *
+  #      StrictHostKeyChecking no" > ~/.ssh/config
+  #  - chmod 400 ~/.ssh
+  #  - ssh -t -t  $AWS_HOST
   #  - ssh-keygen -R $AWS_HOST
+    - ssh-keygen -H ${AWS_HOST} >> ~/.ssh/known_hosts
+    - ssh -t -t $AWS_HOST
     - docker info
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
     - docker pull $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
