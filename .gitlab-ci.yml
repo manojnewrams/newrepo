@@ -64,5 +64,7 @@ deployInAws:
   #  - echo $AWS_HOST
   #  - ssh-keygen -H -R ${AWS_HOST} >> ~/.ssh/known_hosts
   #  - ssh -t -t $AWS_HOST
-    - ssh -i $SSH_PRIVATE_KEY $AWS_HOST docker login $URL_REGISTRY -u $USER -p $TOKEN 
+    - echo $SSH_PRIVATE_KEY > /root/.ssh/hostkey.pem
+    - chmod 600 /root/.ssh/hostkey.pem
+    - ssh -i /root/.ssh/hostkey.pem $AWS_HOST docker login $URL_REGISTRY -u $USER -p $TOKEN 
     #&& docker pull $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA && docker run -p 8080:8080 $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
