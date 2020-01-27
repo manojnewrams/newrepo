@@ -42,17 +42,20 @@ pushImage:
 
 deployInAws:
   stage: deploy
-  image: ubuntu:xenial
+  image: lgatica/openssh-client:latest
   tags:
     - runnerk8s
   before_script:
-    - apt-get update -y
-    - apt-get upgrade -y
-    - apt-get install openssh-client -y
-    - service ssh start
+#    - apt-get update -y
+ #   - apt-get upgrade -y
+  #  - apt-get install openssh-client -y
+   # - service ssh start
+    - mkdir ~/.ssh
+    - echo $SSH_PRIVATE_KEY > /root/.ssh/hostkey.pem
+    - chmod 600 /root/.ssh/hostkey.pem
   script:
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-    - mkdir -p ~/.ssh
+    #- 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    #- mkdir -p ~/.ssh
   #  - eval $(ssh-agent -s)
   #  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
   #  - echo "Host *
