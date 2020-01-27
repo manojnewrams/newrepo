@@ -49,23 +49,20 @@ deployInAws:
     - apt-get update -y
     - apt-get upgrade -y
     - apt-get install openssh-client -y
-    - apt-get install openssh-server -y
     - service ssh start
   script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - mkdir -p ~/.ssh
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  #  - eval $(ssh-agent -s)
+  #  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
   #  - echo "Host *
   #      StrictHostKeyChecking no" > ~/.ssh/config
   #  - chmod 400 ~/.ssh
   #  - ssh -t -t  $AWS_HOST
   #  - ssh-keygen -R $AWS_HOST
   #  - echo "$AWS_HOST" > ~/.ssh/known_hosts
-    - echo $AWS_HOST
-    - ssh-keygen -H -R ${AWS_HOST} >> ~/.ssh/known_hosts
-    - ssh -t -t $AWS_HOST
-    - docker info
-    - docker login $URL_REGISTRY -u $USER -p $TOKEN
-    - docker pull $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
-    - docker run -p 8080:8080 $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
+  #  - echo $AWS_HOST
+  #  - ssh-keygen -H -R ${AWS_HOST} >> ~/.ssh/known_hosts
+  #  - ssh -t -t $AWS_HOST
+    - ssh -i $SSH_PRIVATE_KEY $AWS_HOST docker login $URL_REGISTRY -u $USER -p $TOKEN 
+    #&& docker pull $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA && docker run -p 8080:8080 $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
