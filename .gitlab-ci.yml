@@ -2,6 +2,7 @@ variables:
   DOCKER_DRIVER: overlay
   DOCKER_HOST: localhost
   DOCKER_TLS_CERTDIR: ""
+  BASE64_PEM: $SSH_PRIVATE_KEY
 
 include:
   - project: 'gitlab-templates/ci-templates/java/gradle'
@@ -67,7 +68,8 @@ deployInAws:
   #  - echo $AWS_HOST
   #  - ssh-keygen -H -R ${AWS_HOST} >> ~/.ssh/known_hosts
   #  - ssh -t -t $AWS_HOST
-    - echo $SSH_PRIVATE_KEY > /root/.ssh/hostkey.pem
+    - $BASE64_PEM base54 -d
+    - echo $BASE64_PEM > /root/.ssh/hostkey.pem
     - chmod 600 /root/.ssh/hostkey.pem
     - cat /root/.ssh/hostkey.pem
     - ssh -i /root/.ssh/hostkey.pem -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=10 $AWS_HOST docker login $URL_REGISTRY -u $USER -p $TOKEN 
