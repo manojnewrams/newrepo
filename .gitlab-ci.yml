@@ -59,8 +59,8 @@ deployInAws:
     #- mkdir -p ~/.ssh
   #  - eval $(ssh-agent -s)
   #  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-  #  - echo "Host *
-  #      StrictHostKeyChecking no" > ~/.ssh/config
+    - echo "Host * StrictHostKeyChecking no" > ~/.ssh/config
+    - StrictHostKeyChecking=no 
   #  - chmod 400 ~/.ssh
   #  - ssh -t -t  $AWS_HOST
   #  - ssh-keygen -R $AWS_HOST
