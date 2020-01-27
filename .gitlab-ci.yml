@@ -2,7 +2,6 @@ variables:
   DOCKER_DRIVER: overlay
   DOCKER_HOST: localhost
   DOCKER_TLS_CERTDIR: ""
-  BASE64_PEM: $SSH_PRIVATE_KEY
 
 include:
   - project: 'gitlab-templates/ci-templates/java/gradle'
@@ -53,8 +52,8 @@ deployInAws:
    # - service ssh start
     - whoami
     - mkdir ~/.ssh
-    - $BASE64_PEM base54 -d
-    - echo $BASE64_PEM > /root/.ssh/hostkey.pem
+    - $SSH_PRIVATE_KEY base64 -d
+    - echo $SSH_PRIVATE_KEY > /root/.ssh/hostkey.pem
     - chmod 600 /root/.ssh/hostkey.pem
   script:
     #- 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
