@@ -54,4 +54,4 @@ deployInAws:
     - chmod 600 $URL_KEY
   script:
     - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST 'docker stop $(docker ps | grep -i jar | cut -d " " -f 1) ;'
-    - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST docker run --rm -p 8080:8080 $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
+    - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST docker run --rm -d -p 8080:8080 $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
