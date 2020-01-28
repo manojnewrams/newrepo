@@ -2,6 +2,7 @@ variables:
   DOCKER_DRIVER: overlay
   DOCKER_HOST: localhost
   DOCKER_TLS_CERTDIR: ""
+  TAG_FOR_IMAGES: $CI_COMMIT_REF_NAME"-"$CI_COMMIT_SHORT_SHA
 
 include:
   - project: 'gitlab-templates/ci-templates/java/gradle'
@@ -37,8 +38,8 @@ pushImage:
   script:
     - echo $DOCKER_HOST
     - docker info
-    - docker build -t $USER/$APP_NAME:$CI_COMMIT_REF_NAME"-"$CI_COMMIT_SHORT_SHA . 
-    - docker push $USER/$APP_NAME:$CI_COMMIT_REF_NAME"-"$CI_COMMIT_SHORT_SHA
+    - docker build -t $USER/$APP_NAME:$TAG_FOR_IMAGES . 
+    - docker push $USER/$APP_NAME:$TAG_FOR_IMAGES
 
 deployInAws:
   stage: deploy
@@ -54,7 +55,7 @@ deployInAws:
     - chmod 600 $URL_KEY
   script:
     - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 errorHandler.sh $AWS_HOST:/tmp/
-    - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/errorHandler.sh $USER $APP_NAME $CI_COMMIT_SHORT_SHA"
+    - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/errorHandler.sh $USER $APP_NAME $TAG_FOR_IMAGES"
   only:
     - master
       

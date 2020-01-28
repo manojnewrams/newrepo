@@ -2,18 +2,18 @@
 
 USER=$1
 APP_NAME=$2
-CI_COMMIT_SHORT_SHA=$3
+TAG_FOR_IMAGES=$3
 
-if [ -z "$USER" ] || [ -z "$APP_NAME" ] || [ -z "$CI_COMMIT_SHORT_SHA" ]; then
+if [ -z "$USER" ] || [ -z "$APP_NAME" ] || [ -z "$TAG_FOR_IMAGES" ]; then
  echo "Alguna de las variables no existe"
  exit 1
 fi
 
 echo $USER
 echo $APP_NAME
-echo $CI_COMMIT_SHORT_SHA
+echo $TAG_FOR_IMAGES
 
-docker stop $(docker ps | grep -i jar | cut -d " " -f 1)
+docker stop $(docker ps | grep -i master | cut -d " " -f 1)
 
 if [ "$?" -eq 0 ]; then
   echo "Eliminado con exito"
@@ -22,4 +22,4 @@ else
   exit 2
 fi    
 
-docker run --rm -d -p 8080:8080 $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
+docker run --rm -d -p 8080:8080 $USER/$APP_NAME:$TAG_FOR_IMAGES
