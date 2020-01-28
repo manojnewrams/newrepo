@@ -42,7 +42,8 @@ pushImage:
 
 deployInAws:
   stage: deploy
-  image: lgatica/openssh-client:latest
+ # image: lgatica/openssh-client:latest
+  image: ubuntu:xenial
   tags:
     - runnerk8s
   before_script:
