@@ -71,7 +71,6 @@ deployInAws:
   #  - echo $AWS_HOST
   #  - ssh-keygen -H -R ${AWS_HOST} >> ~/.ssh/known_hosts
   #  - ssh -t -t $AWS_HOST
-    - ssh -i /root/.ssh/hostkey.pem -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=10 $AWS_HOST sudo docker pull $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA 
-    - docker run -p 8080:8080 $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
+    - ssh -i /root/.ssh/hostkey.pem -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectTimeout=10 $AWS_HOST sudo docker pull $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA  docker run -p 8080:8080 $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
     #- docker login $URL_REGISTRY -u $USER -p $TOKEN 
     # docker pull $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA && docker run -p 8080:8080 $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
