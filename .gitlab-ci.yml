@@ -51,7 +51,9 @@ deployInAws:
  #   - apt-get upgrade -y
   #  - apt-get install openssh-client -y
    # - service ssh start
+    - apt-get update
     - apt-get install -y cl-base64
+    - apt-get install -y openssh-client
     - whoami
     - mkdir ~/.ssh
     - $SSH_PRIVATE_KEY base64 -d
