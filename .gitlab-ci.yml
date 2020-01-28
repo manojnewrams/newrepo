@@ -54,17 +54,16 @@ deployInAws:
     - apt-get update
     - apt-get install -y cl-base64
     - apt-get install -y openssh-client
-    - whoami
     - mkdir ~/.ssh
-    - echo $SSH_PRIVATE_KEY | base64 -d
-    - echo $SSH_PRIVATE_KEY > /root/.ssh/hostkey.pem
+    - echo $SSH_PRIVATE_KEY | base64 -d > /root/.ssh/hostkey.pem
+  #  - echo $SSH_PRIVATE_KEY > /root/.ssh/hostkey.pem
     - chmod 600 /root/.ssh/hostkey.pem
   script:
     #- 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     #- mkdir -p ~/.ssh
   #  - eval $(ssh-agent -s)
   #  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - echo "Host * StrictHostKeyChecking no" > ~/.ssh/config
+  #  - echo "Host * StrictHostKeyChecking no" > ~/.ssh/config
   #  - chmod 400 ~/.ssh
   #  - ssh -t -t  $AWS_HOST
   #  - ssh-keygen -R $AWS_HOST
