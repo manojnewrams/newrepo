@@ -2,7 +2,7 @@ variables:
   DOCKER_DRIVER: overlay
   DOCKER_HOST: localhost
   DOCKER_TLS_CERTDIR: ""
-  TAG_FOR_IMAGES: $CI_COMMIT_REF_NAME"-"$CI_COMMIT_SHORT_SHA
+  TAG_FOR_IMAGES: $CI_COMMIT_REF_NAME + "-" + $CI_COMMIT_SHORT_SHA
 
 include:
   - project: 'gitlab-templates/ci-templates/java/gradle'
