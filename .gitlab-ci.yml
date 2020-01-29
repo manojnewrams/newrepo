@@ -60,7 +60,7 @@ deployMaster:
   only:
     - master
 
-  deployDev:
+deployDev:
   stage: deploy
   image: ubuntu:xenial
   tags:
@@ -74,11 +74,11 @@ deployMaster:
     - chmod 600 $URL_KEY
   script:
     - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deployDev.sh $AWS_HOST:/tmp/
-    - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deployMaster.sh $USER $APP_NAME $TAG_FOR_IMAGES"
+    - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deployDev.sh $USER $APP_NAME $TAG_FOR_IMAGES"
   only:
-    - develop
+    - develop   
 
-  deployQA:
+deployQA:
   stage: deploy
   image: ubuntu:xenial
   tags:
@@ -96,7 +96,7 @@ deployMaster:
   only:
     - qa
 
-  deploy:
+deploy:
   stage: deploy
   image: ubuntu:xenial
   tags:
@@ -110,5 +110,4 @@ deployMaster:
     - chmod 600 $URL_KEY
   script:
     - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deploy.sh $AWS_HOST:/tmp/
-    - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deploy.sh $USER $APP_NAME $TAG_FOR_IMAGES"    
-      
+    - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deploy.sh $USER $APP_NAME $TAG_FOR_IMAGES"
