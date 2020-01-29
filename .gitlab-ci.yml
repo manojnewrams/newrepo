@@ -2,6 +2,7 @@ variables:
   DOCKER_DRIVER: overlay
   DOCKER_HOST: localhost
   DOCKER_TLS_CERTDIR: ""
+  TAG_FOR_IMAGES: $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
 
 include:
   - project: 'gitlab-templates/ci-templates/java/gradle'
@@ -36,11 +37,12 @@ pushImage:
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
   script:
     - echo $DOCKER_HOST
+    - echo $TAG_FOR_IMAGES
     - docker info
-    - docker build -t $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA . 
-    - docker push $USER/$APP_NAME:$CI_COMMIT_SHORT_SHA
+    - docker build -t $USER/$APP_NAME:$TAG_FOR_IMAGES . 
+    - docker push $USER/$APP_NAME:$TAG_FOR_IMAGES
 
-deployInAws:
+deployMaster:
   stage: deploy
   image: ubuntu:xenial
   tags:
@@ -53,8 +55,59 @@ deployInAws:
     - echo $SSH_PRIVATE_KEY | base64 -d > $URL_KEY
     - chmod 600 $URL_KEY
   script:
-    - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 errorHandler.sh $AWS_HOST:/tmp/
-    - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/errorHandler.sh $USER $APP_NAME $CI_COMMIT_SHORT_SHA"
-  # only:
-  #   - master
-      
+    - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deployMaster.sh $AWS_HOST:/tmp/
+    - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deployMaster.sh $USER $APP_NAME $TAG_FOR_IMAGES"
+  only:
+    - master
+
+deployDev:
+  stage: deploy
+  image: ubuntu:xenial
+  tags:
+    - runnerk8s
+  before_script:
+    - apt-get update
+    - apt-get install -y cl-base64
+    - apt-get install -y openssh-client
+    - mkdir ~/.ssh
+    - echo $SSH_PRIVATE_KEY | base64 -d > $URL_KEY
+    - chmod 600 $URL_KEY
+  script:
+    - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deployDev.sh $AWS_HOST:/tmp/
+    - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deployDev.sh $USER $APP_NAME $TAG_FOR_IMAGES"
+  only:
+    - develop   
+
+deployQA:
+  stage: deploy
+  image: ubuntu:xenial
+  tags:
+    - runnerk8s
+  before_script:
+    - apt-get update
+    - apt-get install -y cl-base64
+    - apt-get install -y openssh-client
+    - mkdir ~/.ssh
+    - echo $SSH_PRIVATE_KEY | base64 -d > $URL_KEY
+    - chmod 600 $URL_KEY
+  script:
+    - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deployQA.sh $AWS_HOST:/tmp/
+    - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deployQA.sh $USER $APP_NAME $TAG_FOR_IMAGES"
+  only:
+    - qa
+
+deploy:
+  stage: deploy
+  image: ubuntu:xenial
+  tags:
+    - runnerk8s
+  before_script:
+    - apt-get update
+    - apt-get install -y cl-base64
+    - apt-get install -y openssh-client
+    - mkdir ~/.ssh
+    - echo $SSH_PRIVATE_KEY | base64 -d > $URL_KEY
+    - chmod 600 $URL_KEY
+  script:
+    - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deploy.sh $AWS_HOST:/tmp/
+    - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deploy.sh $USER $APP_NAME $TAG_FOR_IMAGES"
