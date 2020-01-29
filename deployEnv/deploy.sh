@@ -13,7 +13,7 @@ echo $USER
 echo $APP_NAME
 echo $TAG_FOR_IMAGES
 
-docker stop $(docker ps | grep -i master | cut -d " " -f 1)
+docker stop $(docker ps | grep -i jar | cut -d " " -f 1)
 
 if [ "$?" -eq 0 ]; then
   echo "Eliminado con exito"
