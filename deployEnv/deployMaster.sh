@@ -13,13 +13,20 @@ echo $USER
 echo $APP_NAME
 echo $TAG_FOR_IMAGES
 
-docker stop $(docker ps | grep -i master | cut -d " " -f 1)
+output=$(docker ps | grep -i master | cut -d " " -f 1)
 
-if [ "$?" -eq 0 ]; then
-  echo "Eliminado con exito"
-else 
-  echo "Existe algún error, probablemente la imagen no exista" 
-  exit 2
-fi    
+if [ ! -z "$output" ]; then
+
+  docker stop $(docker ps | grep -i master | cut -d " " -f 1)
+
+    if [ "$?" -eq 0 ]; then
+      echo "Eliminado con exito"
+    else 
+      echo "Existe algún error" 
+      exit 2
+    fi    
+else
+ echo "La imagen no existe"
+fi
 
 docker run --rm -d -p 8080:8080 $USER/$APP_NAME:$TAG_FOR_IMAGES
