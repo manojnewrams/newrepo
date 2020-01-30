@@ -9,6 +9,7 @@ import com.example.h5api.exceptions.ValidationException;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,8 +60,8 @@ public class UserAppService extends Transformer implements IGenericService<UserD
         //int lastId = userAppDao.getLastId();
         //log.info("Last Id: "+lastId);
         String password = userDto.getPassword();
-        //String encodedPassword = new BCryptPasswordEncoder().encode(password);
-        //userDto.setPassword(encodedPassword);
+        String encodedPassword = new BCryptPasswordEncoder().encode(password);
+        userDto.setPassword(encodedPassword);
        // userDto.setId(lastId+1);
         userAppDao.save(transformFromUserDtoToUserApp(userDto));
         return userDto;
