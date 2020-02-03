@@ -96,7 +96,6 @@ public class UserAppService extends Transformer implements IGenericService<UserD
     @Transactional(readOnly = true)
     public List<UserDtoIdName> findAllAvailableCandidates(Integer id){
         List<UserApp> userList = new ArrayList<>();
-        List<UserApp> withoutIdSelected = new ArrayList<>();
         userAppDao.findAllAvailable().forEach(userList::add);
         userList.removeIf(user -> user.getId() == id);
         List<UserDtoIdName> userListAsDTO = userList
