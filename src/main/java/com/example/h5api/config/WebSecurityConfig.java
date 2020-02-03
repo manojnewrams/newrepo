@@ -86,6 +86,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET , "/winner/list/").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET , "/winner/list/all").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET , "/winner/list/api").hasRole("ADMIN")
+
+                .antMatchers(HttpMethod.POST , "/user/list").hasRole("ADMIN")
+
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
