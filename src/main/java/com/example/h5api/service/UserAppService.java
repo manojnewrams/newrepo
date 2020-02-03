@@ -92,4 +92,18 @@ public class UserAppService extends Transformer implements IGenericService<UserD
                 .map(this::transformFromUserAppToUserDtoIdName).collect(Collectors.toList());
         return userListAsDTO;
     }
+
+    @Transactional(readOnly = true)
+    public List<UserDtoIdName> findAllAvailableCandidates(Integer id){
+        List<UserApp> userList = new ArrayList<>();
+        List<UserApp> withoutIdSelected = new ArrayList<>();
+        userAppDao.findAllAvailable().forEach(userList::add);
+        userList.removeIf(user -> user.getId() == id);
+        List<UserDtoIdName> userListAsDTO = userList
+                .stream()
+                .map(this::transformFromUserAppToUserDtoIdName)
+                .collect(Collectors.toList());
+        return userListAsDTO;
+    }
+
 }
