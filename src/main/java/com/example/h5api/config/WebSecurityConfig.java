@@ -62,12 +62,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/user").permitAll()
                 .antMatchers(HttpMethod.POST ,"/authenticate").permitAll()
-               .antMatchers(HttpMethod.GET , "/user/{^[\\d]$").hasRole("ADMIN") // need help
-              //  .antMatchers(HttpMethod.GET , "/user/[0-9]").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET , "*/user/list*").hasAnyRole("ADMIN","USER")
+               .antMatchers(HttpMethod.GET , "/user/{\\d+}").hasRole("ADMIN") // need to modify
+                .antMatchers(HttpMethod.GET , "/user/list").hasAnyRole("ADMIN","USER")
                 .antMatchers(HttpMethod.GET , "/user/list/api*").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE , "/user*").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET , "/value/list").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET , "/value/list/*").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET , "/value/list/api*").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET , "/nomination").hasAnyRole("ADMIN","USER")
                 .antMatchers(HttpMethod.GET , "/nomination/list/").hasRole("ADMIN")
