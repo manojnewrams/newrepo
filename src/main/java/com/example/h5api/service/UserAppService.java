@@ -92,4 +92,18 @@ public class UserAppService extends Transformer implements IGenericService<UserD
                 .map(this::transformFromUserAppToUserDtoIdName).collect(Collectors.toList());
         return userListAsDTO;
     }
+
+    /**
+     * Return true if save all the items of the array
+     * */
+    @Transactional
+    public boolean saveList(ArrayList<UserDto> userList){
+        userList.forEach(item -> {
+            if (!(save(item) instanceof UserDto))
+            {
+                throw new ValidationException("We had a problem saving user: " + item.getName());
+            }
+        });
+        return true;
+    }
 }

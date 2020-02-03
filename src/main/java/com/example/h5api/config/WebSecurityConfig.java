@@ -63,6 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/user").permitAll()
                 .antMatchers(HttpMethod.POST ,"/authenticate").permitAll()
                 .antMatchers(HttpMethod.GET , "/user/list").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST , "/user/list").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)

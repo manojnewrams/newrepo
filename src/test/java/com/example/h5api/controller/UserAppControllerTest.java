@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,6 +36,8 @@ public class UserAppControllerTest {
 
     private UserDto user = new UserDto();
     private String json;
+    private String jsonList;
+    private ArrayList<UserDto> userList = new ArrayList<>();
 
     @Before
     public void setUp() throws JsonProcessingException {
@@ -47,7 +50,8 @@ public class UserAppControllerTest {
         user.setId(1);
         ObjectMapper objectMapper = new ObjectMapper();
         json = objectMapper.writeValueAsString(user);
-
+        userList.add(user);
+        jsonList = objectMapper.writeValueAsString(userList);
     }
 
     @Test
@@ -85,6 +89,18 @@ public class UserAppControllerTest {
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name")
                         .exists())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void saveList() throws Exception {
+        Mockito.when(userAppService.saveList(any())).thenReturn(true);
+        mvc.perform(MockMvcRequestBuilders.post("/user/list")
+                .content(jsonList)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$")
+                        .isBoolean())
                 .andExpect(status().isOk());
     }
 
