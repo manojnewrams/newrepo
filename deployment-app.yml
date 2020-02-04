@@ -3,6 +3,7 @@ apiVersion: apps/v1
 metadata:
   name: backend-app
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: backend
