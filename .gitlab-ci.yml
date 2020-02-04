@@ -136,7 +136,7 @@ deployGCP:
     - echo "$ENV_NEW"
     - echo "$ENV_NEW" > deployment-app.yaml
     - ./kubectl apply -f deployment-app.yaml -n default
-   # - ./kubectl apply -f service-app.yaml   
+    - ./kubectl apply -f service-app.yaml   
    # - ./kubectl get nodes -o wide
 
 
