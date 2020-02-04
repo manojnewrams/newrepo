@@ -15,6 +15,7 @@ stages:
   - test
   - pushImage
   - deploy
+  - deployGCP
 
 build:
   stage: build
