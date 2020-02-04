@@ -115,7 +115,7 @@ stages:
 
 deployGCP:
   stage: deployGCP
-  image: 'gcloud-with-envsubst:latest'
+  image: 'google/cloud-sdk'
   tags:
     - runnerk8s
   only:
