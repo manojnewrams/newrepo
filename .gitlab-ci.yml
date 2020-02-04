@@ -132,7 +132,7 @@ deployGCP:
    # - ./kubectl create secret generic registry.hub.docker --from-literal=Docker_User=$"USER" --from-literal=Docker_Password=$"TOKEN" --dry-run -o yaml | kubectl apply -f -
     - ./kubectl apply -f 5award-namespace.yml
     - ./kubectl apply -f deployment-app.yml
-    - ./kubectl apply -f service-app.yml   
+    - ./kubectl apply -f service-app.yaml   
     - ./kubectl get nodes -o wide
 
 
