@@ -131,7 +131,7 @@ deployGCP:
     - chmod +x ./kubectl
    # - ./kubectl create secret generic registry.hub.docker --from-literal=Docker_User=$"USER" --from-literal=Docker_Password=$"TOKEN" --dry-run -o yaml | kubectl apply -f -
     - ./kubectl apply -f 5award-namespace.yml
-    - ENV_NEW=$(cat deployment-app.yml | sed 's/{{imagen}}/$TAG_FOR_IMAGES/g') 
+    - ENV_NEW=$(cat deployment-app.yml | sed 's/{{imagen}}/"$TAG_FOR_IMAGES"/g') 
     - echo "$ENV_NEW"
    # - ./kubectl apply -f service-app.yaml   
    # - ./kubectl get nodes -o wide
