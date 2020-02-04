@@ -123,14 +123,15 @@ deploy:
     - echo "$SERVICE_ACCOUNT_KEY" | base64 -d > gke-token.json
     - gcloud auth activate-service-account --key-file=gke-token.json
     - gcloud config set project prueba-nisum
-    - gcloud config set container/cluster my-cluster
-    - gcloud config set compute/zone southamerica-east1-a
-    - gcloud container clusters get-credentials nodejsapp-cluster --zone southamerica-east1-a
+    - gcloud config set container/cluster k8s-test
+    - gcloud config set compute/zone us-central1-a
+    - gcloud container clusters get-credentials k8s-test --zone us-central1-a
     - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
     - chmod +x ./kubectl
 #    - ./kubectl create secret generic registry.hub.docker --from-literal=Docker_User=$"USER" --from-literal=Docker_Password=$"TOKEN" --dry-run -o yaml | kubectl apply -f -
-    - ./kubectl apply -f deployment-app.yml
-    - ./kubectl apply -f service-app.yml    
+#    - ./kubectl apply -f deployment-app.yml
+ #   - ./kubectl apply -f service-app.yml   
+    - ./kubectl get nodes -o wide
 
 
 
