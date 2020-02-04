@@ -17,7 +17,7 @@ stages:
  # - deploy
   - deployGCP
 
-.build:
+build:
   stage: build
   image: gradle:6.0.1-jdk8
   extends: .gradle_java_build
@@ -29,7 +29,7 @@ stages:
   script:
     - gradle test
 
-.pushImage:
+pushImage:
   stage: pushImage
   extends: .docker_image_creation
   tags:
