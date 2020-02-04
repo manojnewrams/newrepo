@@ -129,9 +129,9 @@ deployGCP:
     - gcloud container clusters get-credentials k8s-test --zone us-central1-a
     - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
     - chmod +x ./kubectl
-#    - ./kubectl create secret generic registry.hub.docker --from-literal=Docker_User=$"USER" --from-literal=Docker_Password=$"TOKEN" --dry-run -o yaml | kubectl apply -f -
-#    - ./kubectl apply -f deployment-app.yml
- #   - ./kubectl apply -f service-app.yml   
+    - ./kubectl create secret generic registry.hub.docker --from-literal=Docker_User=$"USER" --from-literal=Docker_Password=$"TOKEN" --dry-run -o yaml | kubectl apply -f -
+    - ./kubectl apply -f deployment-app.yml
+    - ./kubectl apply -f service-app.yml   
     - ./kubectl get nodes -o wide
 
 
