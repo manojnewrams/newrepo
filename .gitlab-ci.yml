@@ -11,9 +11,9 @@ include:
     file: 'gitlab-ci-template.yml'  
 
 stages:
- # - build
+  - build
  # - test
- # - pushImage
+  - pushImage
  # - deploy
   - deployGCP
 
