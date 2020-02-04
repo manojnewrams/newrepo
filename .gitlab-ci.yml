@@ -111,3 +111,28 @@ deploy:
   script:
     - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deploy.sh $AWS_HOST:/tmp/
     - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deploy.sh $USER $APP_NAME $TAG_FOR_IMAGES"
+
+.deployGCP:
+  stage: deployGCP
+  image: 'gcloud-with-envsubst:latest'
+  tags:
+    - runnerk8s
+  only:
+    - master
+  script:
+    - echo "$SERVICE_ACCOUNT_KEY" | base64 -d > gke-token.json
+    - gcloud auth activate-service-account --key-file=gke-token.json
+    - gcloud config set project prueba-nisum
+    - gcloud config set container/cluster my-cluster
+    - gcloud config set compute/zone southamerica-east1-a
+    - gcloud container clusters get-credentials nodejsapp-cluster --zone southamerica-east1-a
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl
+#    - ./kubectl create secret generic registry.hub.docker --from-literal=Docker_User=$"USER" --from-literal=Docker_Password=$"TOKEN" --dry-run -o yaml | kubectl apply -f -
+    - ./kubectl apply -f deployment-app.yml
+    - ./kubectl apply -f service-app.yml    
+
+
+
+
+
