@@ -15,10 +15,10 @@ spec:
       containers:
       - name: backend-app
         image: jvirrielnisum/backend-app
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "1000m"
+        # resources:
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "1000m"
         ports:
         - containerPort: 8080       
       nodeName: master     
