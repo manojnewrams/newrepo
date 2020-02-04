@@ -121,7 +121,7 @@ deployGCP:
   only:
     - developDevOps
   script:
-    - echo "$SERVICE_ACCOUNT_KEY" | base64 -d > gke-token.json
+    - echo "$SERVICE_ACCOUNT_KEY" > gke-token.json
     - gcloud auth activate-service-account --key-file=gke-token.json
     - gcloud config set project prueba-nisum
     - gcloud config set container/cluster k8s-test
