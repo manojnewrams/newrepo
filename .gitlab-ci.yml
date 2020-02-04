@@ -11,13 +11,13 @@ include:
     file: 'gitlab-ci-template.yml'  
 
 stages:
-  - build
-  - test
-  - pushImage
-  - deploy
+ # - build
+ # - test
+ # - pushImage
+ # - deploy
   - deployGCP
 
-build:
+.build:
   stage: build
   image: gradle:6.0.1-jdk8
   extends: .gradle_java_build
@@ -29,7 +29,7 @@ build:
   script:
     - gradle test
 
-pushImage:
+.pushImage:
   stage: pushImage
   extends: .docker_image_creation
   tags:
@@ -43,7 +43,7 @@ pushImage:
     - docker build -t $USER/$APP_NAME:$TAG_FOR_IMAGES . 
     - docker push $USER/$APP_NAME:$TAG_FOR_IMAGES
 
-deployMaster:
+.deployMaster:
   stage: deploy
   image: ubuntu:xenial
   tags:
@@ -61,7 +61,7 @@ deployMaster:
   only:
     - master
 
-deployDev:
+.deployDev:
   stage: deploy
   image: ubuntu:xenial
   tags:
@@ -79,7 +79,7 @@ deployDev:
   only:
     - develop   
 
-deployQA:
+.deployQA:
   stage: deploy
   image: ubuntu:xenial
   tags:
@@ -97,7 +97,7 @@ deployQA:
   only:
     - qa
 
-deploy:
+.deploy:
   stage: deploy
   image: ubuntu:xenial
   tags:
