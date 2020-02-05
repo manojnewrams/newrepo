@@ -154,8 +154,8 @@ public class NominationService extends Transformer implements IGenericService<No
         nominators2.add(user1);
         nominators2.add(user2);
         nominators2.add(user3);
-        NominationDtoDisplayData data = new NominationDtoDisplayData("Sebastian",1,4,nominators);
-        NominationDtoDisplayData data2 = new NominationDtoDisplayData("Manoj",2,8,nominators2);
+        NominationDtoDisplayData data = new NominationDtoDisplayData("Sebastian",1,nominators.size(),nominators);
+        NominationDtoDisplayData data2 = new NominationDtoDisplayData("Manoj",2,nominators2.size(),nominators2);
         NominationDtoAdmin obj = new NominationDtoAdmin(1,"Play",dataList);
         NominationDtoAdmin obj2 = new NominationDtoAdmin(2,"Respect",dataList);
         NominationDtoAdmin obj3 = new NominationDtoAdmin(3,"Openness",dataList);
