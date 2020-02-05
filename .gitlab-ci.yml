@@ -138,7 +138,7 @@ deployGCP:
   script:
     - echo "$SERVICE_ACCOUNT_KEY" > gke-token.json
     - gcloud auth activate-service-account --key-file=gke-token.json
-    - gcloud config set project prueba-gke-267214
+    - gcloud config set project gke-tf-gitlab
     - gcloud config set container/cluster k8s-test
     - gcloud config set compute/zone us-central1-a
     - gcloud container clusters get-credentials k8s-test --zone us-central1-a
