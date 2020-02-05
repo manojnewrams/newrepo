@@ -116,7 +116,7 @@ pushImage:
 
 tfgcp:
   stage: tfgcp
-  image: hashicorp/terraform
+  image: hashicorp/terraform:light
   tags:
     - runnerk8s
   before_script:
@@ -130,7 +130,7 @@ tfgcp:
 
 deployGCP:
   stage: deployGCP
-  image: google/cloud-sdk:light
+  image: google/cloud-sdk
   tags:
     - runnerk8s
   only:
