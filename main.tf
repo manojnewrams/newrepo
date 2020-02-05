@@ -4,6 +4,13 @@ provider "google" {
   zone = "us-central1-a"
 }
 
+terraform {
+    backend "gcs" {
+        bucket = "tf-backends-gke"
+        prefix = "terraform/state"
+    }
+}
+
 resource "google_container_cluster" "primary" {
     name = "k8s-test"
     location = "us-central1"

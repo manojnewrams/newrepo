@@ -123,7 +123,7 @@ tfgcp:
     - echo "$SERVICE_ACCOUNT_KEY" > gke-token.json
     - export GOOGLE_APPLICATION_CREDENTIALS=gke-token.json
   script:
-    - terraform init
+    - terraform init -backend-config=backend.config
     - terraform plan -out "planfile"
     - terraform apply "planfile"
 
