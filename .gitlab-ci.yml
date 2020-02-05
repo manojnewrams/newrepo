@@ -124,7 +124,7 @@ tfgcp:
     - export GOOGLE_APPLICATION_CREDENTIALS=gke-token.json
   script:
     - terraform init
-    - terraform apply
+    - terraform apply -auto-approve
 
 
 deployGCP:
