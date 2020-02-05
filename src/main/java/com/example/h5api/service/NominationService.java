@@ -141,6 +141,33 @@ public class NominationService extends Transformer implements IGenericService<No
         }
     }
 
+    public List<NominationDtoAdmin> showAdminNominations(){
+        List<NominationDtoAdmin>adminList = new ArrayList<>();
+        List<NominationDtoDisplayData> dataList = new ArrayList<>();
+        List<UserDtoIdName> nominators = new ArrayList<>();
+        List<UserDtoIdName> nominators2 = new ArrayList<>();
+        UserDtoIdName user1 = new UserDtoIdName(1,"Carlos");
+        UserDtoIdName user2 = new UserDtoIdName(2,"Camilo");
+        UserDtoIdName user3 = new UserDtoIdName(3,"Alex");
+        nominators.add(user1);
+        nominators.add(user2);
+        nominators2.add(user1);
+        nominators2.add(user2);
+        nominators2.add(user3);
+        NominationDtoDisplayData data = new NominationDtoDisplayData("Sebastian",1,4,nominators);
+        NominationDtoDisplayData data2 = new NominationDtoDisplayData("Manoj",2,8,nominators2);
+        NominationDtoAdmin obj = new NominationDtoAdmin(1,"Play",dataList);
+        NominationDtoAdmin obj2 = new NominationDtoAdmin(2,"Respect",dataList);
+        NominationDtoAdmin obj3 = new NominationDtoAdmin(3,"Openness",dataList);
+        dataList.add(data);
+        dataList.add(data2);
+        adminList.add(obj);
+        adminList.add(obj2);
+        adminList.add(obj3);
+        return adminList;
+
+    }
+
     private List<NominationDtoCounterValueIdUserId> getNominationDtoCounterValueIdUserIds(List<NominationDtoCounterValueIdUserId> nominationDtoCounterValueIdUserIds, List<CampaignDto> campaignListAsDTO) {
         if (campaignListAsDTO.size() == 1) {
             Date dateTo = campaignListAsDTO.get(0).getDateTo();
