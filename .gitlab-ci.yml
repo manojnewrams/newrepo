@@ -12,9 +12,11 @@ include:
 
 stages:
   - build
-  - test
+ # - test
   - pushImage
-  - deploy
+ # - deploy
+  - tfgcp
+  - deployGCP
 
 build:
   stage: build
@@ -42,7 +44,7 @@ pushImage:
     - docker build -t $USER/$APP_NAME:$TAG_FOR_IMAGES . 
     - docker push $USER/$APP_NAME:$TAG_FOR_IMAGES
 
-deployMaster:
+.deployMaster:
   stage: deploy
   image: ubuntu:xenial
   tags:
@@ -60,7 +62,7 @@ deployMaster:
   only:
     - master
 
-deployDev:
+.deployDev:
   stage: deploy
   image: ubuntu:xenial
   tags:
@@ -78,7 +80,7 @@ deployDev:
   only:
     - develop   
 
-deployQA:
+.deployQA:
   stage: deploy
   image: ubuntu:xenial
   tags:
@@ -96,7 +98,7 @@ deployQA:
   only:
     - qa
 
-deploy:
+.deploy:
   stage: deploy
   image: ubuntu:xenial
   tags:
@@ -111,3 +113,48 @@ deploy:
   script:
     - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deploy.sh $AWS_HOST:/tmp/
     - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deploy.sh $USER $APP_NAME $TAG_FOR_IMAGES"
+
+tfgcp:
+  stage: tfgcp
+  image: hashicorp/terraform:light
+  tags:
+    - runnerk8s
+  before_script:
+    - echo "$SERVICE_ACCOUNT_KEY" > gke-token.json
+    - export GOOGLE_APPLICATION_CREDENTIALS=gke-token.json
+  script:
+    - terraform init -backend-config=backend.config
+    - terraform plan -out "planfile"
+    - terraform apply "planfile"
+
+
+deployGCP:
+  stage: deployGCP
+  image: google/cloud-sdk
+  tags:
+    - runnerk8s
+  only:
+    - developDevOps
+  script:
+    - echo "$SERVICE_ACCOUNT_KEY" > gke-token.json
+    - gcloud auth activate-service-account --key-file=gke-token.json
+    - gcloud config set project gke-tf-gitlab
+    - gcloud config set container/cluster k8s-test
+    - gcloud config set compute/zone us-central1
+    - gcloud container clusters get-credentials k8s-test --zone us-central1
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl
+   # -./kubectl create secret generic registry.hub.docker --from-literal=Docker_User=$"USER" --from-literal=Docker_Password=$"TOKEN" --dry-run -o yaml | kubectl apply -f -
+    - ./kubectl apply -f 5award-namespace.yml
+    - echo $TAG_FOR_IMAGES
+    - ENV_NEW=$(cat deployment-app.yml | sed "s/{{imagen}}/$TAG_FOR_IMAGES/g")
+    - echo "$ENV_NEW"
+    - echo "$ENV_NEW" > deployment-app.yaml
+    - ./kubectl apply -f deployment-app.yaml -n default
+    - ./kubectl apply -f service-app.yaml   
+   # - ./kubectl get nodes -o wide
+
+
+
+
+
