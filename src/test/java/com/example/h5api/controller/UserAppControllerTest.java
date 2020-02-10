@@ -1,4 +1,4 @@
-package com.example.h5api.controllers;
+package com.example.h5api.controller;
 
 import com.example.h5api.controller.UserAppController;
 import com.example.h5api.dto.UserDto;
