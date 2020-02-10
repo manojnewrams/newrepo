@@ -9,13 +9,14 @@ include:
     file: 'gitlab-ci-template.yml'
   - project: 'gitlab-templates/ci-templates/build/docker'
     file: 'gitlab-ci-template.yml'  
+  - project: 'gitlab-templates/ci-templates/deploy/aws/aws-direct-ec2-instance'
+    file: 'gitlab-ci-template.yaml'
 
 stages:
   - build
  # - test
   - pushImage
- # - deploy
-  - tfgcp
+  - deploy
   - deployGCP
 
 build:
@@ -33,7 +34,7 @@ build:
 pushImage:
   stage: pushImage
   extends: .docker_image_creation
-  tags:
+  tags: 
     - runnerk8s
   before_script:
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
@@ -44,91 +45,53 @@ pushImage:
     - docker build -t $USER/$APP_NAME:$TAG_FOR_IMAGES . 
     - docker push $USER/$APP_NAME:$TAG_FOR_IMAGES
 
-.deployMaster:
-  stage: deploy
-  image: ubuntu:xenial
+deployMaster:
+  extends: .deploy_into_ec2_instance
   tags:
     - runnerk8s
-  before_script:
-    - apt-get update
-    - apt-get install -y cl-base64
-    - apt-get install -y openssh-client
-    - mkdir ~/.ssh
+  script:
     - echo $SSH_PRIVATE_KEY | base64 -d > $URL_KEY
     - chmod 600 $URL_KEY
-  script:
     - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deployMaster.sh $AWS_HOST:/tmp/
     - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deployMaster.sh $USER $APP_NAME $TAG_FOR_IMAGES"
-  only:
-    - master
+  only: 
+    - master  
 
-.deployDev:
-  stage: deploy
-  image: ubuntu:xenial
+deployDev:
+  extends: .deploy_into_ec2_instance
   tags:
     - runnerk8s
-  before_script:
-    - apt-get update
-    - apt-get install -y cl-base64
-    - apt-get install -y openssh-client
-    - mkdir ~/.ssh
+  script:
     - echo $SSH_PRIVATE_KEY | base64 -d > $URL_KEY
     - chmod 600 $URL_KEY
-  script:
     - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deployDev.sh $AWS_HOST:/tmp/
     - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deployDev.sh $USER $APP_NAME $TAG_FOR_IMAGES"
   only:
     - develop   
 
-.deployQA:
-  stage: deploy
-  image: ubuntu:xenial
+deployQA:
+  extends: .deploy_into_ec2_instance
   tags:
     - runnerk8s
-  before_script:
-    - apt-get update
-    - apt-get install -y cl-base64
-    - apt-get install -y openssh-client
-    - mkdir ~/.ssh
+  script:
     - echo $SSH_PRIVATE_KEY | base64 -d > $URL_KEY
     - chmod 600 $URL_KEY
-  script:
     - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deployQA.sh $AWS_HOST:/tmp/
     - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deployQA.sh $USER $APP_NAME $TAG_FOR_IMAGES"
   only:
     - qa
 
-.deploy:
-  stage: deploy
-  image: ubuntu:xenial
+deploy:
+  extends: .deploy_into_ec2_instance
   tags:
     - runnerk8s
-  before_script:
-    - apt-get update
-    - apt-get install -y cl-base64
-    - apt-get install -y openssh-client
-    - mkdir ~/.ssh
+  script:
     - echo $SSH_PRIVATE_KEY | base64 -d > $URL_KEY
     - chmod 600 $URL_KEY
-  script:
     - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deploy.sh $AWS_HOST:/tmp/
     - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deploy.sh $USER $APP_NAME $TAG_FOR_IMAGES"
 
-tfgcp:
-  stage: tfgcp
-  image: hashicorp/terraform:light
-  tags:
-    - runnerk8s
-  before_script:
-    - echo "$SERVICE_ACCOUNT_KEY" > gke-token.json
-    - export GOOGLE_APPLICATION_CREDENTIALS=gke-token.json
-  script:
-    - terraform init -backend-config=backend.config
-    - terraform plan -out "planfile"
-    - terraform apply "planfile"
-
-
-deployGCP:
+.deployGCP:
   stage: deployGCP
   image: google/cloud-sdk
   tags:
@@ -151,7 +114,7 @@ deployGCP:
     - echo "$ENV_NEW"
     - echo "$ENV_NEW" > deployment-app.yaml
     - ./kubectl apply -f deployment-app.yaml -n default
-    - ./kubectl apply -f service-app.yaml   
+    - ./kubectl apply -f service-app.yaml -n default   
    # - ./kubectl get nodes -o wide
 
 
