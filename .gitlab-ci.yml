@@ -17,7 +17,6 @@ stages:
  # - test
   - pushImage
   - deploy
-  - tfgcp
   - deployGCP
 
 build:
