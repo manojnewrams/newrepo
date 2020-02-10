@@ -9,35 +9,45 @@ terraform {
     }
 }
 
-resource "google_container_cluster" "primary" {
-    name = "k8s-test"
-    location = "us-central1"
-
-    remove_default_node_pool = true
-    initial_node_count       = 1
-
-    master_auth {
-    username = ""
-    password = ""
-    client_certificate_config {
-      issue_client_certificate = false
-    }
-  }
+module "GCP_ROLES_CUSTOMS" {
+source = "git::https://gitlab.mynisum.com/modules-tf/rules-tf.git?ref=master"
+role_id = "k8sOwner"
+project = "gke-tf-gitlab"
+role_title = "role-k8s-jv-custom"
+role_stage = "BETA"
+role_description = "This role create resources and has access to admin k8s"
+role_permissions = [
+  "container.clusters.create",
+  "container.clusters.update",
+  "storage.buckets.update",
+  "storage.objects.create"
+]
 }
-resource "google_container_node_pool" "primary_preemptible_nodes" {
-  name       = "my-node-pool"
-  location   = "us-central1"
-  cluster    = google_container_cluster.primary.name
-  node_count = 1
-  node_config {
-    preemptible  = true
-    machine_type = "n1-standard-1"
-    metadata = {
-      disable-legacy-endpoints = "true"
-    }
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring",
-    ]
-  }
+
+module "GCP_SERVICESACCOUNT" {
+  source = "git::https://gitlab.mynisum.com/modules-tf/services-account.git?ref=master"
+  name = "gke-tf-gitlab"
+  display_name = "admin-k8s-jv"
+  role = ["roles/container.admin","roles/compute.loadBalancerAdmin"]
+  count-sa = 2
 }
+
+module "GCP_STORAGE" {
+  source = "git::https://gitlab.mynisum.com/modules-tf/storage-tf.git?ref=master"
+  name = "tf-backends-gke"
+  location = "us-central1"
+  project = "gke-tf-gitlab"
+  storage_class = "STANDARD"
+  type = "SetStorageClass"
+  action_storage_class = "REGIONAL"
+  with_state = "LIVE" 
+}
+
+module "GCP_GKE" {
+  source = "git::https://gitlab.mynisum.com/modules-tf/gke-tf.git?ref=master"
+  name = "k8s-test"
+  location = "us-central1"
+  name_pool = "awards"
+  machine_type = "n1-standard-1"
+}
+
