@@ -47,6 +47,7 @@ pushImage:
     - docker push $USER/$APP_NAME:$TAG_FOR_IMAGES
 
 deployMaster:
+  stage: deploy
   extends: .deploy_into_ec2_instance
   tags:
     - runnerk8s
@@ -71,6 +72,7 @@ deployDev:
     - develop   
 
 deployQA:
+  stage: deploy
   extends: .deploy_into_ec2_instance
   tags:
     - runnerk8s
@@ -83,6 +85,7 @@ deployQA:
     - qa
 
 deploy:
+  stage: deploy
   extends: .deploy_into_ec2_instance
   tags:
     - runnerk8s
