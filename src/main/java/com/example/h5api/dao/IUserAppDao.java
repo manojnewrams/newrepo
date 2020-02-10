@@ -15,4 +15,7 @@ public interface IUserAppDao extends CrudRepository<UserApp, Integer> {
 
     @Query(value = "SELECT MAX(user.id) as LastId FROM UserApp as user")
     Integer getLastId();
+
+    @Query(value = "SELECT user FROM UserApp as user WHERE user.deleteAt is NULL AND user.status = TRUE")
+    List<UserApp> findAllAvailable();
 }
