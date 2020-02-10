@@ -1,9 +1,6 @@
 package com.example.h5api.controller;
 
-import com.example.h5api.dto.NominationDto;
-import com.example.h5api.dto.NominationDtoCounterValueIdUserId;
-import com.example.h5api.dto.NominationDtoWithoutDates;
-import com.example.h5api.dto.ValueDtoCountId;
+import com.example.h5api.dto.*;
 import com.example.h5api.service.NominationService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,4 +63,8 @@ public class NominationController implements IController<NominationDto> {
         return nominationService.findAllWithoutDates();
     }
 
+    @GetMapping("/seeAll")
+    public List<NominationDtoAdmin> listAdmin(){
+        return nominationService.showAdminNominations();
+    }
 }
