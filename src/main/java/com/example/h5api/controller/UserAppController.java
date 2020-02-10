@@ -52,13 +52,13 @@ public class UserAppController implements IController<UserDto> {
     }
 
     @GetMapping("/available/{id}")
-    public List<UserDtoIdName> getAllAvailable(@PathVariable Integer id){
+    public List<UserDtoIdName> getAllAvailable(@PathVariable Integer id) {
         return userAppService.findAllAvailableCandidates(id);
+    }
 
     @PostMapping("/list")
     public boolean save(@RequestBody ArrayList<UserDto> body){
         return userAppService.saveList(body);
-
     }
 
 }
