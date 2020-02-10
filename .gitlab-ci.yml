@@ -60,6 +60,7 @@ deployMaster:
     - master  
 
 deployDev:
+  stage: deploy
   extends: .deploy_into_ec2_instance
   tags:
     - runnerk8s
