@@ -1,93 +1,95 @@
 package com.example.h5api.controller;
 
-
 import com.example.h5api.dto.ValueDto;
-import com.example.h5api.entity.Value;
+import com.example.h5api.dto.ValueDtoWithoutDates;
 import com.example.h5api.service.ValueService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(ValueController.class)
 public class ValueControllerTest {
 
-    @Autowired
-    MockMvc mvc;
-
-    @MockBean
+    @Mock
     ValueService valueService;
 
+    @InjectMocks
+    private ValueController valueController;
+
     private ValueDto value;
-    private String json;
+    private ValueDtoWithoutDates valueDtoWithoutDate;
 
     @Before
-    public void setup() throws JsonProcessingException {
+    public void setup() {
         value = new ValueDto();
-        ObjectMapper objectMapper = new ObjectMapper();
-        json = objectMapper.writeValueAsString(value);
+        valueDtoWithoutDate = new ValueDtoWithoutDates();
+        valueDtoWithoutDate.setId(1);
+        valueDtoWithoutDate.setDescription("Play");
+        valueDtoWithoutDate.setName("Play");
+        value.setId(1);
     }
 
     @Test
-    public void findValueById() throws Exception {
+    public void findValueById() {
         Mockito.when(valueService.findById(Mockito.anyInt())).thenReturn(value);
-        mvc.perform(
-                MockMvcRequestBuilders
-                        .get("/value/{id}", 1)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
+        ValueDto valueEntity = valueController.findById(value.getId());
+        assertNotNull(valueEntity);
+        Assert.assertEquals(1, valueEntity.getId());
+        verify(valueService).findById(Mockito.anyInt());
+        verifyNoMoreInteractions(valueService);
     }
 
     @Test
-    public void findAllValues() throws Exception {
+    public void findAllValues() {
         List<ValueDto> valueList = new LinkedList<>();
         valueList.add(value);
         Mockito.when(valueService.findAll()).thenReturn(valueList);
-        mvc.perform(MockMvcRequestBuilders.get("/value/list/api"))
-                .andDo(print())
-                .andExpect(MockMvcResultMatchers.jsonPath(".[0].id").exists())
-                .andExpect(status().isOk());
+        List<ValueDto> responseList = valueController.valueService.findAll();
+        assertNotNull(responseList);
+        Assert.assertEquals(1, responseList.get(0).getId());
+        verify(valueService).findAll();
+        verifyNoMoreInteractions(valueService);
     }
 
     @Test
-    public void saveValue() throws Exception {
+    public void saveValue() {
         Mockito.when(valueService.save(any(ValueDto.class))).thenReturn(value);
-        mvc.perform(MockMvcRequestBuilders.post("/value/")
-                .content(json)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id")
-                        .exists())
-                .andExpect(status().isOk());
+        ValueDto response = valueController.valueService.save(value);
+        assertNotNull(response);
+        Assert.assertEquals(1, response.getId());
+        verify(valueService).save(Mockito.any(ValueDto.class));
+        verifyNoMoreInteractions(valueService);
     }
 
     @Test
-    public void deleteValue() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/value/")
-                .param("id", "3"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$").doesNotExist())
-                .andExpect(status().isOk());
+    public void deleteValue() {
+        valueController.valueService.deleteById(value.getId());
+        verify(valueService).deleteById(Mockito.anyInt());
+        verifyNoMoreInteractions(valueService);
     }
 
-
+    @Test
+    public void listAllWithoutDateValues() {
+        List<ValueDtoWithoutDates> valueList = new LinkedList<>();
+        valueList.add(valueDtoWithoutDate);
+        Mockito.when(valueService.findAllWithoutDates()).thenReturn(valueList);
+        List<ValueDtoWithoutDates> responseList = valueController.valueService.findAllWithoutDates();
+        assertNotNull(responseList);
+        Assert.assertEquals(1, responseList.get(0).getId());
+        verify(valueService).findAllWithoutDates();
+        verifyNoMoreInteractions(valueService);
+    }
 }

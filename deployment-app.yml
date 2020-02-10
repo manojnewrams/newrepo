@@ -1,0 +1,25 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend-app
+        image: jvirrielnisum/backend-app:{{imagen}}
+        # resources:
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "1000m"
+        ports:
+        - containerPort: 8080       
+#      nodeName: master     
+          

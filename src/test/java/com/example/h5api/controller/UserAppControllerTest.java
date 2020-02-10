@@ -1,98 +1,114 @@
 package com.example.h5api.controller;
 
+import com.example.h5api.controller.UserAppController;
 import com.example.h5api.dto.UserDto;
+import com.example.h5api.dto.UserDtoIdName;
 import com.example.h5api.service.UserAppService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.ArgumentMatchers.booleanThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(UserAppController.class)
+@RunWith(MockitoJUnitRunner.class)
 public class UserAppControllerTest {
-    @Autowired
-    MockMvc mvc;
+    @InjectMocks
+    private UserAppController userAppController;
 
-    @MockBean
-    UserAppService userAppService;
+    @Mock
+    private UserAppService userAppService;
 
-    private UserDto user = new UserDto();
-    private String json;
+    private UserDto userapp;
 
     @Before
-    public void setUp() throws JsonProcessingException {
-        user.setName("Camilo");
-        user.setCompany("Nisum");
-        user.setPassword("SDasd!$a21");
-        user.setStatus(true);
-        user.setEmail("test@nisum.com");
-        user.setRole(false);
-        user.setId(1);
-        ObjectMapper objectMapper = new ObjectMapper();
-        json = objectMapper.writeValueAsString(user);
-
+    public void setup(){
+        userapp = new  UserDto();
+        userapp.setId(1);
     }
 
     @Test
-    public void findUserById() throws Exception {
-        Mockito.when(userAppService.findById(Mockito.anyInt())).thenReturn(user);
-        mvc.perform(
-                MockMvcRequestBuilders
-                        .get("/user/{id}", 1)
-                        .accept(MediaType.APPLICATION_JSON)
-        )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());
-
-    }
-
-    @Test
-    public void findAllUsers() throws Exception {
-        List<UserDto> userList = new LinkedList<>();
-        userList.add(user);
+    public void list(){
+        List<UserDto> userList = new ArrayList<>();
+        userList.add(userapp);
         Mockito.when(userAppService.findAll()).thenReturn(userList);
-        mvc.perform(MockMvcRequestBuilders
-                .get("/user/list/api"))
-                .andDo(print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].name").exists())
-                .andExpect(status().isOk());
+        List<UserDto> response = userAppController.list();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(userList.get(0).getId(), response.get(0).getId());
+        Mockito.verify(userAppService).findAll();
+        Mockito.verifyNoMoreInteractions(userAppService);
     }
 
     @Test
-    public void saveUser() throws Exception {
-        Mockito.when(userAppService.save(any(UserDto.class))).thenReturn(user);
-        mvc.perform(MockMvcRequestBuilders.post("/user/")
-                .content(json)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name")
-                        .exists())
-                .andExpect(status().isOk());
+    public void findById() {
+        Mockito.when(userAppService.findById(Mockito.anyInt())).thenReturn(userapp);
+        UserDto response = userAppController.findById(1);
+        Assert.assertEquals(userapp.getId(),response.getId());
+        verify(userAppService).findById(Mockito.anyInt());
+        verifyNoMoreInteractions(userAppService);
     }
 
     @Test
-    public void deleteUser() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.delete("/user/")
-                .param("id", "3"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$").doesNotExist())
-                .andExpect(status().isOk());
+    public void save(){
+        Mockito.when(userAppService.save(Mockito.any(UserDto.class))).thenReturn(userapp);
+        UserDto response = userAppController.save(userapp);
+        Assert.assertNotNull(response);
+        Assert.assertEquals(response.getId(), userapp.getId());
+        Mockito.verify(userAppService).save(Mockito.any(UserDto.class));
+        Mockito.verifyNoMoreInteractions(userAppService);
     }
+
+    @Test
+    public void delete(){
+        userAppController.delete(1);
+        Mockito.verify(userAppService).deleteById(Mockito.anyInt());
+        Mockito.verifyNoMoreInteractions(userAppService);
+    }
+
+    @Test
+    public void deleteApp(){
+        List<UserDto> userList = new ArrayList<>();
+        userList.add(userapp);
+        Mockito.when(userAppService.findAllNotDeleted()).thenReturn(userList);
+        List<UserDto> response = userAppController.deleteApp();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(userList.get(0).getId(), response.get(0).getId());
+        Mockito.verify(userAppService).findAllNotDeleted();
+        Mockito.verifyNoMoreInteractions(userAppService);
+    }
+
+    @Test
+    public void getUserByIdName(){
+        List<UserDtoIdName> userList = new ArrayList<>();
+        userList.add(new UserDtoIdName(1, "Carlos"));
+        Mockito.when(userAppService.findAllUserIdName()).thenReturn(userList);
+        List<UserDtoIdName> response = userAppController.getUserByIdName();
+        Assert.assertNotNull(response);
+        Assert.assertEquals(userList.get(0).getId(), response.get(0).getId());
+        Mockito.verify(userAppService).findAllUserIdName();
+        Mockito.verifyNoMoreInteractions(userAppService);
+    }
+
+    @Test
+    public void saveList(){
+        ArrayList<UserDto> userList = new ArrayList<>();
+        userList.add(userapp);
+        Mockito.when(userAppService.saveList(Mockito.any())).thenReturn(true);
+        Boolean response = userAppController.save(userList);
+        Assert.assertNotNull(response);
+        Assert.assertEquals(true, response);
+        Mockito.verify(userAppService).saveList(Mockito.any());
+        Mockito.verifyNoMoreInteractions(userAppService);
+    }
+
 }
