@@ -11,5 +11,4 @@ public class ValueDtoIdName {
 
     private int id;
     private String description;
-
 }
