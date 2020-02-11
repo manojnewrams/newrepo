@@ -35,12 +35,12 @@ public class CampaignController implements IController<CampaignDto> {
         campaignService.deleteById(id);
     }
 
-    @PostMapping("/enable/{id}")
+    @GetMapping("/enable/{id}")
     public CampaignDto enableCampaign(@PathVariable Integer id) {
         return campaignService.enableCampaign(id);
     }
 
-    @PostMapping("/disable/{id}")
+    @GetMapping("/disable/{id}")
     public CampaignDto disableCampaign(@PathVariable Integer id) {
         return campaignService.disableCampaign(id);
     }
