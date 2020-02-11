@@ -4,10 +4,12 @@ import com.example.h5api.builders.Transformer;
 import com.example.h5api.dao.ICampaignDao;
 import com.example.h5api.dao.INominationDao;
 import com.example.h5api.dao.IUserAppDao;
+import com.example.h5api.dao.IValueDao;
 import com.example.h5api.dto.*;
 import com.example.h5api.entity.Campaign;
 import com.example.h5api.entity.Nomination;
 import com.example.h5api.entity.UserApp;
+import com.example.h5api.entity.Value;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,10 @@ public class NominationService extends Transformer implements IGenericService<No
 
     @Autowired
     private IUserAppDao userDao;
+
+
+    @Autowired
+    private IValueDao valueDao;
 
     @Autowired
     private ICampaignDao campaignDao;
@@ -166,84 +172,37 @@ public class NominationService extends Transformer implements IGenericService<No
     }
 
 
+    public List<ValueDtoIdName> findAllValueList() {
+        List<ValueDtoIdName> valueList = new ArrayList<>();
+        valueDao.findIdandValue().forEach(valueList::add);
+        return valueList;
+    }
 
     public List<NominationDtoAdmin> showAdminNominations(){
         List<NominationDtoAdmin>adminList = new ArrayList<>();
-        List<NominationDtoDisplayData> dataList1 = new ArrayList<>();
-        List<NominationDtoDisplayData> dataList2 = new ArrayList<>();
-        List<NominationDtoDisplayData> dataList3 = new ArrayList<>();
-        List<NominationDtoDisplayData> dataList4 = new ArrayList<>();
-        List<NominationDtoDisplayData> dataList5 = new ArrayList<>();
-
-        List<UserDtoIdName> nominations1 = new ArrayList<>();
-        nominations1.addAll(findAllUserList(1));
-        List<UserDtoIdName> nominations2 = new ArrayList<>();
-        nominations2.addAll(findAllUserList(2));
-        List<UserDtoIdName> nominations3 = new ArrayList<>();
-        nominations3.addAll(findAllUserList(3));
-        List<UserDtoIdName> nominations4 = new ArrayList<>();
-        nominations4.addAll(findAllUserList(4));
-        List<UserDtoIdName> nominations5 = new ArrayList<>();
-        nominations5.addAll(findAllUserList(5));
+        List<ValueDtoIdName> valueList = new ArrayList<>();
+        valueList.addAll(findAllValueList());
 
         NominationDtoDisplayData data = null;
 
-       for(int i=0;i<nominations1.size();i++){
-           List<UserDtoIdName> nominators = new ArrayList<>();
-           nominators.addAll(findAllUserNominatorList(1,nominations1.get(i).getId()));
-           data= new NominationDtoDisplayData(nominations1.get(i).getName(),nominations1.get(i).getId(),nominators.size(),nominators);
-           dataList1.add(data);
-       }
+        for(int i=0;i<valueList.size();i++){
+            List<UserDtoIdName> nominations = new ArrayList<>();
+            nominations.addAll(findAllUserList(i+1));
+            List<NominationDtoDisplayData> dataList = new ArrayList<>();
 
+            for(int j=0;j<nominations.size();j++){
+                List<UserDtoIdName> nominators = new ArrayList<>();
+                nominators.addAll(findAllUserNominatorList(i+1,nominations.get(j).getId()));
+                data= new NominationDtoDisplayData(nominations.get(j).getName(),nominations.get(j).getId(),nominators.size(),nominators);
+                dataList.add(data);
+            }
 
-        for(int i=0;i<nominations2.size();i++){
-            List<UserDtoIdName> nominators = new ArrayList<>();
-            nominators.addAll(findAllUserNominatorList(2,nominations2.get(i).getId()));
-            data= new NominationDtoDisplayData(nominations2.get(i).getName(),nominations2.get(i).getId(),nominators.size(),nominators);
-            dataList2.add(data);
+            NominationDtoAdmin obj = new NominationDtoAdmin(valueList.get(i).getId(),valueList.get(i).getDescription(),dataList);
+            adminList.add(obj);
         }
-
-
-        for(int i=0;i<nominations3.size();i++){
-            List<UserDtoIdName> nominators = new ArrayList<>();
-            nominators.addAll(findAllUserNominatorList(3,nominations3.get(i).getId()));
-            data= new NominationDtoDisplayData(nominations3.get(i).getName(),nominations3.get(i).getId(),nominators.size(),nominators);
-            dataList3.add(data);
-        }
-
-
-        for(int i=0;i<nominations4.size();i++){
-            List<UserDtoIdName> nominators = new ArrayList<>();
-            nominators.addAll(findAllUserNominatorList(4,nominations4.get(i).getId()));
-            data= new NominationDtoDisplayData(nominations4.get(i).getName(),nominations4.get(i).getId(),nominators.size(),nominators);
-            dataList4.add(data);
-        }
-
-
-        for(int i=0;i<nominations5.size();i++){
-            List<UserDtoIdName> nominators = new ArrayList<>();
-            nominators.addAll(findAllUserNominatorList(5,nominations5.get(i).getId()));
-            data= new NominationDtoDisplayData(nominations5.get(i).getName(),nominations5.get(i).getId(),nominators.size(),nominators);
-            dataList5.add(data);
-        }
-
-        List<UserDtoIdName> nominators2 = new ArrayList<>();
-        NominationDtoAdmin obj = new NominationDtoAdmin(1,"Play",dataList1);
-        NominationDtoAdmin obj2 = new NominationDtoAdmin(2,"Respect",dataList2);
-        NominationDtoAdmin obj3 = new NominationDtoAdmin(3,"Openness",dataList3);
-        NominationDtoAdmin obj4 = new NominationDtoAdmin(3,"Customer success",dataList4);
-        NominationDtoAdmin obj5 = new NominationDtoAdmin(3,"Excellence",dataList5);
-
-        adminList.add(obj);
-        adminList.add(obj2);
-        adminList.add(obj3);
-        adminList.add(obj4);
-        adminList.add(obj5);
         return adminList;
 
     }
-
-
 
     private List<NominationDtoCounterValueIdUserId> getNominationDtoCounterValueIdUserIds(List<NominationDtoCounterValueIdUserId> nominationDtoCounterValueIdUserIds, List<CampaignDto> campaignListAsDTO) {
         if (campaignListAsDTO.size() == 1) {
