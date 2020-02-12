@@ -10,6 +10,7 @@ import com.example.h5api.entity.Campaign;
 import com.example.h5api.entity.Nomination;
 import com.example.h5api.entity.UserApp;
 import com.example.h5api.entity.Value;
+import com.example.h5api.exceptions.ValidationException;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,9 +69,14 @@ public class NominationService extends Transformer implements IGenericService<No
     @Override
     @Transactional
     public NominationDto save(NominationDto nominationDto) {
+        List<Campaign> CampaignList =campaignDao.getCampaignByDateNow(nominationDto.getCreateAt());
+        if (CampaignList.size() >0){
         Nomination n = transformFromNominationDtoToNomination(nominationDto);
         nominationDao.save(n);
-        return nominationDto;
+        return nominationDto;}
+        else{
+            throw new ValidationException("{\"message\": \"The campaign is closed\"}");
+        }
     }
 
     @Override
