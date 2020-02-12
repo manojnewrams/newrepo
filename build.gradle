@@ -34,6 +34,9 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     implementation 'junit:junit:4.12'
     compile 'io.jsonwebtoken:jjwt:0.9.1'
+    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.1'
+
     runtime 'com.h2database:h2:1.4.199'
 }
 
