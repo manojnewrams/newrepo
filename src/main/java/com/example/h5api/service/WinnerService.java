@@ -24,9 +24,9 @@ public class WinnerService extends Transformer implements IGenericService<Winner
     public List<WinnerDto> findAll() {
         List<Winner> winnerList = new ArrayList<>();
         winnerDao.findAll().forEach(winnerList::add);
-        List<WinnerDto> winnerListAsDTO = winnerList.stream()
+        return winnerList.stream()
                 .map(this::transformFromWinnerToWinnerDto).collect(Collectors.toList());
-        return winnerListAsDTO;
+
     }
 
     @Override
@@ -63,9 +63,8 @@ public class WinnerService extends Transformer implements IGenericService<Winner
     public List<WinnerDto> findWinnerByCampaignId(Integer id) {
         List<Winner> winnerList = new ArrayList<>();
         winnerDao.findWinnerByCampaignId(id).forEach(winnerList::add);
-        List<WinnerDto> winnerListAsDTO = winnerList.stream()
+        return winnerList.stream()
                 .map(this::transformFromWinnerToWinnerDto).collect(Collectors.toList());
-        return winnerListAsDTO;
     }
 
     @Transactional
@@ -73,16 +72,14 @@ public class WinnerService extends Transformer implements IGenericService<Winner
         int lastCampaign = winnerDao.findLastCampaignId();
         List<Winner> winnerList = new ArrayList<>();
         winnerDao.findWinnerByCampaignId(lastCampaign).forEach(winnerList::add);
-        List<WinnerDtoWithoutDates> winnerListAsDTO = winnerList.stream()
+        return winnerList.stream()
                 .map(this::transformFromWinnerToWinnerDtoWithoutDates).collect(Collectors.toList());
-        return winnerListAsDTO;
     }
 
     public List<WinnerDtoWithoutDates> findAllWithoutDates() {
         List<Winner> winnerList = new ArrayList<>();
         winnerDao.findAll().forEach(winnerList::add);
-        List<WinnerDtoWithoutDates> winnerListAsDTO = winnerList.stream()
+        return winnerList.stream()
                 .map(this::transformFromWinnerToWinnerDtoWithoutDates).collect(Collectors.toList());
-        return winnerListAsDTO;
     }
 }
