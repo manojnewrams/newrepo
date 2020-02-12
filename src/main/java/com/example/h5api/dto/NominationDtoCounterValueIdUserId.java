@@ -12,4 +12,8 @@ public class NominationDtoCounterValueIdUserId {
     private int counter;
     private int valueId;
     private int userId;
+
+    public NominationDtoCounterValueIdUserId() {
+
+    }
 }

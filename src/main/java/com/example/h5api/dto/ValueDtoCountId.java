@@ -14,4 +14,8 @@ public class ValueDtoCountId {
         this.counter = counter;
         this.valueId = valueId;
     }
+
+    public ValueDtoCountId() {
+
+    }
 }

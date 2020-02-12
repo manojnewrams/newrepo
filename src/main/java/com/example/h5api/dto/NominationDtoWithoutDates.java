@@ -14,4 +14,8 @@ public class NominationDtoWithoutDates {
     private UserDtoIdName user;
     private String description;
     private ValueDtoIdName value;
+
+    public NominationDtoWithoutDates() {
+
+    }
 }

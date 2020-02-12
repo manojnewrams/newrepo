@@ -17,4 +17,8 @@ public class NominationDtoAdmin {
         this.valueName = valueName;
         this.nominations = nominations;
     }
+
+    public NominationDtoAdmin() {
+
+    }
 }

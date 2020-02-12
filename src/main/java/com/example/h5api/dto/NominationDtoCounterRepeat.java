@@ -11,6 +11,10 @@ import lombok.Data;
 public class NominationDtoCounterRepeat {
 
     private int repeat;
+
+    public NominationDtoCounterRepeat() {
+
+    }
 }
 
 
