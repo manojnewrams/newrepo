@@ -2,8 +2,12 @@ package com.example.h5api.service;
 
 import com.example.h5api.builders.Transformer;
 import com.example.h5api.dao.IValueDao;
-import com.example.h5api.dto.*;
+import com.example.h5api.dto.ValueDto;
+import com.example.h5api.dto.ValueDtoIdName;
+import com.example.h5api.dto.ValueDtoWithoutDates;
 import com.example.h5api.entity.Value;
+import com.example.h5api.exceptions.GenericEmptyListException;
+import com.example.h5api.exceptions.GenericNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +28,9 @@ public class ValueService extends Transformer implements IGenericService<ValueDt
     public List<ValueDto> findAll() {
         List<Value> valueList = new ArrayList<>();
         valueDao.findAll().forEach(valueList::add);
+        if (valueList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         List<ValueDto> valueListAsDto = valueList.stream()
                 .map(this::transformFromValueToValueDto).collect(Collectors.toList());
         return valueListAsDto;
@@ -32,7 +39,7 @@ public class ValueService extends Transformer implements IGenericService<ValueDt
     @Override
     @Transactional(readOnly = true)
     public ValueDto findById(Integer id) {
-        Value value = valueDao.findById(id).orElse(null);
+        Value value = valueDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         return transformFromValueToValueDto(value);
     }
 
@@ -46,11 +53,10 @@ public class ValueService extends Transformer implements IGenericService<ValueDt
     @Override
     @Transactional
     public void deleteById(Integer id) {
-        Value value = valueDao.findById(id).orElse(null);
-        if (value != null) {
-            value.setDeleteAt(new Date());
-            valueDao.save(value);
-        }
+        Value value = valueDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
+        value.setDeleteAt(new Date());
+        valueDao.save(value);
+
     }
 
     @Override
@@ -63,6 +69,9 @@ public class ValueService extends Transformer implements IGenericService<ValueDt
     public List<ValueDtoIdName> findAllValueIdName() {
         List<Value> valueList = new ArrayList<>();
         valueDao.findAll().forEach(valueList::add);
+        if (valueList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         List<ValueDtoIdName> valueListAsDto = valueList.stream()
                 .map(this::transformFromValueToValueDtoIdName).collect(Collectors.toList());
         return valueListAsDto;
@@ -72,6 +81,9 @@ public class ValueService extends Transformer implements IGenericService<ValueDt
     public List<ValueDtoWithoutDates> findAllWithoutDates() {
         List<Value> valueList = new ArrayList<>();
         valueDao.findAll().forEach(valueList::add);
+        if (valueList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         List<ValueDtoWithoutDates> valueListAsDto = valueList.stream()
                 .map(this::transformFromValueToValueDtoWithoutDates).collect(Collectors.toList());
         return valueListAsDto;
