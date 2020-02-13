@@ -4,6 +4,10 @@ import com.example.h5api.builders.Transformer;
 import com.example.h5api.dao.ICampaignDao;
 import com.example.h5api.dto.CampaignDto;
 import com.example.h5api.entity.Campaign;
+import com.example.h5api.exceptions.GenericAlreadyExistException;
+import com.example.h5api.exceptions.GenericEmptyListException;
+import com.example.h5api.exceptions.GenericNotFoundException;
+import com.example.h5api.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +27,9 @@ public class CampaignService extends Transformer implements IGenericService<Camp
     public List<CampaignDto> findAll() {
         List<Campaign> campaignList = new ArrayList<>();
         campaignDao.findAll().forEach(campaignList::add);
+        if (campaignList.size() == 0) {
+            throw new GenericEmptyListException();
+        }
         List<CampaignDto> campaignListAsDTO = campaignList.stream()
                 .map(this::transformFromCampaignToCampaignDto).collect(Collectors.toList());
         return campaignListAsDTO;
@@ -31,7 +38,7 @@ public class CampaignService extends Transformer implements IGenericService<Camp
     @Override
     @Transactional(readOnly = true)
     public CampaignDto findById(Integer id) {
-        Campaign campaign = campaignDao.findById(id).orElse(null);
+        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         return transformFromCampaignToCampaignDto(campaign);
     }
 
@@ -45,11 +52,10 @@ public class CampaignService extends Transformer implements IGenericService<Camp
     @Override
     @Transactional
     public void deleteById(Integer id) {
-        Campaign campaign = campaignDao.findById(id).orElse(null);
-        if(campaign !=null){
-            campaign.setDeleteAt(new Date());
-            campaignDao.save(campaign);
-        }
+        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException());
+        campaign.setDeleteAt(new Date());
+        campaignDao.save(campaign);
+
     }
 
     @Override
@@ -59,36 +65,38 @@ public class CampaignService extends Transformer implements IGenericService<Camp
     }
 
     @Transactional
-    public CampaignDto enableCampaign(int id){
-        Campaign campaign = campaignDao.findById(id).orElse(null);
-        if(campaign !=null){
-            campaign.setStatus(true);
-            campaignDao.save(campaign);
-        }
+    public CampaignDto enableCampaign(int id) {
+        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException());
+        campaign.setStatus(true);
+        campaignDao.save(campaign);
         return transformFromCampaignToCampaignDto(campaign);
     }
 
     @Transactional
-    public CampaignDto disableCampaign(int id){
-        Campaign campaign = campaignDao.findById(id).orElse(null);
-        if(campaign !=null){
-            campaign.setStatus(false);
-            campaignDao.save(campaign);
-        }
+    public CampaignDto disableCampaign(int id) {
+        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException());
+        campaign.setStatus(false);
+        campaignDao.save(campaign);
         return transformFromCampaignToCampaignDto(campaign);
     }
 
-    public List<CampaignDto> getCampaignByDate(Date date){
+    public List<CampaignDto> getCampaignByDate(Date date) {
         List<Campaign> campaignList = new ArrayList<>();
         campaignDao.getCampaignByDate(date).forEach(campaignList::add);
+        if(campaignList.size()==0){
+            throw new GenericEmptyListException();
+        }
         List<CampaignDto> campaignListAsDTO = campaignList.stream()
                 .map(this::transformFromCampaignToCampaignDto).collect(Collectors.toList());
         return campaignListAsDTO;
     }
 
-    public List<CampaignDto> getCampaignByDateNow(){
+    public List<CampaignDto> getCampaignByDateNow() {
         List<Campaign> campaignList = new ArrayList<>();
         campaignDao.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        if(campaignList.size()==0){
+            throw new GenericEmptyListException();
+        }
         List<CampaignDto> campaignListAsDTO = campaignList.stream()
                 .map(this::transformFromCampaignToCampaignDto).collect(Collectors.toList());
         return campaignListAsDTO;
