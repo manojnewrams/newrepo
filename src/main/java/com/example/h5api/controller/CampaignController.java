@@ -1,6 +1,7 @@
 package com.example.h5api.controller;
 
 import com.example.h5api.dto.CampaignDto;
+import com.example.h5api.dto.CampaignDtoIdDescription;
 import com.example.h5api.service.CampaignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -53,5 +54,10 @@ public class CampaignController implements IController<CampaignDto> {
     @GetMapping("/get/")
     public List <CampaignDto> nominationSummary(){
         return campaignService.getCampaignByDateNow();
+    }
+
+    @GetMapping("/listCampaigns")
+    public List <CampaignDtoIdDescription> findAllCampaignIdName(){
+        return campaignService.findAllCampaignIdName();
     }
 }

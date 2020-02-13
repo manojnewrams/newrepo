@@ -3,6 +3,7 @@ package com.example.h5api.service;
 import com.example.h5api.builders.Transformer;
 import com.example.h5api.dao.ICampaignDao;
 import com.example.h5api.dto.CampaignDto;
+import com.example.h5api.dto.CampaignDtoIdDescription;
 import com.example.h5api.entity.Campaign;
 import com.example.h5api.exceptions.GenericAlreadyExistException;
 import com.example.h5api.exceptions.GenericEmptyListException;
@@ -99,6 +100,18 @@ public class CampaignService extends Transformer implements IGenericService<Camp
         }
         List<CampaignDto> campaignListAsDTO = campaignList.stream()
                 .map(this::transformFromCampaignToCampaignDto).collect(Collectors.toList());
+        return campaignListAsDTO;
+    }
+
+    @Transactional(readOnly = true)
+    public List<CampaignDtoIdDescription> findAllCampaignIdName() {
+        List<Campaign> campaignList = new ArrayList<>();
+        campaignDao.findAll().forEach(campaignList::add);
+        if (campaignList.size() == 0) {
+            throw new GenericEmptyListException();
+        }
+        List<CampaignDtoIdDescription> campaignListAsDTO = campaignList.stream()
+                .map(this::transformFromCampaignToCampaignDtoIdDescription).collect(Collectors.toList());
         return campaignListAsDTO;
     }
 
