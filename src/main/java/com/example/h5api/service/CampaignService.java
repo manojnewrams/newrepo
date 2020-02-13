@@ -38,7 +38,7 @@ public class CampaignService extends Transformer implements IGenericService<Camp
     @Override
     @Transactional(readOnly = true)
     public CampaignDto findById(Integer id) {
-        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         return transformFromCampaignToCampaignDto(campaign);
     }
 
@@ -52,7 +52,7 @@ public class CampaignService extends Transformer implements IGenericService<Camp
     @Override
     @Transactional
     public void deleteById(Integer id) {
-        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException());
+        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         campaign.setDeleteAt(new Date());
         campaignDao.save(campaign);
 
@@ -66,7 +66,7 @@ public class CampaignService extends Transformer implements IGenericService<Camp
 
     @Transactional
     public CampaignDto enableCampaign(int id) {
-        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException());
+        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         campaign.setStatus(true);
         campaignDao.save(campaign);
         return transformFromCampaignToCampaignDto(campaign);
@@ -74,7 +74,7 @@ public class CampaignService extends Transformer implements IGenericService<Camp
 
     @Transactional
     public CampaignDto disableCampaign(int id) {
-        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException());
+        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         campaign.setStatus(false);
         campaignDao.save(campaign);
         return transformFromCampaignToCampaignDto(campaign);

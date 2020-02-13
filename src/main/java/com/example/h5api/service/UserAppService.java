@@ -5,10 +5,11 @@ import com.example.h5api.dao.IUserAppDao;
 import com.example.h5api.dto.UserDto;
 import com.example.h5api.dto.UserDtoIdName;
 import com.example.h5api.entity.UserApp;
-import com.example.h5api.exceptions.ValidationException;
+import com.example.h5api.exceptions.GenericEmptyListException;
+import com.example.h5api.exceptions.UserAlreadyExistException;
+import com.example.h5api.exceptions.UserNotFoundException;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 @Log
@@ -30,6 +33,9 @@ public class UserAppService extends Transformer implements IGenericService<UserD
     public List<UserDto> findAll() {
         List<UserApp> userList = new ArrayList<>();
         userAppDao.findAll().forEach(userList::add);
+        if (userList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         List<UserDto> userListAsDTO = userList.stream()
                 .map(this::transformFromUserAppToUserDto).collect(Collectors.toList());
         return userListAsDTO;
@@ -40,29 +46,28 @@ public class UserAppService extends Transformer implements IGenericService<UserD
         List<UserApp> userList = new ArrayList<>(userAppDao.findAllNotDeleted());
         List<UserDto> userListAsDTO = userList.stream()
                 .map(this::transformFromUserAppToUserDto).collect(Collectors.toList());
+        if (userListAsDTO.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         return userListAsDTO;
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserDto findById(Integer id) {
-        UserApp user = userAppDao.findById(id).orElse(null);
+        UserApp user = userAppDao.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         return transformFromUserAppToUserDto(user);
     }
 
     @Override
     @Transactional
     public UserDto save(UserDto userDto) {
-        if (userAppDao.existsByEmail(userDto.getEmail())){
-            String msg = "{\"message\":\"User already existed\"}";
-            throw new ValidationException(msg);
+        if (userAppDao.existsByEmail(userDto.getEmail())) {
+            throw new UserAlreadyExistException(userDto.getEmail());
         }
-        //int lastId = userAppDao.getLastId();
-        //log.info("Last Id: "+lastId);
         String password = userDto.getPassword();
         String encodedPassword = new BCryptPasswordEncoder().encode(password);
         userDto.setPassword(encodedPassword);
-       // userDto.setId(lastId+1);
         userAppDao.save(transformFromUserDtoToUserApp(userDto));
         return userDto;
     }
@@ -70,12 +75,10 @@ public class UserAppService extends Transformer implements IGenericService<UserD
     @Override
     @Transactional
     public void deleteById(Integer id) {
-        UserApp user = userAppDao.findById(id).orElse(null);
-        if (user != null) {
-            user.setDeleteAt(new Date());
-            user.setStatus(false);
-            userAppDao.save(user);
-        }
+        UserApp user = userAppDao.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        user.setDeleteAt(new Date());
+        user.setStatus(false);
+        userAppDao.save(user);
     }
 
     @Override
@@ -88,15 +91,24 @@ public class UserAppService extends Transformer implements IGenericService<UserD
     public List<UserDtoIdName> findAllUserIdName() {
         List<UserApp> userList = new ArrayList<>();
         userAppDao.findAll().forEach(userList::add);
+        if (userList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         List<UserDtoIdName> userListAsDTO = userList.stream()
                 .map(this::transformFromUserAppToUserDtoIdName).collect(Collectors.toList());
         return userListAsDTO;
     }
 
     @Transactional(readOnly = true)
-    public List<UserDtoIdName> findAllAvailableCandidates(Integer id){
+    public List<UserDtoIdName> findAllAvailableCandidates(Integer id) {
+        if (!userAppDao.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
         List<UserApp> userList = new ArrayList<>();
         userAppDao.findAllAvailable().forEach(userList::add);
+        if (userList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         userList.removeIf(user -> user.getId() == id);
         List<UserDtoIdName> userListAsDTO = userList
                 .stream()
@@ -107,15 +119,10 @@ public class UserAppService extends Transformer implements IGenericService<UserD
 
     /**
      * Return true if save all the items of the array
-     * */
+     */
     @Transactional
-    public boolean saveList(ArrayList<UserDto> userList){
-        userList.forEach(item -> {
-            if (!(save(item) instanceof UserDto))
-            {
-                throw new ValidationException("We had a problem saving user: " + item.getName());
-            }
-        });
+    public boolean saveList(ArrayList<UserDto> userList) {
+        userList.forEach(this::save);
         return true;
     }
 
