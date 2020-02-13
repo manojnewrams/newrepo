@@ -9,14 +9,14 @@ import com.example.h5api.dto.*;
 import com.example.h5api.entity.Campaign;
 import com.example.h5api.entity.Nomination;
 import com.example.h5api.entity.UserApp;
-import com.example.h5api.entity.Value;
-import com.example.h5api.exceptions.ValidationException;
+import com.example.h5api.exceptions.CampaignIsClosedException;
+import com.example.h5api.exceptions.GenericEmptyListException;
+import com.example.h5api.exceptions.GenericNotFoundException;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.lang.model.element.Element;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,6 +54,9 @@ public class NominationService extends Transformer implements IGenericService<No
     public List<NominationDto> findAll() {
         List<Nomination> nominationList = new ArrayList<>();
         nominationDao.findAll().forEach(nominationList::add);
+        if (nominationList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         List<NominationDto> nominationListAsDto = nominationList.stream()
                 .map(this::transformFromNominationToNominationDto).collect(Collectors.toList());
         return nominationListAsDto;
@@ -62,31 +65,28 @@ public class NominationService extends Transformer implements IGenericService<No
     @Override
     @Transactional(readOnly = true)
     public NominationDto findById(Integer id) {
-        Nomination nomination = nominationDao.findById(id).orElse(null);
+        Nomination nomination = nominationDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         return transformFromNominationToNominationDto(nomination);
     }
 
     @Override
     @Transactional
     public NominationDto save(NominationDto nominationDto) {
-        List<Campaign> CampaignList =campaignDao.getCampaignByDateNow(nominationDto.getCreateAt());
-        if (CampaignList.size() >0){
+        List<Campaign> campaignList = campaignDao.getCampaignByDateNow(nominationDto.getCreateAt());
+        if (campaignList.isEmpty()) {
+            throw new CampaignIsClosedException();
+        }
         Nomination n = transformFromNominationDtoToNomination(nominationDto);
         nominationDao.save(n);
-        return nominationDto;}
-        else{
-            throw new ValidationException("{\"message\": \"The campaign is closed\"}");
-        }
+        return nominationDto;
     }
 
     @Override
     @Transactional
     public void deleteById(Integer id) {
-        Nomination nomination = nominationDao.findById(id).orElse(null);
-        if (nomination != null) {
-            nomination.setDeleteAt(new Date());
-            nominationDao.save(nomination);
-        }
+        Nomination nomination = nominationDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
+        nomination.setDeleteAt(new Date());
+        nominationDao.save(nomination);
     }
 
     @Override
@@ -100,6 +100,9 @@ public class NominationService extends Transformer implements IGenericService<No
         List<Campaign> campaignList = new ArrayList<>();
         List<ValueDtoCountId> empty = new ArrayList<>();
         campaignDao.getCampaignByDate(date).forEach(campaignList::add);
+        if (campaignList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         List<CampaignDto> campaignListAsDTO = campaignList.stream()
                 .map(this::transformFromCampaignToCampaignDto)
                 .collect(Collectors.toList());
@@ -111,6 +114,9 @@ public class NominationService extends Transformer implements IGenericService<No
         List<Campaign> campaignList = new ArrayList<>();
         List<ValueDtoCountId> empty = new ArrayList<>();
         campaignDao.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        if (campaignList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         List<CampaignDto> campaignListAsDTO = campaignList.stream()
                 .map(this::transformFromCampaignToCampaignDto)
                 .collect(Collectors.toList());
@@ -121,6 +127,9 @@ public class NominationService extends Transformer implements IGenericService<No
     public List<NominationDtoCounterRepeat> counterRepeats() {
         List<Campaign> campaignList = new ArrayList<>();
         campaignDao.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        if (campaignList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         return getCounterRepeats(campaignList);
     }
 
@@ -128,6 +137,9 @@ public class NominationService extends Transformer implements IGenericService<No
     public List<NominationDtoCounterRepeat> counterRepeats(Date date) {
         List<Campaign> campaignList = new ArrayList<>();
         campaignDao.getCampaignByDateNow(date).forEach(campaignList::add);
+        if (campaignList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         return getCounterRepeats(campaignList);
     }
 
@@ -135,6 +147,9 @@ public class NominationService extends Transformer implements IGenericService<No
         List<Campaign> campaignList = new ArrayList<>();
         List<NominationDtoCounterValueIdUserId> nominationDtoCounterValueIdUserIds = new ArrayList<>();
         campaignDao.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        if (campaignList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         List<CampaignDto> campaignListAsDTO = campaignList.stream()
                 .map(this::transformFromCampaignToCampaignDto)
                 .collect(Collectors.toList());
@@ -149,6 +164,9 @@ public class NominationService extends Transformer implements IGenericService<No
         List<Campaign> campaignList = new ArrayList<>();
         List<NominationDtoCounterValueIdUserId> nominationDtoCounterValueIdUserIds = new ArrayList<>();
         campaignDao.getCampaignByDateNow(date).forEach(campaignList::add);
+        if (campaignList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         List<CampaignDto> campaignListAsDTO = campaignList.stream()
                 .map(this::transformFromCampaignToCampaignDto)
                 .collect(Collectors.toList());
@@ -163,15 +181,21 @@ public class NominationService extends Transformer implements IGenericService<No
     public Set<UserDtoIdName> findAllUserList(Integer valueid) {
         List<UserApp> userList = new ArrayList<>();
         userDao.findUserNameAndId(valueid).forEach(userList::add);
+        if (userList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         Set<UserDtoIdName> userDtoList = userList.stream()
                 .map(this::transformFromUserAppToUserDtoIdName).collect(Collectors.toSet());
         return userDtoList;
     }
 
 
-    public List<UserDtoIdName> findAllUserNominatorList(Integer valueid,Integer userid) {
+    public List<UserDtoIdName> findAllUserNominatorList(Integer valueid, Integer userid) {
         Set<UserApp> userList = new HashSet<>();
-        userDao.findUserNameAndIdforNominator(valueid,userid).forEach(userList::add);
+        userDao.findUserNameAndIdforNominator(valueid, userid).forEach(userList::add);
+        if (userList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         List<UserDtoIdName> usernominationList = userList.stream()
                 .map(this::transformFromUserAppToUserDtoIdName).collect(Collectors.toList());
         return usernominationList;
@@ -181,29 +205,39 @@ public class NominationService extends Transformer implements IGenericService<No
     public List<ValueDtoIdName> findAllValueList() {
         List<ValueDtoIdName> valueList = new ArrayList<>();
         valueDao.findIdandValue().forEach(valueList::add);
+        if (valueList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         return valueList;
     }
 
-    public List<NominationDtoAdmin> showAdminNominations(){
-        List<NominationDtoAdmin>adminList = new ArrayList<>();
+    public List<NominationDtoAdmin> showAdminNominations() {
+        List<NominationDtoAdmin> adminList = new ArrayList<>();
         List<ValueDtoIdName> valueList = new ArrayList<>();
         valueList.addAll(findAllValueList());
-
+        if (valueList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         NominationDtoDisplayData data = null;
-
-        for(int i=0;i<valueList.size();i++){
+        for (int i = 0; i < valueList.size(); i++) {
             List<UserDtoIdName> nominations = new ArrayList<>();
-            nominations.addAll(findAllUserList(i+1));
+            nominations.addAll(findAllUserList(i + 1));
+            if (nominations.isEmpty()) {
+                throw new GenericEmptyListException();
+            }
             List<NominationDtoDisplayData> dataList = new ArrayList<>();
 
-            for(int j=0;j<nominations.size();j++){
+            for (int j = 0; j < nominations.size(); j++) {
                 List<UserDtoIdName> nominators = new ArrayList<>();
-                nominators.addAll(findAllUserNominatorList(i+1,nominations.get(j).getId()));
-                data= new NominationDtoDisplayData(nominations.get(j).getName(),nominations.get(j).getId(),nominators.size(),nominators);
+                nominators.addAll(findAllUserNominatorList(i + 1, nominations.get(j).getId()));
+                if (nominators.isEmpty()) {
+                    throw new GenericEmptyListException();
+                }
+                data = new NominationDtoDisplayData(nominations.get(j).getName(), nominations.get(j).getId(), nominators.size(), nominators);
                 dataList.add(data);
             }
 
-            NominationDtoAdmin obj = new NominationDtoAdmin(valueList.get(i).getId(),valueList.get(i).getDescription(),dataList);
+            NominationDtoAdmin obj = new NominationDtoAdmin(valueList.get(i).getId(), valueList.get(i).getDescription(), dataList);
             adminList.add(obj);
         }
         return adminList;
@@ -215,12 +249,15 @@ public class NominationService extends Transformer implements IGenericService<No
             Date dateTo = campaignListAsDTO.get(0).getDateTo();
             Date dateFrom = campaignListAsDTO.get(0).getDateFrom();
             List<Map<String, Number>> list = nominationDao.selectWinners(dateFrom, dateTo);
+            if (list.isEmpty()) {
+                throw new GenericEmptyListException();
+            }
             list.forEach(item -> {
                 nominationDtoCounterValueIdUserIds.add(new NominationDtoCounterValueIdUserId(item.get("counter").intValue(), item.get("value_id").intValue(), item.get("user_id").intValue()));
             });
 
             if (checkListContainAllValues(nominationDtoCounterValueIdUserIds)) {
-                for(int i=0;i<nominationDtoCounterValueIdUserIds.size();i++){
+                for (int i = 0; i < nominationDtoCounterValueIdUserIds.size(); i++) {
                     UserDtoIdName user = transformFromUserDtotoUserDtoIdName(userAppService.findById(nominationDtoCounterValueIdUserIds.get(i).getUserId()));
                     ValueDtoIdName value = transformFromValueToValueDtoIdName(transformFromValueDtoToValue(valueService.findById(nominationDtoCounterValueIdUserIds.get(i).getValueId())));
                     CampaignDtoIdDescription campaign = transformFromCampaignToCampaignDtoIdDescription(transformFromCampaignDtoToCampaign(campaignService.findById(campaignListAsDTO.get(0).getId())));
@@ -229,7 +266,7 @@ public class NominationService extends Transformer implements IGenericService<No
                 }
 
                 campaignService.disableCampaign(campaignListAsDTO.get(0).getId());
-                campaignService.enableCampaign(campaignListAsDTO.get(0).getId()+1);
+                campaignService.enableCampaign(campaignListAsDTO.get(0).getId() + 1);
                 return nominationDtoCounterValueIdUserIds;
             } else {
                 return Collections.emptyList();
@@ -257,6 +294,9 @@ public class NominationService extends Transformer implements IGenericService<No
         List<CampaignDto> campaignListAsDTO = campaignList.stream()
                 .map(this::transformFromCampaignToCampaignDto)
                 .collect(Collectors.toList());
+        if (campaignListAsDTO.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         if (campaignListAsDTO.size() == 1) {
             Date dateTo = campaignListAsDTO.get(0).getDateTo();
             Date dateFrom = campaignListAsDTO.get(0).getDateFrom();
@@ -290,6 +330,9 @@ public class NominationService extends Transformer implements IGenericService<No
     public List<NominationDtoWithoutDates> findAllWithoutDates() {
         List<Nomination> nominationList = new ArrayList<>();
         nominationDao.findAll().forEach(nominationList::add);
+        if (nominationList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
         List<NominationDtoWithoutDates> nominationListAsDto = nominationList.stream()
                 .map(this::transformFromNominationToNominationDtoWithoutDates).collect(Collectors.toList());
         return nominationListAsDto;
