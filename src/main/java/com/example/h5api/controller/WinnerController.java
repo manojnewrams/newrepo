@@ -47,7 +47,7 @@ public class WinnerController implements IController<WinnerDto> {
     }
 
     @GetMapping("findByCampaignId/{id}")
-    public List <WinnerDto> findByCampaignId(@PathVariable Integer id){
+    public List <WinnerDtoWithoutDates> findByCampaignId(@PathVariable Integer id){
         return winnerService.findWinnerByCampaignId(id);
     }
 

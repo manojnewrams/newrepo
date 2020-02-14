@@ -65,14 +65,14 @@ public class WinnerService extends Transformer implements IGenericService<Winner
     }
 
     @Transactional(readOnly = true)
-    public List<WinnerDto> findWinnerByCampaignId(Integer id) {
+    public List<WinnerDtoWithoutDates> findWinnerByCampaignId(Integer id) {
         List<Winner> winnerList = new ArrayList<>();
         winnerDao.findWinnerByCampaignId(id).forEach(winnerList::add);
         if (winnerList.isEmpty()) {
             throw new GenericEmptyListException();
         }
         return winnerList.stream()
-                .map(this::transformFromWinnerToWinnerDto).collect(Collectors.toList());
+                .map(this::transformFromWinnerToWinnerDtoWithoutDates).collect(Collectors.toList());
     }
 
     @Transactional

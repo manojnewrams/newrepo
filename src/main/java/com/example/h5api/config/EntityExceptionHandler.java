@@ -34,7 +34,7 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public void userNotFoundException(HttpServletResponse response) throws IOException {
-        response.sendError(HttpStatus.NO_CONTENT.value());
+        response.sendError(HttpStatus.NOT_FOUND.value());
     }
 
      @ExceptionHandler(GenericEmptyListException.class)
@@ -44,7 +44,7 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(GenericNotFoundException.class)
     public void genericNotFoundException(HttpServletResponse response) throws IOException{
-        response.sendError(HttpStatus.NO_CONTENT.value());
+        response.sendError(HttpStatus.NOT_FOUND.value());
     }
 
     @ExceptionHandler(GenericAlreadyExistException.class)

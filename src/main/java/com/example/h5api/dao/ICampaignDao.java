@@ -17,6 +17,7 @@ public interface ICampaignDao extends CrudRepository<Campaign,Integer> {
     @Query(value = "SELECT * FROM campaign as c WHERE ?1 BETWEEN c.date_from AND c.date_to AND c.status='true'" ,nativeQuery = true)
     List<Campaign> getCampaignByDateNow(Date date);
 
-
+    @Query(value = "SELECT * FROM CAMPAIGN WHERE status = 'false' ORDER BY date_to DESC",nativeQuery = true )
+    List<Campaign> getAllCampaignOrderByDateTo();
 
 }

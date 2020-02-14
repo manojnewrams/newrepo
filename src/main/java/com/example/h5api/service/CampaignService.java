@@ -106,7 +106,7 @@ public class CampaignService extends Transformer implements IGenericService<Camp
     @Transactional(readOnly = true)
     public List<CampaignDtoIdDescription> findAllCampaignIdName() {
         List<Campaign> campaignList = new ArrayList<>();
-        campaignDao.findAll().forEach(campaignList::add);
+        campaignDao.getAllCampaignOrderByDateTo().forEach(campaignList::add);
         if (campaignList.size() == 0) {
             throw new GenericEmptyListException();
         }
