@@ -77,6 +77,9 @@ public class WinnerService extends Transformer implements IGenericService<Winner
 
     @Transactional
     public List<WinnerDtoWithoutDates> findWinnersFromLastCampaignWithoutDates() {
+        if(winnerDao.findLastCampaignId() == null){
+            throw new GenericNotFoundException(-404);
+        }
         int lastCampaign = winnerDao.findLastCampaignId();
         List<Winner> winnerList = new ArrayList<>();
         winnerDao.findWinnerByCampaignId(lastCampaign).forEach(winnerList::add);
