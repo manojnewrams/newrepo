@@ -102,7 +102,7 @@ deployGCP:
     - echo "$SERVICE_ACCOUNT_KEY" > gke-token.json
     - gcloud auth activate-service-account --key-file=gke-token.json
     - gcloud config set project gke-tf-gitlab
-    - gcloud config set container/cluster k8s-test
+    - gcloud config set container/cluster k8s-test-4
     - gcloud config set compute/zone us-central1
     - gcloud container clusters get-credentials k8s-test --zone us-central1
     - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
