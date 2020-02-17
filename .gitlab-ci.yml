@@ -3,6 +3,7 @@ variables:
   DOCKER_HOST: localhost
   DOCKER_TLS_CERTDIR: ""
   TAG_FOR_IMAGES: $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+  NAME_IMAGE_DC : $USER/$APP_NAME
 
 include:
   - project: 'gitlab-templates/ci-templates/java/gradle'
@@ -115,7 +116,7 @@ deployGCP:
       | sed "s/{{deploy-name}}/NEW-NAME-FOR-DEPLOY/g"
       | sed "s/{{label}}/NEW-LABEL/g"
       | sed "s/{{image-for-name}}/JVIRRIEL/g"
-      | sed "s/{{name-image}}/$USER/$APP_NAME/g")  
+      | sed "s/{{name-image}}/$NAME_IMAGE_DC/g")  
     - echo "$ENV_NEW"
     - echo "$ENV_NEW" > deployment-app.yaml
     - ./kubectl apply -f deployment-app.yaml -n default
