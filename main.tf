@@ -10,7 +10,7 @@ terraform {
 }
 
 module "GCP_ROLES_CUSTOMS" {
-source = "git::https://gitlab.mynisum.com/modules-tf/rules-tf.git?ref=master"
+source = "git::https://gitlab.mynisum.com/gitlab-templates/ci-templates/terraform/modules/gcp/tf-google-roles.git?ref=master"
 role_id = "k8sOwner"
 project = "gke-tf-gitlab"
 role_title = "role-k8s-jv-custom"
@@ -25,7 +25,7 @@ role_permissions = [
 }
 
 module "GCP_SERVICESACCOUNT" {
-  source = "git::https://gitlab.mynisum.com/modules-tf/services-account.git?ref=master"
+  source = "git::https://gitlab.mynisum.com/gitlab-templates/ci-templates/terraform/modules/gcp/tf-google-account-service.git?ref=master"
   name = "gke-tf-gitlab"
   display_name = "admin-k8s-jv"
   role = ["roles/container.admin","roles/compute.loadBalancerAdmin"]
@@ -33,7 +33,7 @@ module "GCP_SERVICESACCOUNT" {
 }
 
 module "GCP_STORAGE" {
-  source = "git::https://gitlab.mynisum.com/modules-tf/storage-tf.git?ref=master"
+  source = "git::https://gitlab.mynisum.com/gitlab-templates/ci-templates/terraform/modules/gcp/tf-google-storage.git?ref=master"
   name = "tf-backends-gke"
   location = "us-central1"
   project = "gke-tf-gitlab"
@@ -44,7 +44,7 @@ module "GCP_STORAGE" {
 }
 
 module "GCP_GKE" {
-  source = "git::https://gitlab.mynisum.com/modules-tf/gke-tf.git?ref=master"
+  source = "git::https://gitlab.mynisum.com/gitlab-templates/ci-templates/terraform/modules/gcp/tf-google-gke.git?ref=master"
   name = "k8s-test"
   location = "us-central1"
   name_pool = "awards"

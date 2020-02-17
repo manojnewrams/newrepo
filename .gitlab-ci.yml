@@ -45,7 +45,7 @@ pushImage:
     - docker build -t $USER/$APP_NAME:$TAG_FOR_IMAGES . 
     - docker push $USER/$APP_NAME:$TAG_FOR_IMAGES
 
-deployMaster:
+.deployMaster:
   extends: .deploy_into_ec2_instance
   tags:
     - runnerk8s
@@ -57,7 +57,7 @@ deployMaster:
   only: 
     - master  
 
-deployDev:
+.deployDev:
   extends: .deploy_into_ec2_instance
   tags:
     - runnerk8s
@@ -69,7 +69,7 @@ deployDev:
   only:
     - develop   
 
-deployQA:
+.deployQA:
   extends: .deploy_into_ec2_instance
   tags:
     - runnerk8s
@@ -81,7 +81,7 @@ deployQA:
   only:
     - qa
 
-deploy:
+.deploy:
   extends: .deploy_into_ec2_instance
   tags:
     - runnerk8s
@@ -109,8 +109,8 @@ deploy:
     - chmod +x ./kubectl
    # -./kubectl create secret generic registry.hub.docker --from-literal=Docker_User=$"USER" --from-literal=Docker_Password=$"TOKEN" --dry-run -o yaml | kubectl apply -f -
     - ./kubectl apply -f 5award-namespace.yml
-    - echo $TAG_FOR_IMAGES
-    - ENV_NEW=$(cat deployment-app.yml | sed "s/{{imagen}}/$TAG_FOR_IMAGES/g")
+    - echo $TAG_FOR_IMAGES 
+    - ENV_NEW=$(cat deployment-app.yml | sed "s/{{imagen}}/$TAG_FOR_IMAGES/g)  
     - echo "$ENV_NEW"
     - echo "$ENV_NEW" > deployment-app.yaml
     - ./kubectl apply -f deployment-app.yaml -n default
