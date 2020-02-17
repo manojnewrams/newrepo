@@ -91,7 +91,7 @@ pushImage:
     - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deploy.sh $AWS_HOST:/tmp/
     - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deploy.sh $USER $APP_NAME $TAG_FOR_IMAGES"
 
-deployGCP:
+.deployGCP:
   stage: deployGCP
   image: google/cloud-sdk
   tags:
