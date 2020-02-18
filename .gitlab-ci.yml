@@ -135,7 +135,6 @@ deployWithHelm:
       --wait
       --force
       my-super-app-${CI_COMMIT_REF_SLUG}
-      ./k8s-chart
 
 .functions: &functions |
     # Functions
