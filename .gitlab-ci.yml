@@ -125,8 +125,9 @@ deployWithHelm:
   stage: deployHelm
   image: devth/helm
   before_script:
-    - helm create $APP_NAME
+  - *functions
   script:
+    - helm create $APP_NAME
     - init_helm
     - helm upgrade
       --install
@@ -154,6 +155,4 @@ deployWithHelm:
 
 before_script:
 - *functions
-
-
 
