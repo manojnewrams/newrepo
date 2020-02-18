@@ -4,6 +4,7 @@ variables:
   DOCKER_TLS_CERTDIR: ""
   TAG_FOR_IMAGES: $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
   NAME_IMAGE_DC : $USER/$APP_NAME:$TAG_FOR_IMAGES
+  PORT: 8080
 
 include:
   - project: 'gitlab-templates/ci-templates/java/gradle'
@@ -123,18 +124,20 @@ pushImage:
 deployWithHelm:
   stage: deployHelm
   image: devth/helm
+  before_script:
+    - helm create $APP_NAME
   script:
     - init_helm
     - helm upgrade
       --install
-      --set web.name="my-app-${CI_COMMIT_REF_SLUG}"
-      --set web.image="${NAME_IMAGE_DC}"
-      --set service.port="{PORT}"
+      --set $APP_NAME.name="${APP_NAME}-${CI_COMMIT_REF_SLUG}"
+      --set $APP_NAME.image="${NAME_IMAGE_DC}"
+      --set service.port="${PORT}"
       --set replicaCount=2
-      --set fullname="SOMENAME"
       --wait
       --force
-      my-app-${CI_COMMIT_REF_SLUG}
+      ${APP_NAME}-${CI_COMMIT_REF_SLUG}
+      ./$APP_NAME
 
 .functions: &functions |
     # Functions
@@ -146,7 +149,6 @@ deployWithHelm:
         gcloud config set container/cluster k8s-test-4
         gcloud config set compute/zone us-central1
         gcloud container clusters get-credentials k8s-test-4 --zone us-central1
-        helm init 
     }
 
 before_script:
