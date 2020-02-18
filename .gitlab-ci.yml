@@ -127,14 +127,14 @@ deployWithHelm:
     - init_helm
     - helm upgrade
       --install
-      --set web.name="my-super-app-${CI_COMMIT_REF_SLUG}"
+      --set web.name="my-app-${CI_COMMIT_REF_SLUG}"
       --set web.image="${NAME_IMAGE_DC}"
       --set service.port="{PORT}"
       --set replicaCount=2
       --set fullname="SOMENAME"
       --wait
       --force
-      my-super-app-${CI_COMMIT_REF_SLUG}
+      my-app-${CI_COMMIT_REF_SLUG}
 
 .functions: &functions |
     # Functions
