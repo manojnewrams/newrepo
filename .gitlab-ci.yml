@@ -114,11 +114,11 @@ deployGCP:
    # -./kubectl create secret generic registry.hub.docker --from-literal=Docker_User=$"USER" --from-literal=Docker_Password=$"TOKEN" --dry-run -o yaml | kubectl apply -f -
     - ./kubectl apply -f 5award-namespace.yml
     - echo $TAG_FOR_IMAGES 
-    - sed -i -r 's/{{imagen}}/$TAG_FOR_IMAGES/g' deployment-app.yaml;
     - sed -i -r 's/{{deploy-name}}/NEW-NAME-FOR-DEPLOY/g' deployment-app.yaml;
     - sed -i -r 's/{{label}}/NEW-LABEL/g' deployment-app.yaml;
     - sed -i -r 's/{{image-for-name}}/JVIRRIEL/g' deployment-app.yaml;
     - sed -i -r 's/{{name-image}}/$NAME_IMAGE_DC/g'  deployment-app.yaml;
+    - sed -i -r 's/{{imagen}}/$TAG_FOR_IMAGES/g' deployment-app.yaml;
     - ./kubectl apply -f deployment-app.yaml -n default
     - ./kubectl apply -f service-app.yaml -n default   
 
