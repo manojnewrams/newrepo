@@ -3,7 +3,7 @@ variables:
   DOCKER_HOST: localhost
   DOCKER_TLS_CERTDIR: ""
   TAG_FOR_IMAGES: $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
-  NAME_IMAGE_DC : $USER/$APP_NAME:$TAG_FOR_IMAGES
+  NAME_IMAGE_DC : $USER/$APP_NAME
   PORT: 8080
 
 include:
@@ -95,62 +95,62 @@ pushImage:
     - scp -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 deployEnv/deploy.sh $AWS_HOST:/tmp/
     - ssh -i $URL_KEY -o $KNOWN_HOST_FILE -o $KEY_CHECKING -o ConnectTimeout=10 $AWS_HOST "/tmp/deploy.sh $USER $APP_NAME $TAG_FOR_IMAGES"
 
-# deployGCP:
-#   stage: deployGCP
-#   image: google/cloud-sdk
-#   tags:
-#     - runnerk8s
-#   only:
-#     - developDevOps
-#   script:
-#     - echo "$SERVICE_ACCOUNT_KEY" > gke-token.json
-#     - gcloud auth activate-service-account --key-file=gke-token.json
-#     - gcloud config set project cert-ins-jv
-#     - gcloud config set container/cluster k8s-test-4
-#     - gcloud config set compute/zone us-central1
-#     - gcloud container clusters get-credentials k8s-test-4 --zone us-central1
-#     - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
-#     - chmod +x ./kubectl
-#    # -./kubectl create secret generic registry.hub.docker --from-literal=Docker_User=$"USER" --from-literal=Docker_Password=$"TOKEN" --dry-run -o yaml | kubectl apply -f -
-#     - ./kubectl apply -f 5award-namespace.yml
-#     - echo $TAG_FOR_IMAGES 
-#     - ENV_NEW=$(cat deployment-app.yml | sed "s/{{imagen}}/$TAG_FOR_IMAGES/g" | sed "s/{{deploy-name}}/NEW-NAME-FOR-DEPLOY/g" | sed "s/{{label}}/NEW-LABEL/g" | sed "s/{{image-for-name}}/JVIRRIEL/g" | sed "s/{{name-image}}/$NAME_IMAGE_DC/g")  
-#     - echo "$ENV_NEW"
-#     - echo "$ENV_NEW" > deployment-app.yaml
-#     - ./kubectl apply -f deployment-app.yaml -n default
-#     - ./kubectl apply -f service-app.yaml -n default   
-#    # - ./kubectl get nodes -o wide
-
-deployWithHelm:
-  stage: deployHelm
-  image: devth/helm
+deployGCP:
+  stage: deployGCP
+  image: google/cloud-sdk
+  tags:
+    - runnerk8s
+  only:
+    - developDevOps
   script:
-    - helm create $APP_NAME
-    - init_helm
-    - helm upgrade
-      --install
-      --set $APP_NAME.name="${APP_NAME}-${CI_COMMIT_REF_SLUG}"
-      --set $APP_NAME.image="${NAME_IMAGE_DC}"
-      --set service.port="${PORT}"
-      --set replicaCount=2
-      --wait
-      --force
-      ${APP_NAME}-${CI_COMMIT_REF_SLUG}
-      ./$APP_NAME
+    - echo "$SERVICE_ACCOUNT_KEY" > gke-token.json
+    - gcloud auth activate-service-account --key-file=gke-token.json
+    - gcloud config set project cert-ins-jv
+    - gcloud config set container/cluster k8s-test-4
+    - gcloud config set compute/zone us-central1
+    - gcloud container clusters get-credentials k8s-test-4 --zone us-central1
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl
+   # -./kubectl create secret generic registry.hub.docker --from-literal=Docker_User=$"USER" --from-literal=Docker_Password=$"TOKEN" --dry-run -o yaml | kubectl apply -f -
+    - ./kubectl apply -f 5award-namespace.yml
+    - echo $TAG_FOR_IMAGES 
+    - sed -i -r "s/{{imagen}}/$TAG_FOR_IMAGES/g" deployment-app.yaml;
+    - sed -i -r "s/{{deploy-name}}/NEW-NAME-FOR-DEPLOY/g" deployment-app.yaml;
+    - sed -i -r "s/{{label}}/NEW-LABEL/g" deployment-app.yaml;
+    - sed -i -r "s/{{image-for-name}}/JVIRRIEL/g" deployment-app.yaml;
+    - sed -i -r "s/{{name-image}}/$NAME_IMAGE_DC/g"  deployment-app.yaml;
+    - ./kubectl apply -f deployment-app.yaml -n default
+    - ./kubectl apply -f service-app.yaml -n default   
 
-.functions: &functions |
-    # Functions
-    function init_helm() {
-        mkdir -p /etc/deploy
-        echo "$SERVICE_ACCOUNT_KEY" > gke-token.json
-        gcloud config set project cert-ins-jv
-        gcloud auth activate-service-account --key-file=gke-token.json
-        gcloud config set container/cluster k8s-test-4
-        gcloud config set compute/zone us-central1
-        gcloud container clusters get-credentials k8s-test-4 --zone us-central1
-        helm init
-    }
+# deployWithHelm:
+#   stage: deployHelm
+#   image: devth/helm
+#   script:
+#     - helm create $APP_NAME
+#     - init_helm
+#     - helm upgrade
+#       --install
+#       --set $APP_NAME.name="${APP_NAME}-${CI_COMMIT_REF_SLUG}"
+#       --set $APP_NAME.image="${NAME_IMAGE_DC}"
+#       --set service.port="${PORT}"
+#       --set replicaCount=2
+#       --wait
+#       --force
+#       ${APP_NAME}-${CI_COMMIT_REF_SLUG}
+#       ./$APP_NAME
 
-before_script:
-- *functions
+# .functions: &functions |
+#     # Functions
+#     function init_helm() {
+#         mkdir -p /etc/deploy
+#         echo "$SERVICE_ACCOUNT_KEY" > gke-token.json
+#         gcloud config set project cert-ins-jv
+#         gcloud auth activate-service-account --key-file=gke-token.json
+#         gcloud config set container/cluster k8s-test-4
+#         gcloud config set compute/zone us-central1
+#         gcloud container clusters get-credentials k8s-test-4 --zone us-central1
+#     }
+
+# before_script:
+# - *functions
 
