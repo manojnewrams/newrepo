@@ -2,6 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: "{{deploy-name}}"
+  namespace: build-gitlab-namespace-5awards
 spec:
   replicas: 1
   selector:
