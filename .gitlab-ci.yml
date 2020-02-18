@@ -124,8 +124,6 @@ pushImage:
 deployWithHelm:
   stage: deployHelm
   image: devth/helm
-  before_script:
-    - *functions
   script:
     - helm create $APP_NAME
     - init_helm
@@ -153,6 +151,6 @@ deployWithHelm:
         helm init
     }
 
-# before_script:
-# - *functions
+before_script:
+- *functions
 
