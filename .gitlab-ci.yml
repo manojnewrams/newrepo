@@ -149,6 +149,7 @@ deployWithHelm:
         gcloud config set container/cluster k8s-test-4
         gcloud config set compute/zone us-central1
         gcloud container clusters get-credentials k8s-test-4 --zone us-central1
+        helm init
     }
 
 before_script:
