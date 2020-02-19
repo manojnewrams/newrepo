@@ -3,7 +3,7 @@ variables:
   DOCKER_HOST: localhost
   DOCKER_TLS_CERTDIR: ""
   TAG_FOR_IMAGES: $CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
-  NAME_IMAGE_DC : $USER/$APP_NAME
+  NAME_IMAGE_DC : $USER/$APP_NAME:$TAG_FOR_IMAGES
   PORT: 8080
 
 include:
@@ -114,11 +114,11 @@ deployGCP:
    # -./kubectl create secret generic registry.hub.docker --from-literal=Docker_User=$"USER" --from-literal=Docker_Password=$"TOKEN" --dry-run -o yaml | kubectl apply -f -
     - ./kubectl apply -f 5award-namespace.yml
     - echo $TAG_FOR_IMAGES 
-    - sed -i 's/{{deploy-name}}/$NAME_IMAGE_DC/g' deployment-app.yml;
+    - sed -i 's/{{deploy-name}}/$APP_NAME/g' deployment-app.yml;
     - sed -i 's/{{label}}/$APP_NAME/g' deployment-app.yml;
     - sed -i 's/{{image-for-name}}/$APP_NAME/g' deployment-app.yml;
     - sed -i 's/{{name-image}}/$NAME_IMAGE_DC/g' deployment-app.yml;
-    - sed -i 's/{{imagen}}/$TAG_FOR_IMAGES/g' deployment-app.yml;
+    #- sed -i 's/{{imagen}}/$TAG_FOR_IMAGES/g' deployment-app.yml;
     - sed -i 's/{{backend-app}}/$APP_NAME/g' service-app.yaml;
     - sed -i 's/{{name-service}}/$APP_NAME/g' service-app.yaml;
     - cat deployment-app.yml

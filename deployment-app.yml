@@ -1,20 +1,20 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: "{{deploy-name}}"
+  name: {{deploy-name}}
   namespace: build-gitlab-namespace-5awards
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "{{label}}"
+      app: {{label}}
   template:
     metadata:
       labels:
-        app: "{{label}}"
+        app: {{label}}
     spec:
       containers:
-      - name: "{{image-for-name}}"
-        image: '"{{name-image}}":{{imagen}}'
+      - name: {{image-for-name}}
+        image: {{name-image}}
         ports:
         - containerPort: 8080                 
