@@ -6,6 +6,7 @@ variables:
   NAME_IMAGE_DC : $USER/$APP_NAME:$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
   PORT: 8080
   IMAGE_NAME : $USER/$APP_NAME
+  TARGET_PORT: 8080
 
 include:
   - project: 'gitlab-templates/ci-templates/java/gradle'
@@ -119,6 +120,8 @@ deployGCP:
     - YMPDLP=$(cat deployment-app.yml | sed "s/{{deploy-name}}/$APP_NAME/g" | sed "s/{{label}}/$APP_NAME/g" | sed "s/{{image-for-name}}/$APP_NAME/g" | sed "s#{{name-image}}#$NAME_IMAGE_DC#g" | sed "s/{{backend-app}}/$APP_NAME/g" | sed "s/{{name-service}}/$APP_NAME/g")
     - echo "$YMPDLP" > deployment-app.yml
     - cat deployment-app.yml
+    - YMPDSV=$(cat service-app.yaml | sed "s/{{name-service}}/$APP_NAME/g" | sed "s/{{backend-app}}/$APP_NAME/g" | sed "s/{{PORT}}/$PORT/g" | sed "s/{{TARGET_PORT}}/$TARGET_PORT/g")
+    - echo "$YMPDSV" > service-app.yaml
     - cat service-app.yaml
     - ./kubectl apply -f deployment-app.yml 
     - ./kubectl apply -f service-app.yaml  
