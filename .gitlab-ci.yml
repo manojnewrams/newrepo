@@ -117,25 +117,27 @@ deployGCP:
     - ./kubectl apply -f 5award-namespace.yml
     - echo $APP_NAME
     - echo $NAME_IMAGE_DC 
-    - YMPDLP=$(cat deployment-app.yml | sed "s/{{deploy-name}}/$APP_NAME/g" | sed "s/{{label}}/$APP_NAME/g" | sed "s/{{image-for-name}}/$APP_NAME/g" | sed "s#{{name-image}}#$NAME_IMAGE_DC#g" | sed "s/{{backend-app}}/$APP_NAME/g" | sed "s/{{name-service}}/$APP_NAME/g")
-    - echo "$YMPDLP" > deployment-app.yml
+    # - YMPDLP=$(cat deployment-app.yml | sed "s/{{deploy-name}}/$APP_NAME/g" | sed "s/{{label}}/$APP_NAME/g" | sed "s/{{image-for-name}}/$APP_NAME/g" | sed "s#{{name-image}}#$NAME_IMAGE_DC#g" | sed "s/{{backend-app}}/$APP_NAME/g")
+    # - echo "$YMPDLP" > deployment-app.yml
+    # - cat deployment-app.yml
+    # - YMPDSV=$(cat service-app.yaml | sed "s/{{name-service}}/$APP_NAME/g" | sed "s/{{backend-app}}/$APP_NAME/g" | sed "s/{{PORT}}/$PORT/g" | sed "s/{{TARGET_PORT}}/$TARGET_PORT/g")
+    # - echo "$YMPDSV" > service-app.yaml
+    # - cat service-app.yaml
+    # - ./kubectl apply -f deployment-app.yml 
+    # - ./kubectl apply -f service-app.yaml  
+
+    - sed -i "s/{{deploy-name}}/$APP_NAME/g" deployment-app.yml;
+    - sed -i "s/{{label}}/$APP_NAME/g" deployment-app.yml;
+    - sed -i "s/{{image-for-name}}/$APP_NAME/g" deployment-app.yml;
+    - sed -i "s#{{name-image}}#$NAME_IMAGE_DC#g" deployment-app.yml;
+    - sed -i "s/{{backend-app}}/$APP_NAME/g" service-app.yaml;
+    - sed -i "s/{{name-service}}/$APP_NAME/g" service-app.yaml;
+    - sed -i "s/{{PORT}}/$PORT/g" service-app.yaml;
+    - sed -i "s/{{TARGET_PORT}}/$TARGET_PORT/g" service-app.yaml;
     - cat deployment-app.yml
-    - YMPDSV=$(cat service-app.yaml | sed "s/{{name-service}}/$APP_NAME/g" | sed "s/{{backend-app}}/$APP_NAME/g" | sed "s/{{PORT}}/$PORT/g" | sed "s/{{TARGET_PORT}}/$TARGET_PORT/g")
-    - echo "$YMPDSV" > service-app.yaml
     - cat service-app.yaml
     - ./kubectl apply -f deployment-app.yml 
     - ./kubectl apply -f service-app.yaml  
-
-  #  # - sed -i "s/{{label}}/$APP_NAME/g" deployment-app.yml;
-  #   - sed -i "s/{{image-for-name}}/$APP_NAME/g" deployment-app.yml;
-  #   - sed -i "s/{{name-image}}/$NAME_IMAGE_DC/g" deployment-app.yml;
-  #   - sed -i "s/{{imagen}}/$TAG_FOR_IMAGES/g" deployment-app.yml;
-  #   - sed -i "s/{{backend-app}}/$APP_NAME/g" service-app.yaml;
-  #   - sed -i "s/{{name-service}}/$APP_NAME/g" service-app.yaml;
-  #   - cat deployment-app.yml
-  #   - cat service-app.yaml
-  #   - ./kubectl apply -f deployment-app.yml 
-  #   - ./kubectl apply -f service-app.yaml  
 
 # deployWithHelm:
 #   stage: deployHelm
