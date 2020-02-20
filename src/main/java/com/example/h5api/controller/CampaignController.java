@@ -13,8 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("campaign")
 public class CampaignController implements IController<CampaignDto> {
+
     @Autowired
-    CampaignService campaignService;
+    private CampaignService campaignService;
 
     @Override
     public List<CampaignDto> list() {
@@ -27,8 +28,8 @@ public class CampaignController implements IController<CampaignDto> {
     }
 
     @Override
-    public CampaignDto save(CampaignDto obj) {
-        return campaignService.save(obj);
+    public CampaignDto save(CampaignDto campaignDto) {
+        return campaignService.save(campaignDto);
     }
 
     @Override

@@ -204,7 +204,7 @@ public class NominationService extends Transformer implements IGenericService<No
 
     public List<ValueDtoIdName> findAllValueList() {
         List<ValueDtoIdName> valueList = new ArrayList<>();
-        valueDao.findIdandValue().forEach(valueList::add);
+        valueDao.findIdAndValue().forEach(valueList::add);
         if (valueList.isEmpty()) {
             throw new GenericEmptyListException();
         }

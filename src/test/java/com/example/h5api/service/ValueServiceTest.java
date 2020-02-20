@@ -1,26 +1,43 @@
 package com.example.h5api.service;
 
+import com.example.h5api.builders.Transformer;
+import com.example.h5api.dao.IValueDao;
 import com.example.h5api.dto.*;
+import com.example.h5api.entity.Value;
+import com.example.h5api.exceptions.GenericEmptyListException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ValueServiceTest {
+    @Mock
+    private IValueDao valueDao;
 
     @Mock
-    ValueService valueService;
+    private Transformer transformer;
+
+    @Mock
+    private Value value;
+
+    @Mock
+    private ValueDto valueDto2;
+
+    @InjectMocks
+    private ValueService valueService;
 
     private ValueDto valueDto;
     private ValueDtoIdName valueDtoIdName;
@@ -44,12 +61,20 @@ public class ValueServiceTest {
 
     @Test
     public void findAll() {
-        Mockito.when(valueService.findAll()).thenReturn(valueDtoList);
+        List<Value> findAll= Collections.singletonList(value);
+        Mockito.when(valueDao.findAll()).thenReturn(findAll);
+        Mockito.when(transformer.transformFromValueToValueDto(value)).thenReturn(valueDto2);
+
         List<ValueDto> responseList = valueService.findAll();
+
         assertNotNull(responseList);
-        assertEquals(1, responseList.get(0).getId());
-        verify(valueService).findAll();
-        verifyNoMoreInteractions(valueService);
+        assertEquals(findAll.size(), responseList.size());
+        for (ValueDto dto : responseList) {
+            assertEquals(valueDto2,dto);
+        }
+        verify(valueDao).findAll();
+        verify(transformer,times(findAll.size())).transformFromValueToValueDto(value);
+        verifyNoMoreInteractions(valueDao, transformer, value, valueDto2);
     }
 
 
@@ -62,6 +87,22 @@ public class ValueServiceTest {
         verify(valueService).findById(Mockito.anyInt());
         verifyNoMoreInteractions(valueService);
     }
+
+    @Test(expected = GenericEmptyListException.class )
+    public void shouldFindAllWhenTheListIsEmpty() {
+        List<Value> findAll= Collections.emptyList();
+        Mockito.when(valueDao.findAll()).thenReturn(findAll);
+
+        try{
+            valueService.findAll();
+        }catch (GenericEmptyListException exception){
+            verify(valueDao).findAll();
+            verifyNoMoreInteractions(valueDao, value);
+            throw exception;
+        }
+
+    }
+
 
     @Test
     public void save() {

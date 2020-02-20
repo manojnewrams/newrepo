@@ -12,41 +12,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Service
-public class ValueService extends Transformer implements IGenericService<ValueDto> {
+public class ValueService  implements IGenericService<ValueDto> {
 
     @Autowired
     private IValueDao valueDao;
 
+    @Autowired
+    private Transformer transformer;
+
     @Override
     @Transactional(readOnly = true)
     public List<ValueDto> findAll() {
-        List<Value> valueList = new ArrayList<>();
-        valueDao.findAll().forEach(valueList::add);
-        if (valueList.isEmpty()) {
+        List<Value> all = valueDao.findAll();
+        if (all.isEmpty()) {
             throw new GenericEmptyListException();
         }
-        List<ValueDto> valueListAsDto = valueList.stream()
-                .map(this::transformFromValueToValueDto).collect(Collectors.toList());
-        return valueListAsDto;
+        return  all.stream()
+                .map(transformer::transformFromValueToValueDto).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
     public ValueDto findById(Integer id) {
         Value value = valueDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
-        return transformFromValueToValueDto(value);
+        return transformer.transformFromValueToValueDto(value);
     }
 
     @Override
     @Transactional
     public ValueDto save(ValueDto valueDto) {
-        valueDao.save(transformFromValueDtoToValue(valueDto));
+        valueDao.save(transformer.transformFromValueDtoToValue(valueDto));
         return valueDto;
     }
 
@@ -73,7 +74,7 @@ public class ValueService extends Transformer implements IGenericService<ValueDt
             throw new GenericEmptyListException();
         }
         List<ValueDtoIdName> valueListAsDto = valueList.stream()
-                .map(this::transformFromValueToValueDtoIdName).collect(Collectors.toList());
+                .map(transformer::transformFromValueToValueDtoIdName).collect(Collectors.toList());
         return valueListAsDto;
     }
 
@@ -85,7 +86,7 @@ public class ValueService extends Transformer implements IGenericService<ValueDt
             throw new GenericEmptyListException();
         }
         List<ValueDtoWithoutDates> valueListAsDto = valueList.stream()
-                .map(this::transformFromValueToValueDtoWithoutDates).collect(Collectors.toList());
+                .map(transformer::transformFromValueToValueDtoWithoutDates).collect(Collectors.toList());
         return valueListAsDto;
     }
 }
