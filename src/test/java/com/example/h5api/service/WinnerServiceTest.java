@@ -86,15 +86,15 @@ public class WinnerServiceTest {
         verifyNoMoreInteractions(winnerService);
     }
 
-    @Test
-    public void findWinnerByCampaignId() {
-        Mockito.when(winnerService.findWinnerByCampaignId(Mockito.anyInt())).thenReturn(winnerDtoList);
-        List<WinnerDto> response = winnerService.findWinnerByCampaignId(1);
-        assertNotNull(response);
-        Assert.assertSame(winnerDtoList, response);
-        verify(winnerService).findWinnerByCampaignId(Mockito.anyInt());
-        verifyNoMoreInteractions(winnerService);
-    }
+//    @Test
+//    public void findWinnerByCampaignId() {
+//        Mockito.when(winnerService.findWinnerByCampaignId(Mockito.anyInt())).thenReturn(winnerDtoList);
+//        List<WinnerDto> response = winnerService.findWinnerByCampaignId(1);
+//        assertNotNull(response);
+//        Assert.assertSame(winnerDtoList, response);
+//        verify(winnerService).findWinnerByCampaignId(Mockito.anyInt());
+//        verifyNoMoreInteractions(winnerService);
+//    }
 
     @Test
     public void findWinnersFromLastCampaignWithoutDates() {

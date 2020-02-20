@@ -85,17 +85,17 @@ public class WinnerControllerTest {
         verifyNoMoreInteractions(winnerService);
     }
 
-    @Test
-    public void findWinnerByCampaignId() throws Exception {
-        List<WinnerDto> winnerList = new LinkedList<>();
-        winnerList.add(winner);
-        Mockito.when(winnerService.findWinnerByCampaignId(Mockito.anyInt())).thenReturn(winnerList);
-        List<WinnerDto> response = winnerController.winnerService.findWinnerByCampaignId(winner.getId());
-        assertNotNull(response);
-        Assert.assertEquals(1,response.get(0).getId());
-        verify(winnerService).findWinnerByCampaignId(Mockito.anyInt());
-        verifyNoMoreInteractions(winnerService);
-    }
+//    @Test
+//    public void findWinnerByCampaignId() throws Exception {
+//        List<WinnerDto> winnerList = new LinkedList<>();
+//        winnerList.add(winner);
+//        Mockito.when(winnerService.findWinnerByCampaignId(Mockito.anyInt())).thenReturn(winnerList);
+//        List<WinnerDto> response = winnerController.winnerService.findWinnerByCampaignId(winner.getId());
+//        assertNotNull(response);
+//        Assert.assertEquals(1,response.get(0).getId());
+//        verify(winnerService).findWinnerByCampaignId(Mockito.anyInt());
+//        verifyNoMoreInteractions(winnerService);
+//    }
 
     @Test
     public void findIfWinnersHasRepeatsNomination() throws Exception {

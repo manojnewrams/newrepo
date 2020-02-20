@@ -1,27 +1,17 @@
 package com.example.h5api.controller;
 
 import com.example.h5api.dto.CampaignDto;
-import com.example.h5api.dto.ValueDto;
-import com.example.h5api.entity.Campaign;
-import com.example.h5api.service.CampaignService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.h5api.dto.CampaignDtoIdDescription;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,87 +20,116 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @RunWith(SpringRunner.class)
 public class CampaignControllerTest {
 
     @Mock
-    CampaignService campaignService;
-
-    @InjectMocks
     private CampaignController campaignController;
 
+    private  CampaignDtoIdDescription campaignDtoIdDescription;
     private CampaignDto campaign;
-    private String json;
-
+    private List <CampaignDtoIdDescription> campaignDtoIdDescriptionLinkedList= new LinkedList<>();
+    private List<CampaignDto> campaignList = new LinkedList<>();
     @Before
-    public void setup() throws JsonProcessingException {
+
+    public void setup() throws ParseException {
         campaign = new CampaignDto();
+        campaignDtoIdDescription = new CampaignDtoIdDescription(1,"First Quarter");
         campaign.setId(1);
-       // campaign.setStatus(true);
-        ObjectMapper objectMapper = new ObjectMapper();
-        json = objectMapper.writeValueAsString(campaign);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date myDate = sdf.parse("2020-01-01");
+        campaign.setCreateAt(myDate);
+        campaignList.add(campaign);
+        campaignDtoIdDescriptionLinkedList.add(campaignDtoIdDescription);
     }
 
 
     @Test
-    public void findCampaignById() throws Exception {
-        Mockito.when(campaignService.findById(Mockito.anyInt())).thenReturn(campaign);
+    public void findCampaignById() {
+        Mockito.when(campaignController.findById(Mockito.anyInt())).thenReturn(campaign);
         CampaignDto campaignEntity = campaignController.findById(campaign.getId());
         assertNotNull(campaignEntity);
-        Assert.assertEquals(1,campaignEntity.getId());
-        verify(campaignService).findById(Mockito.anyInt());
-        verifyNoMoreInteractions(campaignService);
+        Assert.assertEquals(1, campaignEntity.getId());
+        verify(campaignController).findById(Mockito.anyInt());
+        verifyNoMoreInteractions(campaignController);
     }
 
     @Test
-    public void findAllCampaigns() throws Exception {
+    public void findAllCampaigns() {
         List<CampaignDto> campaignList = new LinkedList<>();
         campaignList.add(campaign);
-        Mockito.when(campaignService.findAll()).thenReturn(campaignList);
-        List<CampaignDto> responseList = campaignController.campaignService.findAll();
+        Mockito.when(campaignController.list()).thenReturn(campaignList);
+        List<CampaignDto> responseList = campaignController.list();
         assertNotNull(responseList);
         Assert.assertEquals(1, responseList.get(0).getId());
-        verify(campaignService).findAll();
-        verifyNoMoreInteractions(campaignService);
+        verify(campaignController).list();
+        verifyNoMoreInteractions(campaignController);
     }
 
     @Test
-    public void saveCampaign() throws Exception {
-        Mockito.when(campaignService.save(any(CampaignDto.class))).thenReturn(campaign);
-        CampaignDto response = campaignController.campaignService.save(campaign);
+    public void saveCampaign() {
+        Mockito.when(campaignController.save(any(CampaignDto.class))).thenReturn(campaign);
+        CampaignDto response = campaignController.save(campaign);
         assertNotNull(response);
         Assert.assertEquals(1, response.getId());
-        verify(campaignService).save(Mockito.any(CampaignDto.class));
-        verifyNoMoreInteractions(campaignService);
+        verify(campaignController).save(Mockito.any(CampaignDto.class));
+        verifyNoMoreInteractions(campaignController);
     }
 
     @Test
-    public void deleteCampaign() throws Exception {
-        campaignController.campaignService.deleteById(campaign.getId());
-        verify(campaignService).deleteById(Mockito.anyInt());
-        verifyNoMoreInteractions(campaignService);
+    public void deleteCampaign() {
+        campaignController.delete(campaign.getId());
+        verify(campaignController).delete(Mockito.anyInt());
+        verifyNoMoreInteractions(campaignController);
     }
 
     @Test
-    public void enableCampaign() throws Exception {
-        Mockito.when(campaignService.enableCampaign(Mockito.anyInt())).thenReturn(campaign);
+    public void enableCampaign() {
+        Mockito.when(campaignController.enableCampaign(Mockito.anyInt())).thenReturn(campaign);
         CampaignDto response = campaignController.enableCampaign(campaign.getId());
         assertNotNull(response);
-        verify(campaignService).enableCampaign(Mockito.anyInt());
-        verifyNoMoreInteractions(campaignService);
+        verify(campaignController).enableCampaign(Mockito.anyInt());
+        verifyNoMoreInteractions(campaignController);
     }
 
     @Test
-    public void disableCampaign() throws Exception {
-        Mockito.when(campaignService.disableCampaign(Mockito.anyInt())).thenReturn(campaign);
+    public void disableCampaign() {
+        Mockito.when(campaignController.disableCampaign(Mockito.anyInt())).thenReturn(campaign);
         CampaignDto response = campaignController.disableCampaign(campaign.getId());
         assertNotNull(response);
-        verify(campaignService).disableCampaign(Mockito.anyInt());
-        verifyNoMoreInteractions(campaignService);
+        verify(campaignController).disableCampaign(Mockito.anyInt());
+        verifyNoMoreInteractions(campaignController);
+    }
+
+    @Test
+    public void nominationSummary() {
+        Mockito.when(campaignController.nominationSummary()).thenReturn(campaignList);
+       List<CampaignDto>  response = campaignController.nominationSummary();
+        assertNotNull(response);
+        verify(campaignController).nominationSummary();
+        verifyNoMoreInteractions(campaignController);
+    }
+
+    @Test
+    public void nominationSummaryWithDate() throws ParseException {
+        Mockito.when(campaignController.nominationSummary(Mockito.any(Date.class))).thenReturn(campaignList);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date myDate = sdf.parse("2020-01-01");
+        List<CampaignDto>  response = campaignController.nominationSummary(myDate);
+        assertNotNull(response);
+        verify(campaignController).nominationSummary(Mockito.any(Date.class));
+        verifyNoMoreInteractions(campaignController);
+    }
+
+    @Test
+    public void findAllCampaignIdName() {
+        Mockito.when(campaignController.findAllCampaignIdName()).thenReturn(campaignDtoIdDescriptionLinkedList);
+        List <CampaignDtoIdDescription> response = campaignController.findAllCampaignIdName();
+        assertNotNull(response);
+        verify(campaignController).findAllCampaignIdName();
+        verifyNoMoreInteractions(campaignController);
     }
 
 }
