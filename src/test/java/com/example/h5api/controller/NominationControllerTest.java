@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -32,6 +31,9 @@ public class NominationControllerTest {
     private NominationDto nomination;
     private NominationDtoWithoutDates nominationDtoWithoutDates;
     private ValueDtoCountId valueDtoCountId;
+    private NominationDtoCounterValueIdUserId nominationDtoCounterValueIdUserId;
+    private NominationDtoAdmin nominationDtoAdmin;
+    private List<NominationDtoDisplayData> nominationList;
 
 
     @Before
@@ -41,6 +43,9 @@ public class NominationControllerTest {
         valueDtoCountId.setValueId(1);
         valueDtoCountId.setCounter(3);
         nominationDtoWithoutDates = new NominationDtoWithoutDates(1, 1, new UserDtoIdName(1, "Seba"), "play a lot", new ValueDtoIdName(1, "play"));
+        nominationDtoCounterValueIdUserId = new NominationDtoCounterValueIdUserId(1, 1, 1);
+        nominationList = new ArrayList<>();
+        nominationDtoAdmin = new NominationDtoAdmin(1, "admin", nominationList);
         nomination.setId(1);
     }
 
@@ -85,13 +90,13 @@ public class NominationControllerTest {
 
     @Test
     public void checkNominationSummaryWithoutDateAsParameter() {
-        List<NominationDtoWithoutDates> list = new ArrayList<>();
-        list.add(nominationDtoWithoutDates);
-        Mockito.when(nominationController.listWithoutDates()).thenReturn(list);
-        List<NominationDtoWithoutDates> responseList = nominationController.listWithoutDates();
+        List<ValueDtoCountId> list = new ArrayList<>();
+        list.add(valueDtoCountId);
+        Mockito.when(nominationController.nominationSummary()).thenReturn(list);
+        List<ValueDtoCountId> responseList = nominationController.nominationSummary();
         assertNotNull(responseList);
-        Assert.assertEquals(1, responseList.get(0).getId());
-        verify(nominationController).listWithoutDates();
+        Assert.assertEquals(1, responseList.get(0).getValueId());
+        verify(nominationController).nominationSummary();
         verifyNoMoreInteractions(nominationController);
     }
 
@@ -111,6 +116,56 @@ public class NominationControllerTest {
         verifyNoMoreInteractions(nominationController);
 
 
+    }
+
+    @Test
+    public void checkWinnersOfQuarterWithOutDateAsParameter() {
+        List<NominationDtoCounterValueIdUserId> list = new ArrayList<>();
+        list.add(nominationDtoCounterValueIdUserId);
+        Mockito.when(nominationController.winnersOfQuarter()).thenReturn(list);
+        List<NominationDtoCounterValueIdUserId> responseList = nominationController.winnersOfQuarter();
+        assertNotNull(responseList);
+        Assert.assertEquals(1, responseList.get(0).getValueId());
+        verify(nominationController).winnersOfQuarter();
+        verifyNoMoreInteractions(nominationController);
+    }
+
+    @Test
+    public void checkWinnersOfQuarterWithDateAsParameter() throws ParseException {
+        List<NominationDtoCounterValueIdUserId> list = new ArrayList<>();
+        list.add(nominationDtoCounterValueIdUserId);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date myDate = sdf.parse("2020-01-01");
+        Mockito.when(nominationController.winnersOfQuarter(Mockito.any(Date.class))).thenReturn(list);
+        List<NominationDtoCounterValueIdUserId> responseList = nominationController.winnersOfQuarter(myDate);
+        assertNotNull(responseList);
+        Assert.assertEquals(1, responseList.get(0).getValueId());
+        verify(nominationController).winnersOfQuarter(Mockito.any(Date.class));
+        verifyNoMoreInteractions(nominationController);
+    }
+
+    @Test
+    public void checkListWithoutDates() {
+        List<NominationDtoWithoutDates> list = new ArrayList<>();
+        list.add(nominationDtoWithoutDates);
+        Mockito.when(nominationController.listWithoutDates()).thenReturn(list);
+        List<NominationDtoWithoutDates> responseList = nominationController.listWithoutDates();
+        assertNotNull(responseList);
+        Assert.assertEquals(1, responseList.get(0).getId());
+        verify(nominationController).listWithoutDates();
+        verifyNoMoreInteractions(nominationController);
+    }
+
+    @Test
+    public void checkListAdmin() {
+        List<NominationDtoAdmin> list = new ArrayList<>();
+        list.add(nominationDtoAdmin);
+        Mockito.when(nominationController.listAdmin()).thenReturn(list);
+        List<NominationDtoAdmin> responseList = nominationController.listAdmin();
+        assertNotNull(responseList);
+        Assert.assertEquals(1, responseList.get(0).getValueId());
+        verify(nominationController).listAdmin();
+        verifyNoMoreInteractions(nominationController);
     }
 
 }
