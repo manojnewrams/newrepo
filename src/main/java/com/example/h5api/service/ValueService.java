@@ -1,7 +1,7 @@
 package com.example.h5api.service;
 
 import com.example.h5api.utils.Transformer;
-import com.example.h5api.repository.IValueDao;
+import com.example.h5api.repository.ValueRepository;
 import com.example.h5api.dto.ValueDto;
 import com.example.h5api.dto.ValueDtoIdName;
 import com.example.h5api.dto.ValueDtoWithoutDates;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class ValueService  implements GenericService<ValueDto> {
 
     @Autowired
-    private IValueDao valueDao;
+    private ValueRepository valueDao;
 
     @Autowired
     private Transformer transformer;

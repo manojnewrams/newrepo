@@ -1,7 +1,7 @@
 package com.example.h5api.service;
 
 import com.example.h5api.utils.Transformer;
-import com.example.h5api.repository.IValueDao;
+import com.example.h5api.repository.ValueRepository;
 import com.example.h5api.dto.*;
 import com.example.h5api.entity.Value;
 import com.example.h5api.exceptions.GenericEmptyListException;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ValueServiceTest {
     @Mock
-    private IValueDao valueDao;
+    private ValueRepository valueDao;
 
     @Mock
     private Transformer transformer;

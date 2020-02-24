@@ -1,7 +1,7 @@
 package com.example.h5api.service;
 
 import com.example.h5api.utils.Transformer;
-import com.example.h5api.repository.IWinnerDao;
+import com.example.h5api.repository.WinnerRepository;
 import com.example.h5api.dto.WinnerDto;
 import com.example.h5api.dto.WinnerDtoWithoutDates;
 import com.example.h5api.entity.Winner;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class WinnerService extends Transformer implements GenericService<WinnerDto> {
     @Autowired
-    private IWinnerDao winnerDao;
+    private WinnerRepository winnerDao;
 
     @Override
     @Transactional(readOnly = true)

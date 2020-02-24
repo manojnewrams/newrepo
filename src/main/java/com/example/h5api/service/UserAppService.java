@@ -1,7 +1,7 @@
 package com.example.h5api.service;
 
 import com.example.h5api.utils.Transformer;
-import com.example.h5api.repository.IUserAppDao;
+import com.example.h5api.repository.UserRepository;
 import com.example.h5api.dto.UserDto;
 import com.example.h5api.dto.UserDtoIdName;
 import com.example.h5api.entity.UserApp;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class UserAppService extends Transformer implements GenericService<UserDto> {
 
     @Autowired
-    private IUserAppDao userAppDao;
+    private UserRepository userAppDao;
 
     @Override
     @Transactional(readOnly = true)

@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface IUserAppDao extends CrudRepository<UserApp, Integer> {
+public interface UserRepository extends CrudRepository<UserApp, Integer> {
     @Query(value = "SELECT user FROM UserApp as user WHERE user.deleteAt is NULL")
     public List<UserApp> findAllNotDeleted();
 

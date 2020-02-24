@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Date;
 import java.util.List;
 
-public interface ICampaignDao extends CrudRepository<Campaign,Integer> {
+public interface CampaignRepository extends CrudRepository<Campaign,Integer> {
 
     @Query(value = "SELECT * FROM campaign as c WHERE ?1 BETWEEN c.date_from AND c.date_to" ,nativeQuery = true)
     List<Campaign> getCampaignByDate(Date date);

@@ -1,6 +1,6 @@
 package com.example.h5api.jwt;
 
-import com.example.h5api.repository.IUserAppDao;
+import com.example.h5api.repository.UserRepository;
 import com.example.h5api.entity.UserApp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,7 +17,7 @@ import java.util.Collection;
 public class JwtUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private IUserAppDao userInfoRepository;
+    private UserRepository userInfoRepository;
 
 
     @Override

@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public interface INominationDao extends CrudRepository<Nomination, Integer> {
+public interface NominationRepository extends CrudRepository<Nomination, Integer> {
 
     @Query(value = "SELECT count(value_id) as counter, value_id as valueId FROM Nomination WHERE create_at BETWEEN ?1 AND ?2 GROUP BY value_id", nativeQuery = true)
     List<Map<String, Number>> nominationSummary(Date dateFrom, Date dateTo);

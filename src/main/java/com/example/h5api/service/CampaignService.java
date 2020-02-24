@@ -1,7 +1,7 @@
 package com.example.h5api.service;
 
 import com.example.h5api.utils.Transformer;
-import com.example.h5api.repository.ICampaignDao;
+import com.example.h5api.repository.CampaignRepository;
 import com.example.h5api.dto.CampaignDto;
 import com.example.h5api.dto.CampaignDtoIdDescription;
 import com.example.h5api.entity.Campaign;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class CampaignService extends Transformer implements GenericService<CampaignDto> {
     @Autowired
-    private ICampaignDao campaignDao;
+    private CampaignRepository campaignDao;
 
     @Override
     @Transactional(readOnly = true)
