@@ -1,28 +1,30 @@
 package com.example.h5api.service;
 
-import com.example.h5api.utils.Transformer;
-import com.example.h5api.repository.ValueRepository;
 import com.example.h5api.dto.ValueDto;
 import com.example.h5api.dto.ValueDtoIdName;
 import com.example.h5api.dto.ValueDtoWithoutDates;
 import com.example.h5api.entity.Value;
 import com.example.h5api.exceptions.GenericEmptyListException;
 import com.example.h5api.exceptions.GenericNotFoundException;
+import com.example.h5api.repository.ValueRepository;
+import com.example.h5api.utils.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ValueService  implements GenericService<ValueDto> {
+public class ValueService implements GenericService<ValueDto> {
 
     @Autowired
     private ValueRepository valueDao;
 
     @Autowired
-    private Transformer transformer;
+    private ValueUtil valueUtil;
 
     @Override
     @Transactional(readOnly = true)
@@ -31,21 +33,21 @@ public class ValueService  implements GenericService<ValueDto> {
         if (all.isEmpty()) {
             throw new GenericEmptyListException();
         }
-        return  all.stream()
-                .map(transformer::transformFromValueToValueDto).collect(Collectors.toList());
+        return all.stream()
+                .map(valueUtil::transformFromValueToValueDto).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
     public ValueDto findById(Integer id) {
         Value value = valueDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
-        return transformer.transformFromValueToValueDto(value);
+        return valueUtil.transformFromValueToValueDto(value);
     }
 
     @Override
     @Transactional
     public ValueDto save(ValueDto valueDto) {
-        valueDao.save(transformer.transformFromValueDtoToValue(valueDto));
+        valueDao.save(valueUtil.transformFromValueDtoToValue(valueDto));
         return valueDto;
     }
 
@@ -72,7 +74,7 @@ public class ValueService  implements GenericService<ValueDto> {
             throw new GenericEmptyListException();
         }
         List<ValueDtoIdName> valueListAsDto = valueList.stream()
-                .map(transformer::transformFromValueToValueDtoIdName).collect(Collectors.toList());
+                .map(valueUtil::transformFromValueToValueDtoIdName).collect(Collectors.toList());
         return valueListAsDto;
     }
 
@@ -84,7 +86,7 @@ public class ValueService  implements GenericService<ValueDto> {
             throw new GenericEmptyListException();
         }
         List<ValueDtoWithoutDates> valueListAsDto = valueList.stream()
-                .map(transformer::transformFromValueToValueDtoWithoutDates).collect(Collectors.toList());
+                .map(valueUtil::transformFromValueToValueDtoWithoutDates).collect(Collectors.toList());
         return valueListAsDto;
     }
 }

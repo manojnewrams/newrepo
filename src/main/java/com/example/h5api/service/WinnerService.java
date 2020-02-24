@@ -1,12 +1,12 @@
 package com.example.h5api.service;
 
-import com.example.h5api.utils.Transformer;
-import com.example.h5api.repository.WinnerRepository;
 import com.example.h5api.dto.WinnerDto;
 import com.example.h5api.dto.WinnerDtoWithoutDates;
 import com.example.h5api.entity.Winner;
 import com.example.h5api.exceptions.GenericEmptyListException;
 import com.example.h5api.exceptions.GenericNotFoundException;
+import com.example.h5api.repository.WinnerRepository;
+import com.example.h5api.utils.WinnerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +17,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class WinnerService extends Transformer implements GenericService<WinnerDto> {
+public class WinnerService implements GenericService<WinnerDto> {
     @Autowired
     private WinnerRepository winnerDao;
+
+    @Autowired
+    private WinnerUtil winnerUtil;
 
     @Override
     @Transactional(readOnly = true)
@@ -30,28 +33,28 @@ public class WinnerService extends Transformer implements GenericService<WinnerD
             throw new GenericEmptyListException();
         }
         return winnerList.stream()
-                .map(this::transformFromWinnerToWinnerDto).collect(Collectors.toList());
+                .map(winnerUtil::transformFromWinnerToWinnerDto).collect(Collectors.toList());
 
     }
 
     @Override
     @Transactional(readOnly = true)
     public WinnerDto findById(Integer id) {
-        Winner winner = winnerDao.findById(id).orElseThrow(()->new GenericNotFoundException(id));
-        return transformFromWinnerToWinnerDto(winner);
+        Winner winner = winnerDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
+        return winnerUtil.transformFromWinnerToWinnerDto(winner);
     }
 
     @Override
     @Transactional
     public WinnerDto save(WinnerDto winnerDto) {
-        winnerDao.save(transformFromWinnerDtoToWinner(winnerDto));
+        winnerDao.save(winnerUtil.transformFromWinnerDtoToWinner(winnerDto));
         return winnerDto;
     }
 
     @Override
     @Transactional
     public void deleteById(Integer id) {
-        Winner winner = winnerDao.findById(id).orElseThrow(()->new GenericNotFoundException(id));
+        Winner winner = winnerDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         if (winner != null) {
             winner.setDeleteAt(new Date());
             winnerDao.save(winner);
@@ -72,12 +75,12 @@ public class WinnerService extends Transformer implements GenericService<WinnerD
             throw new GenericEmptyListException();
         }
         return winnerList.stream()
-                .map(this::transformFromWinnerToWinnerDtoWithoutDates).collect(Collectors.toList());
+                .map(winnerUtil::transformFromWinnerToWinnerDtoWithoutDates).collect(Collectors.toList());
     }
 
     @Transactional
     public List<WinnerDtoWithoutDates> findWinnersFromLastCampaignWithoutDates() {
-        if(winnerDao.findLastCampaignId() == null){
+        if (winnerDao.findLastCampaignId() == null) {
             throw new GenericNotFoundException(-404);
         }
         int lastCampaign = winnerDao.findLastCampaignId();
@@ -87,7 +90,7 @@ public class WinnerService extends Transformer implements GenericService<WinnerD
             throw new GenericEmptyListException();
         }
         return winnerList.stream()
-                .map(this::transformFromWinnerToWinnerDtoWithoutDates).collect(Collectors.toList());
+                .map(winnerUtil::transformFromWinnerToWinnerDtoWithoutDates).collect(Collectors.toList());
     }
 
     public List<WinnerDtoWithoutDates> findAllWithoutDates() {
@@ -97,6 +100,6 @@ public class WinnerService extends Transformer implements GenericService<WinnerD
             throw new GenericEmptyListException();
         }
         return winnerList.stream()
-                .map(this::transformFromWinnerToWinnerDtoWithoutDates).collect(Collectors.toList());
+                .map(winnerUtil::transformFromWinnerToWinnerDtoWithoutDates).collect(Collectors.toList());
     }
 }

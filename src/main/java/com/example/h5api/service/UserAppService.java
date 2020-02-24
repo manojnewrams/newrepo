@@ -1,13 +1,13 @@
 package com.example.h5api.service;
 
-import com.example.h5api.utils.Transformer;
-import com.example.h5api.repository.UserRepository;
 import com.example.h5api.dto.UserDto;
 import com.example.h5api.dto.UserDtoIdName;
 import com.example.h5api.entity.UserApp;
 import com.example.h5api.exceptions.GenericEmptyListException;
 import com.example.h5api.exceptions.UserAlreadyExistException;
 import com.example.h5api.exceptions.UserNotFoundException;
+import com.example.h5api.repository.UserRepository;
+import com.example.h5api.utils.UserUtil;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,14 +19,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 @Service
 @Log
-public class UserAppService extends Transformer implements GenericService<UserDto> {
+public class UserAppService implements GenericService<UserDto> {
 
     @Autowired
     private UserRepository userAppDao;
+
+    @Autowired
+    private UserUtil userUtil;
 
     @Override
     @Transactional(readOnly = true)
@@ -37,7 +38,7 @@ public class UserAppService extends Transformer implements GenericService<UserDt
             throw new GenericEmptyListException();
         }
         List<UserDto> userListAsDTO = userList.stream()
-                .map(this::transformFromUserAppToUserDto).collect(Collectors.toList());
+                .map(userUtil::transformFromUserAppToUserDto).collect(Collectors.toList());
         return userListAsDTO;
     }
 
@@ -45,7 +46,7 @@ public class UserAppService extends Transformer implements GenericService<UserDt
     public List<UserDto> findAllNotDeleted() {
         List<UserApp> userList = new ArrayList<>(userAppDao.findAllNotDeleted());
         List<UserDto> userListAsDTO = userList.stream()
-                .map(this::transformFromUserAppToUserDto).collect(Collectors.toList());
+                .map(userUtil::transformFromUserAppToUserDto).collect(Collectors.toList());
         if (userListAsDTO.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -56,7 +57,7 @@ public class UserAppService extends Transformer implements GenericService<UserDt
     @Transactional(readOnly = true)
     public UserDto findById(Integer id) {
         UserApp user = userAppDao.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        return transformFromUserAppToUserDto(user);
+        return userUtil.transformFromUserAppToUserDto(user);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class UserAppService extends Transformer implements GenericService<UserDt
         String password = userDto.getPassword();
         String encodedPassword = new BCryptPasswordEncoder().encode(password);
         userDto.setPassword(encodedPassword);
-        userAppDao.save(transformFromUserDtoToUserApp(userDto));
+        userAppDao.save(userUtil.transformFromUserDtoToUserApp(userDto));
         return userDto;
     }
 
@@ -95,7 +96,7 @@ public class UserAppService extends Transformer implements GenericService<UserDt
             throw new GenericEmptyListException();
         }
         List<UserDtoIdName> userListAsDTO = userList.stream()
-                .map(this::transformFromUserAppToUserDtoIdName).collect(Collectors.toList());
+                .map(userUtil::transformFromUserAppToUserDtoIdName).collect(Collectors.toList());
         return userListAsDTO;
     }
 
@@ -112,7 +113,7 @@ public class UserAppService extends Transformer implements GenericService<UserDt
         userList.removeIf(user -> user.getId() == id);
         List<UserDtoIdName> userListAsDTO = userList
                 .stream()
-                .map(this::transformFromUserAppToUserDtoIdName)
+                .map(userUtil::transformFromUserAppToUserDtoIdName)
                 .collect(Collectors.toList());
         return userListAsDTO;
     }
