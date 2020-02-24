@@ -14,7 +14,7 @@ import java.util.Date;
 @Data
 @SuperBuilder
 @Entity
-public class Campaign extends BaseEntity {
+public class Campaign extends GenericEntity {
     @Column(name = "date_from")
     @Temporal(TemporalType.DATE)
     private Date dateFrom;
@@ -24,7 +24,7 @@ public class Campaign extends BaseEntity {
     private Date dateTo;
     
     private String description;
-    private boolean status; //true = active campaign
+    private boolean status;
 
     public Campaign (){
         this.status = false;

@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 @Data
 @Entity
-public class Winner extends BaseEntity {
+public class Winner extends GenericEntity {
     @ManyToOne
     @JoinColumn(name = "value_id")
     private Value value;

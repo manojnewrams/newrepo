@@ -1,7 +1,6 @@
-package com.example.h5api.config;
+package com.example.h5api.jwt;
 
 
-import com.example.h5api.service.JwtUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

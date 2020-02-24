@@ -1,4 +1,4 @@
-package com.example.h5api.builders;
+package com.example.h5api.utils;
 
 import com.example.h5api.dto.*;
 import com.example.h5api.entity.*;

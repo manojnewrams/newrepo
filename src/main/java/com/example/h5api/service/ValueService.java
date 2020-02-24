@@ -1,7 +1,7 @@
 package com.example.h5api.service;
 
-import com.example.h5api.builders.Transformer;
-import com.example.h5api.dao.IValueDao;
+import com.example.h5api.utils.Transformer;
+import com.example.h5api.repository.IValueDao;
 import com.example.h5api.dto.ValueDto;
 import com.example.h5api.dto.ValueDtoIdName;
 import com.example.h5api.dto.ValueDtoWithoutDates;
@@ -14,11 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @Service
-public class ValueService  implements IGenericService<ValueDto> {
+public class ValueService  implements GenericService<ValueDto> {
 
     @Autowired
     private IValueDao valueDao;

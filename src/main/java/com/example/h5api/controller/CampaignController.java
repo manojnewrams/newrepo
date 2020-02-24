@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("campaign")
-public class CampaignController implements IController<CampaignDto> {
+public class CampaignController implements GenericController<CampaignDto> {
 
     @Autowired
     private CampaignService campaignService;

@@ -1,4 +1,4 @@
-package com.example.h5api.dao;
+package com.example.h5api.repository;
 
 import com.example.h5api.entity.Nomination;
 import org.springframework.data.jpa.repository.Query;

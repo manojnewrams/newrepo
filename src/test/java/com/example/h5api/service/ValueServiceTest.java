@@ -1,7 +1,7 @@
 package com.example.h5api.service;
 
-import com.example.h5api.builders.Transformer;
-import com.example.h5api.dao.IValueDao;
+import com.example.h5api.utils.Transformer;
+import com.example.h5api.repository.IValueDao;
 import com.example.h5api.dto.*;
 import com.example.h5api.entity.Value;
 import com.example.h5api.exceptions.GenericEmptyListException;
@@ -13,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collections;

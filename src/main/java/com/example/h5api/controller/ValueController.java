@@ -2,7 +2,6 @@ package com.example.h5api.controller;
 
 import com.example.h5api.dto.ValueDto;
 import com.example.h5api.dto.ValueDtoWithoutDates;
-import com.example.h5api.entity.Value;
 import com.example.h5api.service.ValueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("value")
-public class ValueController implements IController<ValueDto>{
+public class ValueController implements GenericController<ValueDto> {
 
 
     @Autowired

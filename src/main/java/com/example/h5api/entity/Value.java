@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 @SuperBuilder
 @NoArgsConstructor
 @Entity
-public class Value extends BaseEntity {
+public class Value extends GenericEntity {
     private String name;
     private String description;
 }

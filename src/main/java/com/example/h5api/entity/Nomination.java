@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 @SuperBuilder
 @Entity
 @NoArgsConstructor
-public class Nomination extends BaseEntity {
+public class Nomination extends GenericEntity {
     @Column(name = "nominator_id")
     private int nominatorId;
 

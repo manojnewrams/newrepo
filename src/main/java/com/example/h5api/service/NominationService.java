@@ -1,10 +1,10 @@
 package com.example.h5api.service;
 
-import com.example.h5api.builders.Transformer;
-import com.example.h5api.dao.ICampaignDao;
-import com.example.h5api.dao.INominationDao;
-import com.example.h5api.dao.IUserAppDao;
-import com.example.h5api.dao.IValueDao;
+import com.example.h5api.utils.Transformer;
+import com.example.h5api.repository.ICampaignDao;
+import com.example.h5api.repository.INominationDao;
+import com.example.h5api.repository.IUserAppDao;
+import com.example.h5api.repository.IValueDao;
 import com.example.h5api.dto.*;
 import com.example.h5api.entity.Campaign;
 import com.example.h5api.entity.Nomination;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Log
 @Service
-public class NominationService extends Transformer implements IGenericService<NominationDto> {
+public class NominationService extends Transformer implements GenericService<NominationDto> {
     @Autowired
     private INominationDao nominationDao;
 

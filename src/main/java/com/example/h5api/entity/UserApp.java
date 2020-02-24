@@ -11,13 +11,13 @@ import javax.persistence.Entity;
 @Data
 @NoArgsConstructor
 @SuperBuilder
-public class UserApp extends BaseEntity {
+public class UserApp extends GenericEntity {
 
     private String name;
     private String email;
     private String company;
     private String password;
-    private Boolean role; //Admin true
+    private Boolean role;
     private Boolean status;
 
 }

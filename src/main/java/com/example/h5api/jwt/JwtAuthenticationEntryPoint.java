@@ -1,4 +1,4 @@
-package com.example.h5api.config;
+package com.example.h5api.jwt;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

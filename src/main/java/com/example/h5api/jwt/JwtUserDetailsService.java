@@ -1,6 +1,6 @@
-package com.example.h5api.service;
+package com.example.h5api.jwt;
 
-import com.example.h5api.dao.IUserAppDao;
+import com.example.h5api.repository.IUserAppDao;
 import com.example.h5api.entity.UserApp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

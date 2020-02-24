@@ -2,10 +2,10 @@ package com.example.h5api.controller;
 
 
 
-import com.example.h5api.config.JwtToken;
-import com.example.h5api.entity.JwtRequest;
-import com.example.h5api.entity.JwtResponse;
-import com.example.h5api.service.JwtUserDetailsService;
+import com.example.h5api.jwt.JwtToken;
+import com.example.h5api.jwt.JwtRequest;
+import com.example.h5api.jwt.JwtResponse;
+import com.example.h5api.jwt.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

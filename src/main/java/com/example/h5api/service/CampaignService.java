@@ -1,14 +1,12 @@
 package com.example.h5api.service;
 
-import com.example.h5api.builders.Transformer;
-import com.example.h5api.dao.ICampaignDao;
+import com.example.h5api.utils.Transformer;
+import com.example.h5api.repository.ICampaignDao;
 import com.example.h5api.dto.CampaignDto;
 import com.example.h5api.dto.CampaignDtoIdDescription;
 import com.example.h5api.entity.Campaign;
-import com.example.h5api.exceptions.GenericAlreadyExistException;
 import com.example.h5api.exceptions.GenericEmptyListException;
 import com.example.h5api.exceptions.GenericNotFoundException;
-import com.example.h5api.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CampaignService extends Transformer implements IGenericService<CampaignDto> {
+public class CampaignService extends Transformer implements GenericService<CampaignDto> {
     @Autowired
     private ICampaignDao campaignDao;
 

@@ -1,6 +1,5 @@
 package com.example.h5api.entity;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
@@ -10,9 +9,9 @@ import java.util.Date;
 @Data
 @MappedSuperclass
 @SuperBuilder
-public class BaseEntity {
+public class GenericEntity {
 
-    public BaseEntity(){
+    public GenericEntity() {
         this.createAt = new Date();
     }
 

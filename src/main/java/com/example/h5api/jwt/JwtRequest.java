@@ -1,4 +1,4 @@
-package com.example.h5api.entity;
+package com.example.h5api.jwt;
 
 import java.io.Serializable;
 

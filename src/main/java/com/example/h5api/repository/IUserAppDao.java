@@ -1,6 +1,5 @@
-package com.example.h5api.dao;
+package com.example.h5api.repository;
 
-import com.example.h5api.dto.UserDtoIdName;
 import com.example.h5api.entity.UserApp;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

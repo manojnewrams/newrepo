@@ -2,7 +2,7 @@ package com.example.h5api.service;
 
 import java.util.List;
 
-public interface IGenericService<T> {
+public interface GenericService<T> {
 
     List<T> findAll();
 

@@ -3,7 +3,6 @@ package com.example.h5api.controller;
 import com.example.h5api.dto.NominationDtoCounterRepeat;
 import com.example.h5api.dto.WinnerDto;
 import com.example.h5api.dto.WinnerDtoWithoutDates;
-import com.example.h5api.entity.Nomination;
 import com.example.h5api.service.NominationService;
 import com.example.h5api.service.WinnerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("winner")
-public class WinnerController implements IController<WinnerDto> {
+public class WinnerController implements GenericController<WinnerDto> {
 
     @Autowired
     WinnerService winnerService;

@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("nomination")
 @Log
-public class NominationController implements IController<NominationDto> {
+public class NominationController implements GenericController<NominationDto> {
     @Autowired
     NominationService nominationService;
 

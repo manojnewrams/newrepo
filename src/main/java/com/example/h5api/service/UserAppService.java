@@ -1,7 +1,7 @@
 package com.example.h5api.service;
 
-import com.example.h5api.builders.Transformer;
-import com.example.h5api.dao.IUserAppDao;
+import com.example.h5api.utils.Transformer;
+import com.example.h5api.repository.IUserAppDao;
 import com.example.h5api.dto.UserDto;
 import com.example.h5api.dto.UserDtoIdName;
 import com.example.h5api.entity.UserApp;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Log
-public class UserAppService extends Transformer implements IGenericService<UserDto> {
+public class UserAppService extends Transformer implements GenericService<UserDto> {
 
     @Autowired
     private IUserAppDao userAppDao;
