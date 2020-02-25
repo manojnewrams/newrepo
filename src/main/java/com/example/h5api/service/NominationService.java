@@ -207,7 +207,7 @@ public class NominationService implements GenericService<NominationDto> {
 
     public List<UserDtoIdName> findAllUserNominatorList(Integer valueid, Integer userid) {
         Set<UserApp> userList = new HashSet<>();
-        userDao.findUserNameAndIdforNominator(valueid, userid).forEach(userList::add);
+        userDao.findUserNameAndIdForNominator(valueid, userid).forEach(userList::add);
         if (userList.isEmpty()) {
             throw new GenericEmptyListException();
         }
