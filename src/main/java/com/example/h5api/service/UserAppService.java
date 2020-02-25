@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 @Log
 public class UserAppService implements GenericService<UserDto> {
 
-    private final UserRepository userAppDao;
+    private final UserRepository userRepository;
 
     private final UserUtil userUtil;
 
     @Autowired
-    public UserAppService(UserRepository userAppDao, UserUtil userUtil) {
-        this.userAppDao = userAppDao;
+    public UserAppService(UserRepository userRepository, UserUtil userUtil) {
+        this.userRepository = userRepository;
         this.userUtil = userUtil;
     }
 
@@ -37,7 +37,7 @@ public class UserAppService implements GenericService<UserDto> {
     @Transactional(readOnly = true)
     public List<UserDto> findAll() {
         List<UserApp> userList = new ArrayList<>();
-        userAppDao.findAll().forEach(userList::add);
+        userRepository.findAll().forEach(userList::add);
         if (userList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -47,7 +47,7 @@ public class UserAppService implements GenericService<UserDto> {
 
     @Transactional(readOnly = true)
     public List<UserDto> findAllNotDeleted() {
-        List<UserApp> userList = new ArrayList<>(userAppDao.findAllNotDeleted());
+        List<UserApp> userList = new ArrayList<>(userRepository.findAllNotDeleted());
         List<UserDto> userListAsDTO = userList.stream()
                 .map(userUtil::transformFromUserAppToUserDto).collect(Collectors.toList());
         if (userListAsDTO.isEmpty()) {
@@ -59,42 +59,42 @@ public class UserAppService implements GenericService<UserDto> {
     @Override
     @Transactional(readOnly = true)
     public UserDto findById(Integer id) {
-        UserApp user = userAppDao.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        UserApp user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         return userUtil.transformFromUserAppToUserDto(user);
     }
 
     @Override
     @Transactional
     public UserDto save(UserDto userDto) {
-        if (userAppDao.existsByEmail(userDto.getEmail())) {
+        if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new UserAlreadyExistException(userDto.getEmail());
         }
         String password = userDto.getPassword();
         String encodedPassword = new BCryptPasswordEncoder().encode(password);
         userDto.setPassword(encodedPassword);
-        userAppDao.save(userUtil.transformFromUserDtoToUserApp(userDto));
+        userRepository.save(userUtil.transformFromUserDtoToUserApp(userDto));
         return userDto;
     }
 
     @Override
     @Transactional
     public void deleteById(Integer id) {
-        UserApp user = userAppDao.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        UserApp user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         user.setDeleteAt(new Date());
         user.setStatus(false);
-        userAppDao.save(user);
+        userRepository.save(user);
     }
 
     @Override
     @Transactional
     public Boolean existById(Integer id) {
-        return userAppDao.existsById(id);
+        return userRepository.existsById(id);
     }
 
     @Transactional(readOnly = true)
     public List<UserDtoIdName> findAllUserIdName() {
         List<UserApp> userList = new ArrayList<>();
-        userAppDao.findAll().forEach(userList::add);
+        userRepository.findAll().forEach(userList::add);
         if (userList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -104,11 +104,11 @@ public class UserAppService implements GenericService<UserDto> {
 
     @Transactional(readOnly = true)
     public List<UserDtoIdName> findAllAvailableCandidates(Integer id) {
-        if (!userAppDao.existsById(id)) {
+        if (!userRepository.existsById(id)) {
             throw new UserNotFoundException(id);
         }
         List<UserApp> userList = new ArrayList<>();
-        userAppDao.findAllAvailable().forEach(userList::add);
+        userRepository.findAllAvailable().forEach(userList::add);
         if (userList.isEmpty()) {
             throw new GenericEmptyListException();
         }

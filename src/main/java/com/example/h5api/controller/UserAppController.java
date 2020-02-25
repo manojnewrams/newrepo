@@ -18,8 +18,7 @@ import java.util.List;
 @RequestMapping("user")
 public class UserAppController implements GenericController<UserDto> {
 
-    final
-    UserAppService userAppService;
+    private final UserAppService userAppService;
 
     @Autowired
     public UserAppController(UserAppService userAppService) {

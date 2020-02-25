@@ -27,13 +27,13 @@ import java.util.stream.Collectors;
 @Log
 @Service
 public class NominationService implements GenericService<NominationDto> {
-    private final NominationRepository nominationDao;
+    private final NominationRepository nominationRepository;
 
-    private final UserRepository userDao;
+    private final UserRepository userRepository;
 
-    private final ValueRepository valueDao;
+    private final ValueRepository valueRepository;
 
-    private final CampaignRepository campaignDao;
+    private final CampaignRepository campaignRepository;
 
     private final WinnerService winnerService;
 
@@ -52,11 +52,11 @@ public class NominationService implements GenericService<NominationDto> {
     private final ValueUtil valueUtil;
 
     @Autowired
-    public NominationService(NominationRepository nominationDao, UserRepository userDao, ValueRepository valueDao, CampaignRepository campaignDao, WinnerService winnerService, CampaignService campaignService, UserAppService userAppService, ValueService valueService, NominationUtil nominationUtil, CampaignUtil campaignUtil, ValueUtil valueUtil, UserUtil userUtil) {
-        this.nominationDao = nominationDao;
-        this.userDao = userDao;
-        this.valueDao = valueDao;
-        this.campaignDao = campaignDao;
+    public NominationService(NominationRepository nominationRepository, UserRepository userRepository, ValueRepository valueRepository, CampaignRepository campaignRepository, WinnerService winnerService, CampaignService campaignService, UserAppService userAppService, ValueService valueService, NominationUtil nominationUtil, CampaignUtil campaignUtil, ValueUtil valueUtil, UserUtil userUtil) {
+        this.nominationRepository = nominationRepository;
+        this.userRepository = userRepository;
+        this.valueRepository = valueRepository;
+        this.campaignRepository = campaignRepository;
         this.winnerService = winnerService;
         this.campaignService = campaignService;
         this.userAppService = userAppService;
@@ -71,7 +71,7 @@ public class NominationService implements GenericService<NominationDto> {
     @Transactional(readOnly = true)
     public List<NominationDto> findAll() {
         List<Nomination> nominationList = new ArrayList<>();
-        nominationDao.findAll().forEach(nominationList::add);
+        nominationRepository.findAll().forEach(nominationList::add);
         if (nominationList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -82,41 +82,41 @@ public class NominationService implements GenericService<NominationDto> {
     @Override
     @Transactional(readOnly = true)
     public NominationDto findById(Integer id) {
-        Nomination nomination = nominationDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
+        Nomination nomination = nominationRepository.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         return nominationUtil.transformFromNominationToNominationDto(nomination);
     }
 
     @Override
     @Transactional
     public NominationDto save(NominationDto nominationDto) {
-        List<Campaign> campaignList = campaignDao.getCampaignByDateNow(nominationDto.getCreateAt());
+        List<Campaign> campaignList = campaignRepository.getCampaignByDateNow(nominationDto.getCreateAt());
         if (campaignList.isEmpty()) {
             throw new CampaignIsClosedException();
         }
         Nomination n = nominationUtil.transformFromNominationDtoToNomination(nominationDto);
-        nominationDao.save(n);
+        nominationRepository.save(n);
         return nominationDto;
     }
 
     @Override
     @Transactional
     public void deleteById(Integer id) {
-        Nomination nomination = nominationDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
+        Nomination nomination = nominationRepository.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         nomination.setDeleteAt(new Date());
-        nominationDao.save(nomination);
+        nominationRepository.save(nomination);
     }
 
     @Override
     @Transactional
     public Boolean existById(Integer id) {
-        return nominationDao.existsById(id);
+        return nominationRepository.existsById(id);
     }
 
     @Transactional(readOnly = true)
     public List<ValueDtoCountId> nominationSummary(Date date) {
         List<Campaign> campaignList = new ArrayList<>();
         List<ValueDtoCountId> empty = new ArrayList<>();
-        campaignDao.getCampaignByDate(date).forEach(campaignList::add);
+        campaignRepository.getCampaignByDate(date).forEach(campaignList::add);
         if (campaignList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -130,7 +130,7 @@ public class NominationService implements GenericService<NominationDto> {
     public List<ValueDtoCountId> nominationSummary() {
         List<Campaign> campaignList = new ArrayList<>();
         List<ValueDtoCountId> empty = new ArrayList<>();
-        campaignDao.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        campaignRepository.getCampaignByDateNow(new Date()).forEach(campaignList::add);
         if (campaignList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -143,7 +143,7 @@ public class NominationService implements GenericService<NominationDto> {
     @Transactional(readOnly = true)
     public List<NominationDtoCounterRepeat> counterRepeats() {
         List<Campaign> campaignList = new ArrayList<>();
-        campaignDao.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        campaignRepository.getCampaignByDateNow(new Date()).forEach(campaignList::add);
         if (campaignList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -153,7 +153,7 @@ public class NominationService implements GenericService<NominationDto> {
     @Transactional(readOnly = true)
     public List<NominationDtoCounterRepeat> counterRepeats(Date date) {
         List<Campaign> campaignList = new ArrayList<>();
-        campaignDao.getCampaignByDateNow(date).forEach(campaignList::add);
+        campaignRepository.getCampaignByDateNow(date).forEach(campaignList::add);
         if (campaignList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -163,7 +163,7 @@ public class NominationService implements GenericService<NominationDto> {
     public List<NominationDtoCounterValueIdUserId> drawWinnersOfQuarter() {
         List<Campaign> campaignList = new ArrayList<>();
         List<NominationDtoCounterValueIdUserId> nominationDtoCounterValueIdUserIds = new ArrayList<>();
-        campaignDao.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        campaignRepository.getCampaignByDateNow(new Date()).forEach(campaignList::add);
         if (campaignList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -180,7 +180,7 @@ public class NominationService implements GenericService<NominationDto> {
     public List<NominationDtoCounterValueIdUserId> drawWinnersOfQuarter(Date date) {
         List<Campaign> campaignList = new ArrayList<>();
         List<NominationDtoCounterValueIdUserId> nominationDtoCounterValueIdUserIds = new ArrayList<>();
-        campaignDao.getCampaignByDateNow(date).forEach(campaignList::add);
+        campaignRepository.getCampaignByDateNow(date).forEach(campaignList::add);
         if (campaignList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -197,7 +197,7 @@ public class NominationService implements GenericService<NominationDto> {
 
     public Set<UserDtoIdName> findAllUserList(Integer valueid) {
         List<UserApp> userList = new ArrayList<>();
-        userDao.findUserNameAndId(valueid).forEach(userList::add);
+        userRepository.findUserNameAndId(valueid).forEach(userList::add);
         if (userList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -208,7 +208,7 @@ public class NominationService implements GenericService<NominationDto> {
 
     public List<UserDtoIdName> findAllUserNominatorList(Integer valueid, Integer userid) {
         Set<UserApp> userList = new HashSet<>();
-        userDao.findUserNameAndIdForNominator(valueid, userid).forEach(userList::add);
+        userRepository.findUserNameAndIdForNominator(valueid, userid).forEach(userList::add);
         if (userList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -219,7 +219,7 @@ public class NominationService implements GenericService<NominationDto> {
 
     public List<ValueDtoIdName> findAllValueList() {
         List<ValueDtoIdName> valueList = new ArrayList<>();
-        valueDao.findIdAndValue().forEach(valueList::add);
+        valueRepository.findIdAndValue().forEach(valueList::add);
         if (valueList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -263,7 +263,7 @@ public class NominationService implements GenericService<NominationDto> {
         if (campaignListAsDTO.size() == 1) {
             Date dateTo = campaignListAsDTO.get(0).getDateTo();
             Date dateFrom = campaignListAsDTO.get(0).getDateFrom();
-            List<Map<String, Number>> list = nominationDao.selectWinners(dateFrom, dateTo);
+            List<Map<String, Number>> list = nominationRepository.selectWinners(dateFrom, dateTo);
             if (list.isEmpty()) {
                 throw new GenericEmptyListException();
             }
@@ -315,7 +315,7 @@ public class NominationService implements GenericService<NominationDto> {
         if (campaignListAsDTO.size() == 1) {
             Date dateTo = campaignListAsDTO.get(0).getDateTo();
             Date dateFrom = campaignListAsDTO.get(0).getDateFrom();
-            List<BigInteger> list = nominationDao.findTie(dateFrom, dateTo);
+            List<BigInteger> list = nominationRepository.findTie(dateFrom, dateTo);
             list.forEach(item -> {
                 counterRepeats.add(new NominationDtoCounterRepeat(item.intValue()));
             });
@@ -330,7 +330,7 @@ public class NominationService implements GenericService<NominationDto> {
         if (campaignListAsDTO.size() == 1) {
             Date dateTo = campaignListAsDTO.get(0).getDateTo();
             Date dateFrom = campaignListAsDTO.get(0).getDateFrom();
-            List<Map<String, Number>> list = nominationDao.nominationSummary(dateFrom, dateTo);
+            List<Map<String, Number>> list = nominationRepository.nominationSummary(dateFrom, dateTo);
             List<ValueDtoCountId> valueDtoCountIds = new ArrayList<>();
             list.forEach(item -> {
                 valueDtoCountIds.add(new ValueDtoCountId(item.get("counter").intValue(), item.get("valueid").intValue()));
@@ -344,7 +344,7 @@ public class NominationService implements GenericService<NominationDto> {
 
     public List<NominationDtoWithoutDates> findAllWithoutDates() {
         List<Nomination> nominationList = new ArrayList<>();
-        nominationDao.findAll().forEach(nominationList::add);
+        nominationRepository.findAll().forEach(nominationList::add);
         if (nominationList.isEmpty()) {
             throw new GenericEmptyListException();
         }

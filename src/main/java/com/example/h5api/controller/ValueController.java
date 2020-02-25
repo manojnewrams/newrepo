@@ -14,9 +14,7 @@ import java.util.List;
 @RequestMapping("value")
 public class ValueController implements GenericController<ValueDto> {
 
-
-    final
-    ValueService valueService;
+    private final ValueService valueService;
 
     @Autowired
     public ValueController(ValueService valueService) {

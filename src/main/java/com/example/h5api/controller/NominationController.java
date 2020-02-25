@@ -14,8 +14,7 @@ import java.util.List;
 @RequestMapping("nomination")
 @Log
 public class NominationController implements GenericController<NominationDto> {
-    final
-    NominationService nominationService;
+    private final NominationService nominationService;
 
     @Autowired
     public NominationController(NominationService nominationService) {

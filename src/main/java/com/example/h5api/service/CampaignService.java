@@ -18,13 +18,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class CampaignService implements GenericService<CampaignDto> {
-    private final CampaignRepository campaignDao;
+    private final CampaignRepository campaignRepository;
 
     private final CampaignUtil campaignUtil;
 
     @Autowired
-    public CampaignService(CampaignRepository campaignDao, CampaignUtil campaignUtil) {
-        this.campaignDao = campaignDao;
+    public CampaignService(CampaignRepository campaignRepository, CampaignUtil campaignUtil) {
+        this.campaignRepository = campaignRepository;
         this.campaignUtil = campaignUtil;
     }
 
@@ -32,7 +32,7 @@ public class CampaignService implements GenericService<CampaignDto> {
     @Transactional(readOnly = true)
     public List<CampaignDto> findAll() {
         List<Campaign> campaignList = new ArrayList<>();
-        campaignDao.findAll().forEach(campaignList::add);
+        campaignRepository.findAll().forEach(campaignList::add);
         if (campaignList.size() == 0) {
             throw new GenericEmptyListException();
         }
@@ -43,51 +43,51 @@ public class CampaignService implements GenericService<CampaignDto> {
     @Override
     @Transactional(readOnly = true)
     public CampaignDto findById(Integer id) {
-        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
+        Campaign campaign = campaignRepository.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         return campaignUtil.transformFromCampaignToCampaignDto(campaign);
     }
 
     @Override
     @Transactional
     public CampaignDto save(CampaignDto campaignDto) {
-        campaignDao.save(campaignUtil.transformFromCampaignDtoToCampaign(campaignDto));
+        campaignRepository.save(campaignUtil.transformFromCampaignDtoToCampaign(campaignDto));
         return campaignDto;
     }
 
     @Override
     @Transactional
     public void deleteById(Integer id) {
-        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
+        Campaign campaign = campaignRepository.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         campaign.setDeleteAt(new Date());
-        campaignDao.save(campaign);
+        campaignRepository.save(campaign);
 
     }
 
     @Override
     @Transactional
     public Boolean existById(Integer id) {
-        return campaignDao.existsById(id);
+        return campaignRepository.existsById(id);
     }
 
     @Transactional
     public CampaignDto enableCampaign(int id) {
-        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
+        Campaign campaign = campaignRepository.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         campaign.setStatus(true);
-        campaignDao.save(campaign);
+        campaignRepository.save(campaign);
         return campaignUtil.transformFromCampaignToCampaignDto(campaign);
     }
 
     @Transactional
     public CampaignDto disableCampaign(int id) {
-        Campaign campaign = campaignDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
+        Campaign campaign = campaignRepository.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         campaign.setStatus(false);
-        campaignDao.save(campaign);
+        campaignRepository.save(campaign);
         return campaignUtil.transformFromCampaignToCampaignDto(campaign);
     }
 
     public List<CampaignDto> getCampaignByDate(Date date) {
         List<Campaign> campaignList = new ArrayList<>();
-        campaignDao.getCampaignByDate(date).forEach(campaignList::add);
+        campaignRepository.getCampaignByDate(date).forEach(campaignList::add);
         if (campaignList.size() == 0) {
             throw new GenericEmptyListException();
         }
@@ -97,7 +97,7 @@ public class CampaignService implements GenericService<CampaignDto> {
 
     public List<CampaignDto> getCampaignByDateNow() {
         List<Campaign> campaignList = new ArrayList<>();
-        campaignDao.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        campaignRepository.getCampaignByDateNow(new Date()).forEach(campaignList::add);
         if (campaignList.size() == 0) {
             throw new GenericEmptyListException();
         }
@@ -108,7 +108,7 @@ public class CampaignService implements GenericService<CampaignDto> {
     @Transactional(readOnly = true)
     public List<CampaignDtoIdDescription> findAllCampaignIdName() {
         List<Campaign> campaignList = new ArrayList<>();
-        campaignDao.getAllCampaignOrderByDateTo().forEach(campaignList::add);
+        campaignRepository.getAllCampaignOrderByDateTo().forEach(campaignList::add);
         if (campaignList.size() == 0) {
             throw new GenericEmptyListException();
         }

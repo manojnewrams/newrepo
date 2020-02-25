@@ -20,20 +20,20 @@ import java.util.stream.Collectors;
 @Service
 public class ValueService implements GenericService<ValueDto> {
 
-    private final ValueRepository valueDao;
+    private final ValueRepository valueRepository;
 
     private final ValueUtil valueUtil;
 
     @Autowired
-    public ValueService(ValueRepository valueDao, ValueUtil valueUtil) {
-        this.valueDao = valueDao;
+    public ValueService(ValueRepository valueRepository, ValueUtil valueUtil) {
+        this.valueRepository = valueRepository;
         this.valueUtil = valueUtil;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ValueDto> findAll() {
-        List<Value> all = valueDao.findAll();
+        List<Value> all = valueRepository.findAll();
         if (all.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -44,36 +44,36 @@ public class ValueService implements GenericService<ValueDto> {
     @Override
     @Transactional(readOnly = true)
     public ValueDto findById(Integer id) {
-        Value value = valueDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
+        Value value = valueRepository.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         return valueUtil.transformFromValueToValueDto(value);
     }
 
     @Override
     @Transactional
     public ValueDto save(ValueDto valueDto) {
-        valueDao.save(valueUtil.transformFromValueDtoToValue(valueDto));
+        valueRepository.save(valueUtil.transformFromValueDtoToValue(valueDto));
         return valueDto;
     }
 
     @Override
     @Transactional
     public void deleteById(Integer id) {
-        Value value = valueDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
+        Value value = valueRepository.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         value.setDeleteAt(new Date());
-        valueDao.save(value);
+        valueRepository.save(value);
 
     }
 
     @Override
     @Transactional
     public Boolean existById(Integer id) {
-        return valueDao.existsById(id);
+        return valueRepository.existsById(id);
     }
 
     @Transactional(readOnly = true)
     public List<ValueDtoIdName> findAllValueIdName() {
         List<Value> valueList = new ArrayList<>();
-        valueDao.findAll().forEach(valueList::add);
+        valueRepository.findAll().forEach(valueList::add);
         if (valueList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -84,7 +84,7 @@ public class ValueService implements GenericService<ValueDto> {
     @Transactional(readOnly = true)
     public List<ValueDtoWithoutDates> findAllWithoutDates() {
         List<Value> valueList = new ArrayList<>();
-        valueDao.findAll().forEach(valueList::add);
+        valueRepository.findAll().forEach(valueList::add);
         if (valueList.isEmpty()) {
             throw new GenericEmptyListException();
         }

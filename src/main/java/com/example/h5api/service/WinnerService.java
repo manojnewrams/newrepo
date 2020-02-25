@@ -18,13 +18,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class WinnerService implements GenericService<WinnerDto> {
-    private final WinnerRepository winnerDao;
+    private final WinnerRepository winnerRepository;
 
     private final WinnerUtil winnerUtil;
 
     @Autowired
-    public WinnerService(WinnerRepository winnerDao, WinnerUtil winnerUtil) {
-        this.winnerDao = winnerDao;
+    public WinnerService(WinnerRepository winnerRepository, WinnerUtil winnerUtil) {
+        this.winnerRepository = winnerRepository;
         this.winnerUtil = winnerUtil;
     }
 
@@ -32,7 +32,7 @@ public class WinnerService implements GenericService<WinnerDto> {
     @Transactional(readOnly = true)
     public List<WinnerDto> findAll() {
         List<Winner> winnerList = new ArrayList<>();
-        winnerDao.findAll().forEach(winnerList::add);
+        winnerRepository.findAll().forEach(winnerList::add);
         if (winnerList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -44,37 +44,37 @@ public class WinnerService implements GenericService<WinnerDto> {
     @Override
     @Transactional(readOnly = true)
     public WinnerDto findById(Integer id) {
-        Winner winner = winnerDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
+        Winner winner = winnerRepository.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         return winnerUtil.transformFromWinnerToWinnerDto(winner);
     }
 
     @Override
     @Transactional
     public WinnerDto save(WinnerDto winnerDto) {
-        winnerDao.save(winnerUtil.transformFromWinnerDtoToWinner(winnerDto));
+        winnerRepository.save(winnerUtil.transformFromWinnerDtoToWinner(winnerDto));
         return winnerDto;
     }
 
     @Override
     @Transactional
     public void deleteById(Integer id) {
-        Winner winner = winnerDao.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
+        Winner winner = winnerRepository.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
         if (winner != null) {
             winner.setDeleteAt(new Date());
-            winnerDao.save(winner);
+            winnerRepository.save(winner);
         }
     }
 
     @Override
     @Transactional
     public Boolean existById(Integer id) {
-        return winnerDao.existsById(id);
+        return winnerRepository.existsById(id);
     }
 
     @Transactional(readOnly = true)
     public List<WinnerDtoWithoutDates> findWinnerByCampaignId(Integer id) {
         List<Winner> winnerList = new ArrayList<>();
-        winnerDao.findWinnerByCampaignId(id).forEach(winnerList::add);
+        winnerRepository.findWinnerByCampaignId(id).forEach(winnerList::add);
         if (winnerList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -84,12 +84,12 @@ public class WinnerService implements GenericService<WinnerDto> {
 
     @Transactional
     public List<WinnerDtoWithoutDates> findWinnersFromLastCampaignWithoutDates() {
-        if (winnerDao.findLastCampaignId() == null) {
+        if (winnerRepository.findLastCampaignId() == null) {
             throw new GenericNotFoundException(-404);
         }
-        int lastCampaign = winnerDao.findLastCampaignId();
+        int lastCampaign = winnerRepository.findLastCampaignId();
         List<Winner> winnerList = new ArrayList<>();
-        winnerDao.findWinnerByCampaignId(lastCampaign).forEach(winnerList::add);
+        winnerRepository.findWinnerByCampaignId(lastCampaign).forEach(winnerList::add);
         if (winnerList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -99,7 +99,7 @@ public class WinnerService implements GenericService<WinnerDto> {
 
     public List<WinnerDtoWithoutDates> findAllWithoutDates() {
         List<Winner> winnerList = new ArrayList<>();
-        winnerDao.findAll().forEach(winnerList::add);
+        winnerRepository.findAll().forEach(winnerList::add);
         if (winnerList.isEmpty()) {
             throw new GenericEmptyListException();
         }
