@@ -18,11 +18,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class CampaignService implements GenericService<CampaignDto> {
-    @Autowired
-    private CampaignRepository campaignDao;
+    private final CampaignRepository campaignDao;
+
+    private final CampaignUtil campaignUtil;
 
     @Autowired
-    private CampaignUtil campaignUtil;
+    public CampaignService(CampaignRepository campaignDao, CampaignUtil campaignUtil) {
+        this.campaignDao = campaignDao;
+        this.campaignUtil = campaignUtil;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -32,9 +36,8 @@ public class CampaignService implements GenericService<CampaignDto> {
         if (campaignList.size() == 0) {
             throw new GenericEmptyListException();
         }
-        List<CampaignDto> campaignListAsDTO = campaignList.stream()
+        return campaignList.stream()
                 .map(campaignUtil::transformFromCampaignToCampaignDto).collect(Collectors.toList());
-        return campaignListAsDTO;
     }
 
     @Override
@@ -88,9 +91,8 @@ public class CampaignService implements GenericService<CampaignDto> {
         if (campaignList.size() == 0) {
             throw new GenericEmptyListException();
         }
-        List<CampaignDto> campaignListAsDTO = campaignList.stream()
+        return campaignList.stream()
                 .map(campaignUtil::transformFromCampaignToCampaignDto).collect(Collectors.toList());
-        return campaignListAsDTO;
     }
 
     public List<CampaignDto> getCampaignByDateNow() {
@@ -99,9 +101,8 @@ public class CampaignService implements GenericService<CampaignDto> {
         if (campaignList.size() == 0) {
             throw new GenericEmptyListException();
         }
-        List<CampaignDto> campaignListAsDTO = campaignList.stream()
+        return campaignList.stream()
                 .map(campaignUtil::transformFromCampaignToCampaignDto).collect(Collectors.toList());
-        return campaignListAsDTO;
     }
 
     @Transactional(readOnly = true)
@@ -111,9 +112,8 @@ public class CampaignService implements GenericService<CampaignDto> {
         if (campaignList.size() == 0) {
             throw new GenericEmptyListException();
         }
-        List<CampaignDtoIdDescription> campaignListAsDTO = campaignList.stream()
+       return campaignList.stream()
                 .map(campaignUtil::transformFromCampaignToCampaignDtoIdDescription).collect(Collectors.toList());
-        return campaignListAsDTO;
     }
 
 }

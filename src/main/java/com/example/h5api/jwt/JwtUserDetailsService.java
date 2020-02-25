@@ -16,8 +16,12 @@ import java.util.Collection;
 @Component
 public class JwtUserDetailsService implements UserDetailsService {
 
+    private final UserRepository userInfoRepository;
+
     @Autowired
-    private UserRepository userInfoRepository;
+    public JwtUserDetailsService(UserRepository userInfoRepository) {
+        this.userInfoRepository = userInfoRepository;
+    }
 
 
     @Override

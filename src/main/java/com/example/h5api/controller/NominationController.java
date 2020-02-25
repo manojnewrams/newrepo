@@ -14,8 +14,13 @@ import java.util.List;
 @RequestMapping("nomination")
 @Log
 public class NominationController implements GenericController<NominationDto> {
-    @Autowired
+    final
     NominationService nominationService;
+
+    @Autowired
+    public NominationController(NominationService nominationService) {
+        this.nominationService = nominationService;
+    }
 
     @Override
     public List<NominationDto> list() {

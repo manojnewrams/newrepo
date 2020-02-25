@@ -19,14 +19,18 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin()
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtToken jwtToken;
+
+    private final JwtUserDetailsService jwtUserDetailsService;
 
     @Autowired
-    private JwtToken jwtToken;
-
-    @Autowired
-    private JwtUserDetailsService jwtUserDetailsService;
+    public AuthController(AuthenticationManager authenticationManager, JwtToken jwtToken, JwtUserDetailsService jwtUserDetailsService) {
+        this.authenticationManager = authenticationManager;
+        this.jwtToken = jwtToken;
+        this.jwtUserDetailsService = jwtUserDetailsService;
+    }
 
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)

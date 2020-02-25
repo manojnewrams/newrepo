@@ -14,8 +14,12 @@ import java.util.List;
 @RequestMapping("campaign")
 public class CampaignController implements GenericController<CampaignDto> {
 
+    private final CampaignService campaignService;
+
     @Autowired
-    private CampaignService campaignService;
+    public CampaignController(CampaignService campaignService) {
+        this.campaignService = campaignService;
+    }
 
     @Override
     public List<CampaignDto> list() {

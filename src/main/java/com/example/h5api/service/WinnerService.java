@@ -18,11 +18,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class WinnerService implements GenericService<WinnerDto> {
-    @Autowired
-    private WinnerRepository winnerDao;
+    private final WinnerRepository winnerDao;
+
+    private final WinnerUtil winnerUtil;
 
     @Autowired
-    private WinnerUtil winnerUtil;
+    public WinnerService(WinnerRepository winnerDao, WinnerUtil winnerUtil) {
+        this.winnerDao = winnerDao;
+        this.winnerUtil = winnerUtil;
+    }
 
     @Override
     @Transactional(readOnly = true)

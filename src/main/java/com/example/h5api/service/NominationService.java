@@ -27,42 +27,45 @@ import java.util.stream.Collectors;
 @Log
 @Service
 public class NominationService implements GenericService<NominationDto> {
-    @Autowired
-    private NominationRepository nominationDao;
+    private final NominationRepository nominationDao;
+
+    private final UserRepository userDao;
+
+    private final ValueRepository valueDao;
+
+    private final CampaignRepository campaignDao;
+
+    private final WinnerService winnerService;
+
+    private final CampaignService campaignService;
+
+    private final UserAppService userAppService;
+
+    private final ValueService valueService;
+
+    private final NominationUtil nominationUtil;
+
+    private final CampaignUtil campaignUtil;
+
+    private final UserUtil userUtil;
+
+    private final ValueUtil valueUtil;
 
     @Autowired
-    private UserRepository userDao;
-
-
-    @Autowired
-    private ValueRepository valueDao;
-
-    @Autowired
-    private CampaignRepository campaignDao;
-
-    @Autowired
-    private WinnerService winnerService;
-
-    @Autowired
-    private CampaignService campaignService;
-
-    @Autowired
-    private UserAppService userAppService;
-
-    @Autowired
-    private ValueService valueService;
-
-    @Autowired
-    private NominationUtil nominationUtil;
-
-    @Autowired
-    private CampaignUtil campaignUtil;
-
-    @Autowired
-    private UserUtil userUtil;
-
-    @Autowired
-    private ValueUtil valueUtil;
+    public NominationService(NominationRepository nominationDao, UserRepository userDao, ValueRepository valueDao, CampaignRepository campaignDao, WinnerService winnerService, CampaignService campaignService, UserAppService userAppService, ValueService valueService, NominationUtil nominationUtil, CampaignUtil campaignUtil, ValueUtil valueUtil, UserUtil userUtil) {
+        this.nominationDao = nominationDao;
+        this.userDao = userDao;
+        this.valueDao = valueDao;
+        this.campaignDao = campaignDao;
+        this.winnerService = winnerService;
+        this.campaignService = campaignService;
+        this.userAppService = userAppService;
+        this.valueService = valueService;
+        this.nominationUtil = nominationUtil;
+        this.campaignUtil = campaignUtil;
+        this.valueUtil = valueUtil;
+        this.userUtil = userUtil;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -72,9 +75,8 @@ public class NominationService implements GenericService<NominationDto> {
         if (nominationList.isEmpty()) {
             throw new GenericEmptyListException();
         }
-        List<NominationDto> nominationListAsDto = nominationList.stream()
+        return nominationList.stream()
                 .map(nominationUtil::transformFromNominationToNominationDto).collect(Collectors.toList());
-        return nominationListAsDto;
     }
 
     @Override
@@ -199,9 +201,8 @@ public class NominationService implements GenericService<NominationDto> {
         if (userList.isEmpty()) {
             throw new GenericEmptyListException();
         }
-        Set<UserDtoIdName> userDtoList = userList.stream()
+        return userList.stream()
                 .map(userUtil::transformFromUserAppToUserDtoIdName).collect(Collectors.toSet());
-        return userDtoList;
     }
 
 
@@ -211,9 +212,8 @@ public class NominationService implements GenericService<NominationDto> {
         if (userList.isEmpty()) {
             throw new GenericEmptyListException();
         }
-        List<UserDtoIdName> usernominationList = userList.stream()
+        return userList.stream()
                 .map(userUtil::transformFromUserAppToUserDtoIdName).collect(Collectors.toList());
-        return usernominationList;
     }
 
 
@@ -348,8 +348,7 @@ public class NominationService implements GenericService<NominationDto> {
         if (nominationList.isEmpty()) {
             throw new GenericEmptyListException();
         }
-        List<NominationDtoWithoutDates> nominationListAsDto = nominationList.stream()
+        return nominationList.stream()
                 .map(nominationUtil::transformFromNominationToNominationDtoWithoutDates).collect(Collectors.toList());
-        return nominationListAsDto;
     }
 }

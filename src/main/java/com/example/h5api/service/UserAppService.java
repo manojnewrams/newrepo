@@ -23,11 +23,15 @@ import java.util.stream.Collectors;
 @Log
 public class UserAppService implements GenericService<UserDto> {
 
-    @Autowired
-    private UserRepository userAppDao;
+    private final UserRepository userAppDao;
+
+    private final UserUtil userUtil;
 
     @Autowired
-    private UserUtil userUtil;
+    public UserAppService(UserRepository userAppDao, UserUtil userUtil) {
+        this.userAppDao = userAppDao;
+        this.userUtil = userUtil;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -37,9 +41,8 @@ public class UserAppService implements GenericService<UserDto> {
         if (userList.isEmpty()) {
             throw new GenericEmptyListException();
         }
-        List<UserDto> userListAsDTO = userList.stream()
+        return userList.stream()
                 .map(userUtil::transformFromUserAppToUserDto).collect(Collectors.toList());
-        return userListAsDTO;
     }
 
     @Transactional(readOnly = true)
@@ -95,9 +98,8 @@ public class UserAppService implements GenericService<UserDto> {
         if (userList.isEmpty()) {
             throw new GenericEmptyListException();
         }
-        List<UserDtoIdName> userListAsDTO = userList.stream()
+        return userList.stream()
                 .map(userUtil::transformFromUserAppToUserDtoIdName).collect(Collectors.toList());
-        return userListAsDTO;
     }
 
     @Transactional(readOnly = true)
@@ -111,11 +113,10 @@ public class UserAppService implements GenericService<UserDto> {
             throw new GenericEmptyListException();
         }
         userList.removeIf(user -> user.getId() == id);
-        List<UserDtoIdName> userListAsDTO = userList
+        return userList
                 .stream()
                 .map(userUtil::transformFromUserAppToUserDtoIdName)
                 .collect(Collectors.toList());
-        return userListAsDTO;
     }
 
     /**

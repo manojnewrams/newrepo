@@ -20,11 +20,15 @@ import java.util.stream.Collectors;
 @Service
 public class ValueService implements GenericService<ValueDto> {
 
-    @Autowired
-    private ValueRepository valueDao;
+    private final ValueRepository valueDao;
+
+    private final ValueUtil valueUtil;
 
     @Autowired
-    private ValueUtil valueUtil;
+    public ValueService(ValueRepository valueDao, ValueUtil valueUtil) {
+        this.valueDao = valueDao;
+        this.valueUtil = valueUtil;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -73,9 +77,8 @@ public class ValueService implements GenericService<ValueDto> {
         if (valueList.isEmpty()) {
             throw new GenericEmptyListException();
         }
-        List<ValueDtoIdName> valueListAsDto = valueList.stream()
+        return valueList.stream()
                 .map(valueUtil::transformFromValueToValueDtoIdName).collect(Collectors.toList());
-        return valueListAsDto;
     }
 
     @Transactional(readOnly = true)
@@ -85,8 +88,7 @@ public class ValueService implements GenericService<ValueDto> {
         if (valueList.isEmpty()) {
             throw new GenericEmptyListException();
         }
-        List<ValueDtoWithoutDates> valueListAsDto = valueList.stream()
+        return valueList.stream()
                 .map(valueUtil::transformFromValueToValueDtoWithoutDates).collect(Collectors.toList());
-        return valueListAsDto;
     }
 }

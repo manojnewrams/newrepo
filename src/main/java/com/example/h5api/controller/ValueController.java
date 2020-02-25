@@ -15,8 +15,13 @@ import java.util.List;
 public class ValueController implements GenericController<ValueDto> {
 
 
-    @Autowired
+    final
     ValueService valueService;
+
+    @Autowired
+    public ValueController(ValueService valueService) {
+        this.valueService = valueService;
+    }
 
     @Override
     public List<ValueDto> list() {

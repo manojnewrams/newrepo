@@ -19,11 +19,17 @@ import java.util.List;
 @RequestMapping("winner")
 public class WinnerController implements GenericController<WinnerDto> {
 
-    @Autowired
+    final
     WinnerService winnerService;
 
-    @Autowired
+    final
     NominationService nominationService;
+
+    @Autowired
+    public WinnerController(WinnerService winnerService, NominationService nominationService) {
+        this.winnerService = winnerService;
+        this.nominationService = nominationService;
+    }
 
     @Override
     public List<WinnerDto> list() {
