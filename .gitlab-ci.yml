@@ -30,7 +30,7 @@ build:
   image: gradle:6.0.1-jdk8
   extends: .gradle_java_build
   tags:
-    - runnerk8s
+    - backrunner
 
 .test:
   stage: test
@@ -41,7 +41,7 @@ pushImage:
   stage: pushImage
   extends: .docker_image_creation
   tags: 
-    - runnerk8s
+    - backrunner
   before_script:
     - docker login $URL_REGISTRY -u $USER -p $TOKEN
   script:
@@ -54,7 +54,7 @@ pushImage:
 .deployMaster:
   extends: .deploy_into_ec2_instance
   tags:
-    - runnerk8s
+    - backrunner
   script:
     - echo $SSH_PRIVATE_KEY | base64 -d > $URL_KEY
     - chmod 600 $URL_KEY
@@ -66,7 +66,7 @@ pushImage:
 deployDev:
   extends: .deploy_into_ec2_instance
   tags:
-    - runnerk8s
+    - backrunner
   script:
     - echo $SSH_PRIVATE_KEY | base64 -d > $URL_KEY
     - chmod 600 $URL_KEY
@@ -78,7 +78,7 @@ deployDev:
 .deployQA:
   extends: .deploy_into_ec2_instance
   tags:
-    - runnerk8s
+    - backrunner
   script:
     - echo $SSH_PRIVATE_KEY | base64 -d > $URL_KEY
     - chmod 600 $URL_KEY
@@ -90,7 +90,7 @@ deployDev:
 .deploy:
   extends: .deploy_into_ec2_instance
   tags:
-    - runnerk8s
+    - backrunner
   script:
     - echo $SSH_PRIVATE_KEY | base64 -d > $URL_KEY
     - chmod 600 $URL_KEY
@@ -101,7 +101,7 @@ deployDev:
   stage: deployGCP
   image: google/cloud-sdk
   tags:
-    - runnerk8s
+    - backrunner
   only:
     - developDevOps
   script:
