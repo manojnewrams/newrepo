@@ -14,9 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +24,7 @@ public class UserAppService implements GenericService<UserDto> {
     private final UserRepository userRepository;
 
     private final UserUtil userUtil;
+
 
     @Autowired
     public UserAppService(UserRepository userRepository, UserUtil userUtil) {
@@ -127,5 +126,32 @@ public class UserAppService implements GenericService<UserDto> {
         userList.forEach(this::save);
         return true;
     }
+
+
+
+    // **** Here comes the methods useful for Nomination ****
+
+    public Set<UserDtoIdName> findAllUserList(Integer valueid) {
+        List<UserApp> userList = new ArrayList<>();
+        userRepository.findUserNameAndId(valueid).forEach(userList::add);
+        if (userList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
+        Set<UserDtoIdName> userDtoList = userList.stream()
+                .map(userUtil::transformFromUserAppToUserDtoIdName).collect(Collectors.toSet());
+        return userDtoList;
+    }
+
+    public List<UserDtoIdName> findAllUserNominatorList(Integer valueid, Integer userid) {
+        Set<UserApp> userList = new HashSet<>();
+        userRepository.findUserNameAndIdForNominator(valueid, userid).forEach(userList::add);
+        if (userList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
+        List<UserDtoIdName> usernominationList = userList.stream()
+                .map(userUtil::transformFromUserAppToUserDtoIdName).collect(Collectors.toList());
+        return usernominationList;
+    }
+
 
 }

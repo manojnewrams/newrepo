@@ -1,6 +1,7 @@
 package com.example.h5api.controller;
 
 import com.example.h5api.dto.*;
+import com.example.h5api.service.CampaignService;
 import com.example.h5api.service.NominationService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,12 @@ import java.util.List;
 @Log
 public class NominationController implements GenericController<NominationDto> {
     private final NominationService nominationService;
+    private final CampaignService campaignService;
 
     @Autowired
-    public NominationController(NominationService nominationService) {
+    public NominationController(NominationService nominationService, CampaignService campaignService) {
         this.nominationService = nominationService;
+        this.campaignService = campaignService;
     }
 
     @Override
@@ -44,22 +47,22 @@ public class NominationController implements GenericController<NominationDto> {
 
     @GetMapping("/summary/{date}")
     public List<ValueDtoCountId> nominationSummary(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-        return nominationService.nominationSummary(date);
+        return campaignService.nominationSummary(date);
     }
 
     @GetMapping("/summary/")
     public List<ValueDtoCountId> nominationSummary() {
-        return nominationService.nominationSummary();
+        return campaignService.nominationSummary();
     }
 
     @GetMapping("/drawWinners")
     public List<NominationDtoCounterValueIdUserId> winnersOfQuarter(){
-        return nominationService.drawWinnersOfQuarter();
+        return campaignService.drawWinnersOfQuarter();
     }
 
     @GetMapping("/drawWinners/{date}")
     public List<NominationDtoCounterValueIdUserId> winnersOfQuarter(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-        return nominationService.drawWinnersOfQuarter(date);
+        return campaignService.drawWinnersOfQuarter(date);
     }
 
     @GetMapping("/list")

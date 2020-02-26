@@ -91,4 +91,18 @@ public class ValueService implements GenericService<ValueDto> {
         return valueList.stream()
                 .map(valueUtil::transformFromValueToValueDtoWithoutDates).collect(Collectors.toList());
     }
+
+
+    // **** Here comes the methods useful for Nomination ****
+
+    public List<ValueDtoIdName> findAllValueList() {
+        List<ValueDtoIdName> valueList = new ArrayList<>();
+        valueRepository.findIdAndValue().forEach(valueList::add);
+        if (valueList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
+        return valueList;
+    }
+
+
 }

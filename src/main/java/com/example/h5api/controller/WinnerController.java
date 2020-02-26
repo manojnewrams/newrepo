@@ -3,6 +3,7 @@ package com.example.h5api.controller;
 import com.example.h5api.dto.NominationDtoCounterRepeat;
 import com.example.h5api.dto.WinnerDto;
 import com.example.h5api.dto.WinnerDtoWithoutDates;
+import com.example.h5api.service.CampaignService;
 import com.example.h5api.service.NominationService;
 import com.example.h5api.service.WinnerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,15 @@ import java.util.List;
 @RequestMapping("winner")
 public class WinnerController implements GenericController<WinnerDto> {
 
-   private final WinnerService winnerService;
-
+    private final WinnerService winnerService;
     private final NominationService nominationService;
+    private final CampaignService campaignService;
 
     @Autowired
-    public WinnerController(WinnerService winnerService, NominationService nominationService) {
+    public WinnerController(WinnerService winnerService, NominationService nominationService, CampaignService campaignService) {
         this.winnerService = winnerService;
         this.nominationService = nominationService;
+        this.campaignService = campaignService;
     }
 
     @Override
@@ -56,12 +58,12 @@ public class WinnerController implements GenericController<WinnerDto> {
 
     @GetMapping("hasRepeat")
     public  List<NominationDtoCounterRepeat> hasRepeat(){
-        return nominationService.counterRepeats();
+        return campaignService.counterRepeats();
     }
 
     @GetMapping("hasRepeat/{date}")
     public  List<NominationDtoCounterRepeat> hasRepeat(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date){
-        return nominationService.counterRepeats(date);
+        return campaignService.counterRepeats(date);
     }
 
     @GetMapping("list/all")

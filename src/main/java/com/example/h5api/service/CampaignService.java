@@ -1,13 +1,13 @@
 package com.example.h5api.service;
 
-import com.example.h5api.dto.CampaignDto;
-import com.example.h5api.dto.CampaignDtoIdDescription;
+import com.example.h5api.dto.*;
 import com.example.h5api.entity.Campaign;
 import com.example.h5api.exceptions.GenericEmptyListException;
 import com.example.h5api.exceptions.GenericNotFoundException;
 import com.example.h5api.repository.CampaignRepository;
 import com.example.h5api.utils.CampaignUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,14 +18,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class CampaignService implements GenericService<CampaignDto> {
-    private final CampaignRepository campaignRepository;
 
+    private final CampaignRepository campaignRepository;
     private final CampaignUtil campaignUtil;
+    private final CampaignServiceAuxNominationDto campaignServiceAuxNominationDto;
 
     @Autowired
-    public CampaignService(CampaignRepository campaignRepository, CampaignUtil campaignUtil) {
+    public CampaignService(CampaignRepository campaignRepository, CampaignUtil campaignUtil,@Lazy CampaignServiceAuxNominationDto campaignServiceAuxNominationDto) {
         this.campaignRepository = campaignRepository;
         this.campaignUtil = campaignUtil;
+        this.campaignServiceAuxNominationDto = campaignServiceAuxNominationDto;
     }
 
     @Override
@@ -115,5 +117,100 @@ public class CampaignService implements GenericService<CampaignDto> {
        return campaignList.stream()
                 .map(campaignUtil::transformFromCampaignToCampaignDtoIdDescription).collect(Collectors.toList());
     }
+
+
+    // **** Here comes the methods useful for Nomination ****
+
+    @Transactional(readOnly = true)
+    public List<ValueDtoCountId> nominationSummary(Date date) {
+        List<Campaign> campaignList = new ArrayList<>();
+
+        campaignRepository.getCampaignByDate(date).forEach(campaignList::add);
+        if (campaignList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
+        List<CampaignDto> campaignListAsDTO = campaignList.stream()
+                .map(campaignUtil::transformFromCampaignToCampaignDto)
+                .collect(Collectors.toList());
+        if(campaignListAsDTO.isEmpty()){
+            throw new GenericEmptyListException();
+        }
+        return campaignServiceAuxNominationDto.getValueDtoCountIds(campaignListAsDTO);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<ValueDtoCountId> nominationSummary() {
+        List<Campaign> campaignList = new ArrayList<>();
+        List<ValueDtoCountId> empty = new ArrayList<>();
+        campaignRepository.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        if (campaignList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
+        List<CampaignDto> campaignListAsDTO = campaignList.stream()
+                .map(campaignUtil::transformFromCampaignToCampaignDto)
+                .collect(Collectors.toList());
+        if(campaignListAsDTO.isEmpty()){
+            throw new GenericEmptyListException();
+        }
+        return campaignServiceAuxNominationDto.getValueDtoCountIds(campaignListAsDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public List<NominationDtoCounterRepeat> counterRepeats() {
+        List<Campaign> campaignList = new ArrayList<>();
+        campaignRepository.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        if (campaignList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
+        return campaignServiceAuxNominationDto.getCounterRepeats(campaignList);
+    }
+
+    @Transactional(readOnly = true)
+    public List<NominationDtoCounterRepeat> counterRepeats(Date date) {
+        List<Campaign> campaignList = new ArrayList<>();
+        campaignRepository.getCampaignByDateNow(date).forEach(campaignList::add);
+        if (campaignList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
+        return campaignServiceAuxNominationDto.getCounterRepeats(campaignList);
+    }
+
+
+    public List<NominationDtoCounterValueIdUserId> drawWinnersOfQuarter() {
+        List<Campaign> campaignList = new ArrayList<>();
+        List<NominationDtoCounterValueIdUserId> nominationDtoCounterValueIdUserIds = new ArrayList<>();
+        campaignRepository.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        if (campaignList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
+        List<CampaignDto> campaignListAsDTO = campaignList.stream()
+                .map(campaignUtil::transformFromCampaignToCampaignDto)
+                .collect(Collectors.toList());
+        if (counterRepeats(new Date()).size() > 0) {
+            return nominationDtoCounterValueIdUserIds;
+        } else {
+            return campaignServiceAuxNominationDto.getNominationDtoCounterValueIdUserIds(nominationDtoCounterValueIdUserIds, campaignListAsDTO);
+        }
+    }
+
+
+    public List<NominationDtoCounterValueIdUserId> drawWinnersOfQuarter(Date date) {
+        List<Campaign> campaignList = new ArrayList<>();
+        List<NominationDtoCounterValueIdUserId> nominationDtoCounterValueIdUserIds = new ArrayList<>();
+        campaignRepository.getCampaignByDateNow(date).forEach(campaignList::add);
+        if (campaignList.isEmpty()) {
+            throw new GenericEmptyListException();
+        }
+        List<CampaignDto> campaignListAsDTO = campaignList.stream()
+                .map(campaignUtil::transformFromCampaignToCampaignDto)
+                .collect(Collectors.toList());
+        if (counterRepeats(date).size() > 0) {
+            return nominationDtoCounterValueIdUserIds;
+        } else {
+            return campaignServiceAuxNominationDto.getNominationDtoCounterValueIdUserIds(nominationDtoCounterValueIdUserIds, campaignListAsDTO);
+        }
+    }
+
 
 }
