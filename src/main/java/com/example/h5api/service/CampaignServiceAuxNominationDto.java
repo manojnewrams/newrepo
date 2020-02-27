@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 @Service
 public class CampaignServiceAuxNominationDto {
 
-    //Inyección realizada por Setter Inyection
-
     private final  UserUtil userUtil;
     private final UserAppService userAppService;
     private final NominationRepository nominationRepository;

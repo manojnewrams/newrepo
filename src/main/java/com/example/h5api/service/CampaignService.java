@@ -24,7 +24,7 @@ public class CampaignService implements GenericService<CampaignDto> {
     private final CampaignServiceAuxNominationDto campaignServiceAuxNominationDto;
 
     @Autowired
-    public CampaignService(CampaignRepository campaignRepository, CampaignUtil campaignUtil,@Lazy CampaignServiceAuxNominationDto campaignServiceAuxNominationDto) {
+    public CampaignService(CampaignRepository campaignRepository, CampaignUtil campaignUtil, @Lazy CampaignServiceAuxNominationDto campaignServiceAuxNominationDto) {
         this.campaignRepository = campaignRepository;
         this.campaignUtil = campaignUtil;
         this.campaignServiceAuxNominationDto = campaignServiceAuxNominationDto;
@@ -114,7 +114,7 @@ public class CampaignService implements GenericService<CampaignDto> {
         if (campaignList.size() == 0) {
             throw new GenericEmptyListException();
         }
-       return campaignList.stream()
+        return campaignList.stream()
                 .map(campaignUtil::transformFromCampaignToCampaignDtoIdDescription).collect(Collectors.toList());
     }
 
@@ -132,7 +132,7 @@ public class CampaignService implements GenericService<CampaignDto> {
         List<CampaignDto> campaignListAsDTO = campaignList.stream()
                 .map(campaignUtil::transformFromCampaignToCampaignDto)
                 .collect(Collectors.toList());
-        if(campaignListAsDTO.isEmpty()){
+        if (campaignListAsDTO.isEmpty()) {
             throw new GenericEmptyListException();
         }
         return campaignServiceAuxNominationDto.getValueDtoCountIds(campaignListAsDTO);
@@ -150,7 +150,7 @@ public class CampaignService implements GenericService<CampaignDto> {
         List<CampaignDto> campaignListAsDTO = campaignList.stream()
                 .map(campaignUtil::transformFromCampaignToCampaignDto)
                 .collect(Collectors.toList());
-        if(campaignListAsDTO.isEmpty()){
+        if (campaignListAsDTO.isEmpty()) {
             throw new GenericEmptyListException();
         }
         return campaignServiceAuxNominationDto.getValueDtoCountIds(campaignListAsDTO);
