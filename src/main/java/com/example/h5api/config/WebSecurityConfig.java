@@ -17,8 +17,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.Arrays;
 
 
 @Configuration
@@ -60,22 +65,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
-                .allowedMethods("GET","POST","DELETE","PUT")
-                .allowCredentials(true)
-                .allowedHeaders("*");
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedOrigins("*").exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials")
+//                .allowedMethods("GET","POST","DELETE","PUT")
+//                .allowCredentials(true).maxAge(6000)
+//                .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials")
+//                .allowedHeaders("*");
+//    }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
+                .cors()
+                .and()
                 .authorizeRequests()
+
                 .antMatchers(HttpMethod.POST, "/user").permitAll()
                 .antMatchers(HttpMethod.POST ,"/authenticate").permitAll()
-               .antMatchers(HttpMethod.GET , "/user/{\\d+}").hasRole("ADMIN") // need to modify
+                .antMatchers(HttpMethod.GET , "/user/{\\d+}").hasRole("ADMIN") // need to modify
                 .antMatchers(HttpMethod.GET , "/user/list").hasAnyRole("ADMIN","USER")
                 .antMatchers(HttpMethod.GET , "/user/list/api*").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE , "/user*").hasRole("ADMIN")
@@ -99,9 +108,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .antMatchers(HttpMethod.GET , "/winner/list/").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET , "/winner/list/all").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET , "/winner/list/api").hasRole("ADMIN")
-
                 .antMatchers(HttpMethod.POST , "/user/list").hasRole("ADMIN")
-
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
@@ -109,6 +116,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","https://localhost:3000","http://localhost:5000","https://localhost:5000","*"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","DELETE","PUT"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setExposedHeaders(Arrays.asList("Content-Language","Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 }
