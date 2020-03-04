@@ -1,13 +1,18 @@
 package com.example.h5api.service;
 
-import com.example.h5api.repository.CampaignRepository;
-import com.example.h5api.repository.NominationRepository;
-import com.example.h5api.dto.*;
+import com.example.h5api.dto.NominationDto;
+import com.example.h5api.dto.NominationDtoAdmin;
+import com.example.h5api.dto.NominationDtoDisplayData;
+import com.example.h5api.dto.NominationDtoWithoutDates;
+import com.example.h5api.dto.UserDtoIdName;
+import com.example.h5api.dto.ValueDtoIdName;
 import com.example.h5api.entity.Campaign;
 import com.example.h5api.entity.Nomination;
 import com.example.h5api.exceptions.CampaignIsClosedException;
 import com.example.h5api.exceptions.GenericEmptyListException;
 import com.example.h5api.exceptions.GenericNotFoundException;
+import com.example.h5api.repository.CampaignRepository;
+import com.example.h5api.repository.NominationRepository;
 import com.example.h5api.utils.NominationUtil;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Log
@@ -27,7 +32,7 @@ public class NominationService implements GenericService<NominationDto> {
     private final NominationUtil nominationUtil;
     private final CampaignRepository campaignRepository;
     private final ValueService valueService;
-    private final  UserAppService userAppService;
+    private final UserAppService userAppService;
 
     @Autowired
     public NominationService(NominationRepository nominationRepository, NominationUtil nominationUtil, CampaignRepository campaignRepository, ValueService valueService, UserAppService userAppService) {
@@ -133,7 +138,6 @@ public class NominationService implements GenericService<NominationDto> {
                 .map(nominationUtil::transformFromNominationToNominationDtoWithoutDates).collect(Collectors.toList());
         return nominationListAsDto;
     }
-
 
 
 }

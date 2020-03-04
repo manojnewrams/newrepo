@@ -1,6 +1,11 @@
 package com.example.h5api.controlleradvice;
 
-import com.example.h5api.exceptions.*;
+import com.example.h5api.exceptions.CampaignIsClosedException;
+import com.example.h5api.exceptions.GenericAlreadyExistException;
+import com.example.h5api.exceptions.GenericEmptyListException;
+import com.example.h5api.exceptions.GenericNotFoundException;
+import com.example.h5api.exceptions.UserAlreadyExistException;
+import com.example.h5api.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

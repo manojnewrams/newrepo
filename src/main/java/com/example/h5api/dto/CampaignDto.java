@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @Builder
@@ -23,8 +21,8 @@ public class CampaignDto {
     private String description;
     private boolean status;
 
-    public  CampaignDto (){
-        this.createAt= LocalDate.now();
+    public CampaignDto() {
+        this.createAt = LocalDate.now();
     }
 
 }

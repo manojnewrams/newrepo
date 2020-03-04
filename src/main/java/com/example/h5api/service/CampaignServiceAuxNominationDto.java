@@ -1,6 +1,13 @@
 package com.example.h5api.service;
 
-import com.example.h5api.dto.*;
+import com.example.h5api.dto.CampaignDto;
+import com.example.h5api.dto.CampaignDtoIdDescription;
+import com.example.h5api.dto.NominationDtoCounterRepeat;
+import com.example.h5api.dto.NominationDtoCounterValueIdUserId;
+import com.example.h5api.dto.UserDtoIdName;
+import com.example.h5api.dto.ValueDtoCountId;
+import com.example.h5api.dto.ValueDtoIdName;
+import com.example.h5api.dto.WinnerDto;
 import com.example.h5api.entity.Campaign;
 import com.example.h5api.exceptions.GenericEmptyListException;
 import com.example.h5api.repository.NominationRepository;
@@ -8,20 +15,21 @@ import com.example.h5api.utils.CampaignUtil;
 import com.example.h5api.utils.UserUtil;
 import com.example.h5api.utils.ValueUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class CampaignServiceAuxNominationDto {
 
-    private final  UserUtil userUtil;
+    private final UserUtil userUtil;
     private final UserAppService userAppService;
     private final NominationRepository nominationRepository;
     private final ValueUtil valueUtil;
@@ -99,7 +107,7 @@ public class CampaignServiceAuxNominationDto {
 
 
     public List<ValueDtoCountId> getValueDtoCountIds(List<CampaignDto> campaignListAsDTO) {
-        if(campaignListAsDTO.isEmpty()){
+        if (campaignListAsDTO.isEmpty()) {
             throw new GenericEmptyListException();
         }
         if (campaignListAsDTO.size() == 1) {

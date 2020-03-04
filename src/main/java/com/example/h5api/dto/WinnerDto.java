@@ -3,11 +3,8 @@ package com.example.h5api.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @Builder
@@ -22,8 +19,8 @@ public class WinnerDto {
     private CampaignDtoIdDescription campaign;
     private int count;
 
-    public WinnerDto (){
-        this.createAt=LocalDate.now();
+    public WinnerDto() {
+        this.createAt = LocalDate.now();
     }
 
     public WinnerDto(ValueDtoIdName value, UserDtoIdName user, CampaignDtoIdDescription campaign, int count) {

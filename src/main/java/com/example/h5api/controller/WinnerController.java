@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -54,27 +52,27 @@ public class WinnerController implements GenericController<WinnerDto> {
     }
 
     @GetMapping("findByCampaignId/{id}")
-    public List <WinnerDtoWithoutDates> findByCampaignId(@PathVariable Integer id){
+    public List<WinnerDtoWithoutDates> findByCampaignId(@PathVariable Integer id) {
         return winnerService.findWinnerByCampaignId(id);
     }
 
     @GetMapping("hasRepeat")
-    public  List<NominationDtoCounterRepeat> hasRepeat(){
+    public List<NominationDtoCounterRepeat> hasRepeat() {
         return campaignService.counterRepeats();
     }
 
     @GetMapping("hasRepeat/{date}")
-    public  List<NominationDtoCounterRepeat> hasRepeat(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date){
+    public List<NominationDtoCounterRepeat> hasRepeat(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return campaignService.counterRepeats(date);
     }
 
     @GetMapping("list/all")
-    public List<WinnerDtoWithoutDates> listWinnersWithoutDates(){
+    public List<WinnerDtoWithoutDates> listWinnersWithoutDates() {
         return winnerService.findAllWithoutDates();
     }
 
     @GetMapping("list")
-    public List<WinnerDtoWithoutDates> listWinnersOfLastQuarter(){
+    public List<WinnerDtoWithoutDates> listWinnersOfLastQuarter() {
         return winnerService.findWinnersFromLastCampaignWithoutDates();
     }
 }

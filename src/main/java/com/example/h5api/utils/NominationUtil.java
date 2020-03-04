@@ -13,7 +13,7 @@ public class NominationUtil {
     private ValueUtil valueUtil;
 
     @Autowired
-    public NominationUtil(UserUtil userUtil, ValueUtil valueUtil){
+    public NominationUtil(UserUtil userUtil, ValueUtil valueUtil) {
         this.userUtil = userUtil;
         this.valueUtil = valueUtil;
     }

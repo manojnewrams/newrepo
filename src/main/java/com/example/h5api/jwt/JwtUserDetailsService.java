@@ -1,7 +1,7 @@
 package com.example.h5api.jwt;
 
-import com.example.h5api.repository.UserRepository;
 import com.example.h5api.entity.UserApp;
+import com.example.h5api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,11 +34,11 @@ public class JwtUserDetailsService implements UserDetailsService {
         String role;
         Collection<GrantedAuthority> roles = new ArrayList<>();
 
-        if (user.getRole()){
-            role="ROLE_ADMIN";
+        if (user.getRole()) {
+            role = "ROLE_ADMIN";
             roles.add(new SimpleGrantedAuthority(role));
-        }else{
-            role="ROLE_USER";
+        } else {
+            role = "ROLE_USER";
             roles.add(new SimpleGrantedAuthority(role));
 
         }

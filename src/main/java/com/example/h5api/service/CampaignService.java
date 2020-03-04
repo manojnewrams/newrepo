@@ -1,6 +1,10 @@
 package com.example.h5api.service;
 
-import com.example.h5api.dto.*;
+import com.example.h5api.dto.CampaignDto;
+import com.example.h5api.dto.CampaignDtoIdDescription;
+import com.example.h5api.dto.NominationDtoCounterRepeat;
+import com.example.h5api.dto.NominationDtoCounterValueIdUserId;
+import com.example.h5api.dto.ValueDtoCountId;
 import com.example.h5api.entity.Campaign;
 import com.example.h5api.exceptions.GenericEmptyListException;
 import com.example.h5api.exceptions.GenericNotFoundException;
@@ -12,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
