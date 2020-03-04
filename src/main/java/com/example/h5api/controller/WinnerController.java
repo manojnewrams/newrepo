@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -62,7 +64,7 @@ public class WinnerController implements GenericController<WinnerDto> {
     }
 
     @GetMapping("hasRepeat/{date}")
-    public  List<NominationDtoCounterRepeat> hasRepeat(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date){
+    public  List<NominationDtoCounterRepeat> hasRepeat(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date){
         return campaignService.counterRepeats(date);
     }
 

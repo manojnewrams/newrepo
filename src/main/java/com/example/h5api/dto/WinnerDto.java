@@ -3,7 +3,10 @@ package com.example.h5api.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.apache.tomcat.jni.Local;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -11,20 +14,20 @@ import java.util.Date;
 @AllArgsConstructor
 public class WinnerDto {
     private int id;
-    private Date createAt;
-    private Date updateAt;
-    private Date deleteAt;
+    private LocalDate createAt;
+    private LocalDate updateAt;
+    private LocalDate deleteAt;
     private ValueDtoIdName value;
     private UserDtoIdName user;
     private CampaignDtoIdDescription campaign;
     private int count;
 
     public WinnerDto (){
-        this.createAt=new Date();
+        this.createAt=LocalDate.now();
     }
 
     public WinnerDto(ValueDtoIdName value, UserDtoIdName user, CampaignDtoIdDescription campaign, int count) {
-        this.createAt = new Date();
+        this.createAt = LocalDate.now();
         this.updateAt = null;
         this.deleteAt = null;
         this.value = value;

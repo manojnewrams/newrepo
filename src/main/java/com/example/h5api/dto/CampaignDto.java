@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -13,16 +15,16 @@ import java.util.Date;
 public class CampaignDto {
 
     private int id;
-    private Date createAt;
-    private Date updateAt;
-    private Date deleteAt;
-    private Date dateFrom;
-    private Date dateTo;
+    private LocalDate createAt;
+    private LocalDate updateAt;
+    private LocalDate deleteAt;
+    private LocalDate dateFrom;
+    private LocalDate dateTo;
     private String description;
     private boolean status;
 
     public  CampaignDto (){
-        this.createAt=new Date();
+        this.createAt= LocalDate.now();
     }
 
 }

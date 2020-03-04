@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -16,12 +18,10 @@ import java.util.Date;
 @Entity
 public class Campaign extends GenericEntity {
     @Column(name = "date_from")
-    @Temporal(TemporalType.DATE)
-    private Date dateFrom;
+    private LocalDate dateFrom;
 
     @Column(name = "date_to")
-    @Temporal(TemporalType.DATE)
-    private Date dateTo;
+    private LocalDate dateTo;
     
     private String description;
     private boolean status;

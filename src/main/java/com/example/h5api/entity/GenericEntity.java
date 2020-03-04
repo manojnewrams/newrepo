@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @MappedSuperclass
@@ -12,7 +12,6 @@ import java.util.Date;
 public class GenericEntity {
 
     public GenericEntity() {
-        this.createAt = new Date();
     }
 
     @Id
@@ -20,15 +19,12 @@ public class GenericEntity {
     private int id;
 
     @Column(name = "create_at")
-    @Temporal(TemporalType.DATE)
-    private Date createAt;
+    private LocalDate createAt;
 
     @Column(name = "update_at")
-    @Temporal(TemporalType.DATE)
-    private Date updateAt;
+    private LocalDate updateAt;
 
     @Column(name = "delete_at")
-    @Temporal(TemporalType.DATE)
-    private Date deleteAt;
+    private LocalDate deleteAt;
 
 }

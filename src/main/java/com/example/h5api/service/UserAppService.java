@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -79,7 +81,7 @@ public class UserAppService implements GenericService<UserDto> {
     @Transactional
     public void deleteById(Integer id) {
         UserApp user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        user.setDeleteAt(new Date());
+        user.setDeleteAt(LocalDate.now());
         user.setStatus(false);
         userRepository.save(user);
     }

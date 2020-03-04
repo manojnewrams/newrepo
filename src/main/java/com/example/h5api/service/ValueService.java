@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,7 +61,7 @@ public class ValueService implements GenericService<ValueDto> {
     @Transactional
     public void deleteById(Integer id) {
         Value value = valueRepository.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
-        value.setDeleteAt(new Date());
+        value.setDeleteAt(LocalDate.now());
         valueRepository.save(value);
 
     }

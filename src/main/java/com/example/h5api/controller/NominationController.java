@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +48,7 @@ public class NominationController implements GenericController<NominationDto> {
     }
 
     @GetMapping("/summary/{date}")
-    public List<ValueDtoCountId> nominationSummary(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+    public List<ValueDtoCountId> nominationSummary(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return campaignService.nominationSummary(date);
     }
 
@@ -61,7 +63,7 @@ public class NominationController implements GenericController<NominationDto> {
     }
 
     @GetMapping("/drawWinners/{date}")
-    public List<NominationDtoCounterValueIdUserId> winnersOfQuarter(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+    public List<NominationDtoCounterValueIdUserId> winnersOfQuarter(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return campaignService.drawWinnersOfQuarter(date);
     }
 

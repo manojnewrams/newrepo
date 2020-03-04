@@ -11,8 +11,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,7 @@ public class CampaignService implements GenericService<CampaignDto> {
     @Transactional
     public void deleteById(Integer id) {
         Campaign campaign = campaignRepository.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
-        campaign.setDeleteAt(new Date());
+        campaign.setDeleteAt(LocalDate.now());
         campaignRepository.save(campaign);
 
     }
@@ -87,7 +88,7 @@ public class CampaignService implements GenericService<CampaignDto> {
         return campaignUtil.transformFromCampaignToCampaignDto(campaign);
     }
 
-    public List<CampaignDto> getCampaignByDate(Date date) {
+    public List<CampaignDto> getCampaignByDate(LocalDate date) {
         List<Campaign> campaignList = new ArrayList<>();
         campaignRepository.getCampaignByDate(date).forEach(campaignList::add);
         if (campaignList.size() == 0) {
@@ -99,7 +100,7 @@ public class CampaignService implements GenericService<CampaignDto> {
 
     public List<CampaignDto> getCampaignByDateNow() {
         List<Campaign> campaignList = new ArrayList<>();
-        campaignRepository.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        campaignRepository.getCampaignByDateNow(LocalDate.now()).forEach(campaignList::add);
         if (campaignList.size() == 0) {
             throw new GenericEmptyListException();
         }
@@ -122,7 +123,7 @@ public class CampaignService implements GenericService<CampaignDto> {
     // **** Here comes the methods useful for Nomination ****
 
     @Transactional(readOnly = true)
-    public List<ValueDtoCountId> nominationSummary(Date date) {
+    public List<ValueDtoCountId> nominationSummary(LocalDate date) {
         List<Campaign> campaignList = new ArrayList<>();
 
         campaignRepository.getCampaignByDate(date).forEach(campaignList::add);
@@ -143,7 +144,7 @@ public class CampaignService implements GenericService<CampaignDto> {
     public List<ValueDtoCountId> nominationSummary() {
         List<Campaign> campaignList = new ArrayList<>();
         List<ValueDtoCountId> empty = new ArrayList<>();
-        campaignRepository.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        campaignRepository.getCampaignByDateNow(LocalDate.now()).forEach(campaignList::add);
         if (campaignList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -159,7 +160,7 @@ public class CampaignService implements GenericService<CampaignDto> {
     @Transactional(readOnly = true)
     public List<NominationDtoCounterRepeat> counterRepeats() {
         List<Campaign> campaignList = new ArrayList<>();
-        campaignRepository.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        campaignRepository.getCampaignByDateNow(LocalDate.now()).forEach(campaignList::add);
         if (campaignList.isEmpty()) {
             throw new GenericEmptyListException();
         }
@@ -167,7 +168,7 @@ public class CampaignService implements GenericService<CampaignDto> {
     }
 
     @Transactional(readOnly = true)
-    public List<NominationDtoCounterRepeat> counterRepeats(Date date) {
+    public List<NominationDtoCounterRepeat> counterRepeats(LocalDate date) {
         List<Campaign> campaignList = new ArrayList<>();
         campaignRepository.getCampaignByDateNow(date).forEach(campaignList::add);
         if (campaignList.isEmpty()) {
@@ -180,14 +181,14 @@ public class CampaignService implements GenericService<CampaignDto> {
     public List<NominationDtoCounterValueIdUserId> drawWinnersOfQuarter() {
         List<Campaign> campaignList = new ArrayList<>();
         List<NominationDtoCounterValueIdUserId> nominationDtoCounterValueIdUserIds = new ArrayList<>();
-        campaignRepository.getCampaignByDateNow(new Date()).forEach(campaignList::add);
+        campaignRepository.getCampaignByDateNow(LocalDate.now()).forEach(campaignList::add);
         if (campaignList.isEmpty()) {
             throw new GenericEmptyListException();
         }
         List<CampaignDto> campaignListAsDTO = campaignList.stream()
                 .map(campaignUtil::transformFromCampaignToCampaignDto)
                 .collect(Collectors.toList());
-        if (counterRepeats(new Date()).size() > 0) {
+        if (counterRepeats(LocalDate.now()).size() > 0) {
             return nominationDtoCounterValueIdUserIds;
         } else {
             return campaignServiceAuxNominationDto.getNominationDtoCounterValueIdUserIds(nominationDtoCounterValueIdUserIds, campaignListAsDTO);
@@ -195,7 +196,7 @@ public class CampaignService implements GenericService<CampaignDto> {
     }
 
 
-    public List<NominationDtoCounterValueIdUserId> drawWinnersOfQuarter(Date date) {
+    public List<NominationDtoCounterValueIdUserId> drawWinnersOfQuarter(LocalDate date) {
         List<Campaign> campaignList = new ArrayList<>();
         List<NominationDtoCounterValueIdUserId> nominationDtoCounterValueIdUserIds = new ArrayList<>();
         campaignRepository.getCampaignByDateNow(date).forEach(campaignList::add);

@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -13,9 +15,9 @@ import java.util.Date;
 public class UserDto {
 
     private int id;
-    private Date createAt;
-    private Date updateAt;
-    private Date deleteAt;
+    private LocalDate createAt;
+    private LocalDate updateAt;
+    private LocalDate deleteAt;
     private String name;
     private String email;
     private String company;
@@ -24,6 +26,6 @@ public class UserDto {
     private Boolean status;
 
     public UserDto (){
-        this.createAt=new Date();
+        this.createAt=LocalDate.now();
     }
 }

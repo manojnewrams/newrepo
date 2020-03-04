@@ -5,9 +5,13 @@ import com.example.h5api.dto.CampaignDtoIdDescription;
 import com.example.h5api.service.CampaignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -52,17 +56,17 @@ public class CampaignController implements GenericController<CampaignDto> {
     }
 
     @GetMapping("/get/{date}")
-    public List <CampaignDto> nominationSummary(@PathVariable("date")@DateTimeFormat(pattern = "yyyy-MM-dd") Date date){
+    public List<CampaignDto> nominationSummary(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return campaignService.getCampaignByDate(date);
     }
 
     @GetMapping("/get/")
-    public List <CampaignDto> nominationSummary(){
+    public List<CampaignDto> nominationSummary() {
         return campaignService.getCampaignByDateNow();
     }
 
     @GetMapping("/listCampaigns")
-    public List <CampaignDtoIdDescription> findAllCampaignIdName(){
+    public List<CampaignDtoIdDescription> findAllCampaignIdName() {
         return campaignService.findAllCampaignIdName();
     }
 }

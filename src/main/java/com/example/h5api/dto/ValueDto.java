@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -11,13 +13,13 @@ import java.util.Date;
 @AllArgsConstructor
 public class ValueDto {
     private int id;
-    private Date createAt;
-    private Date updateAt;
-    private Date deleteAt;
+    private LocalDate createAt;
+    private LocalDate updateAt;
+    private LocalDate deleteAt;
     private String name;
     private String description;
 
     public ValueDto (){
-        this.createAt = new Date();
+        this.createAt = LocalDate.now();
     }
 }

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,8 +45,8 @@ public class CampaignServiceAuxNominationDto {
 
     public List<NominationDtoCounterValueIdUserId> getNominationDtoCounterValueIdUserIds(List<NominationDtoCounterValueIdUserId> nominationDtoCounterValueIdUserIds, List<CampaignDto> campaignListAsDTO) {
         if (campaignListAsDTO.size() == 1) {
-            Date dateTo = campaignListAsDTO.get(0).getDateTo();
-            Date dateFrom = campaignListAsDTO.get(0).getDateFrom();
+            LocalDate dateTo = campaignListAsDTO.get(0).getDateTo();
+            LocalDate dateFrom = campaignListAsDTO.get(0).getDateFrom();
             List<Map<String, Number>> list = nominationRepository.selectWinners(dateFrom, dateTo);
             if (list.isEmpty()) {
                 throw new GenericEmptyListException();
@@ -83,8 +85,8 @@ public class CampaignServiceAuxNominationDto {
             throw new GenericEmptyListException();
         }
         if (campaignListAsDTO.size() == 1) {
-            Date dateTo = campaignListAsDTO.get(0).getDateTo();
-            Date dateFrom = campaignListAsDTO.get(0).getDateFrom();
+            LocalDate dateTo = campaignListAsDTO.get(0).getDateTo();
+            LocalDate dateFrom = campaignListAsDTO.get(0).getDateFrom();
             List<BigInteger> list = nominationRepository.findTie(dateFrom, dateTo);
             list.forEach(item -> {
                 counterRepeats.add(new NominationDtoCounterRepeat(item.intValue()));
@@ -101,8 +103,8 @@ public class CampaignServiceAuxNominationDto {
             throw new GenericEmptyListException();
         }
         if (campaignListAsDTO.size() == 1) {
-            Date dateTo = campaignListAsDTO.get(0).getDateTo();
-            Date dateFrom = campaignListAsDTO.get(0).getDateFrom();
+            LocalDate dateTo = campaignListAsDTO.get(0).getDateTo();
+            LocalDate dateFrom = campaignListAsDTO.get(0).getDateFrom();
             List<Map<String, Number>> list = nominationRepository.nominationSummary(dateFrom, dateTo);
             List<ValueDtoCountId> valueDtoCountIds = new ArrayList<>();
             list.forEach(item -> {

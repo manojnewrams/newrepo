@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -76,7 +78,7 @@ public class NominationService implements GenericService<NominationDto> {
     @Transactional
     public void deleteById(Integer id) {
         Nomination nomination = nominationRepository.findById(id).orElseThrow(() -> new GenericNotFoundException(id));
-        nomination.setDeleteAt(new Date());
+        nomination.setDeleteAt(LocalDate.now());
         nominationRepository.save(nomination);
     }
 
