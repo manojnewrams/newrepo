@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -48,8 +49,7 @@ public class CampaignControllerTest {
         campaign = new CampaignDto();
         campaignDtoIdDescription = new CampaignDtoIdDescription(1,"First Quarter");
         campaign.setId(1);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date myDate = sdf.parse("2020-01-01");
+        LocalDate myDate = LocalDate.of(2020,01,15);
         campaign.setCreateAt(myDate);
         campaignList.add(campaign);
         campaignDtoIdDescriptionLinkedList.add(campaignDtoIdDescription);
@@ -140,12 +140,11 @@ public class CampaignControllerTest {
 
     @Test
     public void nominationSummaryWithDate() throws ParseException {
-        when(campaignController.nominationSummary(Mockito.any(Date.class))).thenReturn(campaignList);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date myDate = sdf.parse("2020-01-01");
+        when(campaignController.nominationSummary(Mockito.any(LocalDate.class))).thenReturn(campaignList);
+        LocalDate myDate = LocalDate.of(2020,01,15);
         List<CampaignDto>  response = campaignController.nominationSummary(myDate);
         assertNotNull(response);
-        verify(campaignController).nominationSummary(Mockito.any(Date.class));
+        verify(campaignController).nominationSummary(Mockito.any(LocalDate.class));
         verifyNoMoreInteractions(campaignController);
     }
 

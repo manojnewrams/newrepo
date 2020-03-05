@@ -2,6 +2,7 @@ package com.example.h5api.entity;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;

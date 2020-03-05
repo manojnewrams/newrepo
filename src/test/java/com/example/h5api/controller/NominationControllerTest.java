@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -106,13 +107,12 @@ public class NominationControllerTest {
         NominationDtoCounterRepeat nominationDtoCounterRepeat = new NominationDtoCounterRepeat(1);
         nominationDtoCounterRepeat.setRepeat(1);
         list.add(valueDtoCountId);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date myDate = sdf.parse("2020-01-01");
-        Mockito.when(nominationController.nominationSummary(any(Date.class))).thenReturn(list);
+        LocalDate myDate = LocalDate.of(2020,01,15);
+        Mockito.when(nominationController.nominationSummary(any(LocalDate.class))).thenReturn(list);
         List<ValueDtoCountId> response = nominationController.nominationSummary(myDate);
         assertNotNull(response);
         Assert.assertEquals(1, response.get(0).getValueId());
-        verify(nominationController).nominationSummary(Mockito.any(Date.class));
+        verify(nominationController).nominationSummary(Mockito.any(LocalDate.class));
         verifyNoMoreInteractions(nominationController);
 
 
@@ -134,13 +134,12 @@ public class NominationControllerTest {
     public void checkWinnersOfQuarterWithDateAsParameter() throws ParseException {
         List<NominationDtoCounterValueIdUserId> list = new ArrayList<>();
         list.add(nominationDtoCounterValueIdUserId);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date myDate = sdf.parse("2020-01-01");
-        Mockito.when(nominationController.winnersOfQuarter(Mockito.any(Date.class))).thenReturn(list);
+        LocalDate myDate = LocalDate.of(2020,01,15);
+        Mockito.when(nominationController.winnersOfQuarter(Mockito.any(LocalDate.class))).thenReturn(list);
         List<NominationDtoCounterValueIdUserId> responseList = nominationController.winnersOfQuarter(myDate);
         assertNotNull(responseList);
         Assert.assertEquals(1, responseList.get(0).getValueId());
-        verify(nominationController).winnersOfQuarter(Mockito.any(Date.class));
+        verify(nominationController).winnersOfQuarter(Mockito.any(LocalDate.class));
         verifyNoMoreInteractions(nominationController);
     }
 
